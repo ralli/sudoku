@@ -28,6 +28,9 @@ public:
 private:
     std::vector<Range> ranges;
     std::vector<std::vector<Range> > field_ranges;
+    std::vector<Range> rows;
+    std::vector<Range> columns;
+    std::vector<Range> blocks;
 public:
     RangeList();
     RangeList(const RangeList &other);
@@ -40,6 +43,9 @@ public:
     iterator field_end(int idx);
     const_iterator field_begin(int idx) const;
     const_iterator field_end(int idx) const;
+    const Range &get_row(int row) const;
+    const Range &get_column(int col) const;
+    const Range &get_block(int block) const;
 };
 
 extern const RangeList RANGES;
@@ -114,6 +120,18 @@ inline RangeList::const_iterator RangeList::field_begin(int idx) const {
 
 inline RangeList::const_iterator RangeList::field_end(int idx) const {
     return field_ranges[idx].end();
+}
+
+inline const Range &RangeList::get_row(int row) const {
+    return rows[row];
+}
+
+inline const Range &RangeList::get_column(int col) const {
+    return columns[col];
+}
+
+inline const Range &RangeList::get_block(int block) const {
+    return blocks[block];
 }
 
 #endif /* RANGE_HPP_ */

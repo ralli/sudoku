@@ -13,6 +13,7 @@ RangeList::RangeList() {
             indexes[col] = row * 9 + col;
         }
         ranges.push_back(Range(os.str(), indexes));
+        rows.push_back(Range(os.str(), indexes));
     }
 
     for (int col = 0; col < 9; ++col) {
@@ -22,6 +23,7 @@ RangeList::RangeList() {
             indexes[row] = row * 9 + col;
         }
         ranges.push_back(Range(os.str(), indexes));
+        columns.push_back(Range(os.str(), indexes));
     }
 
     for (int i = 0; i < 3; ++i) {
@@ -41,6 +43,7 @@ RangeList::RangeList() {
             }
 
             ranges.push_back(Range(os.str(), indexes));
+            blocks.push_back(Range(os.str(), indexes));
         }
     }
 
@@ -53,7 +56,8 @@ RangeList::RangeList() {
 }
 
 RangeList::RangeList(const RangeList &other) :
-    ranges(other.ranges), field_ranges(other.field_ranges) {
+    ranges(other.ranges), field_ranges(other.field_ranges), rows(other.rows),
+            columns(other.columns), blocks(other.blocks) {
 }
 
 RangeList &RangeList::operator =(const RangeList &other) {
@@ -62,6 +66,10 @@ RangeList &RangeList::operator =(const RangeList &other) {
 
     ranges = other.ranges;
     field_ranges = other.field_ranges;
+    rows = other.rows;
+    columns = other.columns;
+    blocks = other.blocks;
 
     return *this;
 }
+

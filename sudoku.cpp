@@ -11,6 +11,7 @@
 #include "singlehint.hpp"
 #include "hiddendouble.hpp"
 #include "forcingchain.hpp"
+#include "pointing.hpp"
 
 int main(int argc, char *argv[]) {
 #if 0
@@ -40,6 +41,7 @@ int main(int argc, char *argv[]) {
 
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
+    hintproducers.push_back(new PointingHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);
