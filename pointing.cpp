@@ -105,7 +105,7 @@ void PointingHintProducer::find_block_hint(int block_idx, Grid &grid,
             if (!cell.has_value()) {
                 for (int value = 1; value < 10; ++value) {
                     if (cell.has_choice(value)) {
-                        value_cols[value].insert(col);
+                        value_cols[value].insert(start_col+col);
                     }
                 }
             }

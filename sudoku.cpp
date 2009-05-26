@@ -12,6 +12,7 @@
 #include "hiddendouble.hpp"
 #include "forcingchain.hpp"
 #include "pointing.hpp"
+#include "boxlinereduction.hpp"
 
 int main(int argc, char *argv[]) {
 #if 0
@@ -24,12 +25,12 @@ int main(int argc, char *argv[]) {
     s =
     "59.8.2.67.........6..7.3..1..9...1.....186.....7...3..8..4.5..2.........32.6.8.45";
 #endif
-#if 0
+#if 1
     std::string
     s =
     "..........9.7.6.2..3..1..5...2.6.3..76.5.1.49..9.4.8...2..7..3..5.9.4.8..........";
 #endif
-#if 1
+#if 0
     std::string
             s =
                     "385694..21465729832973814566148.3..97531.96.8829.6...147193826553...6.9796......4";
@@ -42,6 +43,7 @@ int main(int argc, char *argv[]) {
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
     hintproducers.push_back(new PointingHintProducer());
+    hintproducers.push_back(new BoxLineReductionHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);
