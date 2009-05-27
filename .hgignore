@@ -1,0 +1,15 @@
+syntax: glob
+*~
+*.o
+sudoku
+.deps/*
+autom4te.cache/*
+config.h
+config.log
+config.status
+stamp-h1
+aclocal.m4
+Makefile
+Makefile.in
+*.swp
+

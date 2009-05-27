@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     grid.print_status(std::cout);
     std::cout << std::endl;
 
-    std::for_each(hintproducers.begin(), hintproducers.end(), destroy<HintProducer *>());
+    //     std::for_each(hintproducers.begin(), hintproducers.end(), destroy<HintProducer *>());
     return 0;
 }
 
