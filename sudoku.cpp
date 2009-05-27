@@ -33,12 +33,14 @@ int main(int argc, char *argv[]) {
 #endif
 #if 0
     std::string
-            s =
-                    "385694..21465729832973814566148.3..97531.96.8829.6...147193826553...6.9796......4";
+    s =
+    "385694..21465729832973814566148.3..97531.96.8829.6...147193826553...6.9796......4";
 
 #endif
 #if 1
-    std::string s = "9..6.2..4.7.9.428...43789..4..5.9..2.9.....4.56.4.1.98..9145637735896421146...859";
+    std::string
+            s =
+                    "9..6.2..4.7.9.428...43789..4..5.9..2.9.....4.56.4.1.98..9145637735896421146...859";
 #endif
     std::istringstream in(s);
     Grid grid;
@@ -87,7 +89,9 @@ int main(int argc, char *argv[]) {
     grid.print_status(std::cout);
     std::cout << std::endl;
 
-    //     std::for_each(hintproducers.begin(), hintproducers.end(), destroy<HintProducer *>());
+    std::for_each(hintproducers.begin(), hintproducers.end(), destroy<
+            HintProducer *> ());
+
     return 0;
 }
 
