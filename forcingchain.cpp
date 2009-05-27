@@ -37,7 +37,8 @@ struct print_forcing_chain {
     void print(std::ostream &out) const {
         for (std::vector<Conclusion *>::const_iterator i = conclusions.begin(); i
                 != conclusions.end(); ++i) {
-            out << print_row_col((*i)->get_cell_idx()) << "=" << (*i)->get_value();
+            out << print_row_col((*i)->get_cell_idx()) << "="
+                    << (*i)->get_value();
             if (i + 1 != conclusions.end())
                 out << " => ";
         }
@@ -126,23 +127,15 @@ void ForcingChainHint::print_description(std::ostream &out) const {
 
 void ForcingChainHintProducer::find_next_cells(Grid &grid, int cell_idx,
         int value, std::vector<Cell *> &cells) const {
-    RangeList::const_iterator begin = RANGES.field_begin(cell_idx);
-    RangeList::const_iterator end = RANGES.field_end(cell_idx);
-    std::map<int, Cell *> cell_map;
+    RangeList::const_index_iterator begin = RANGES.field_begin(cell_idx);
+    RangeList::const_index_iterator end = RANGES.field_end(cell_idx);
 
-    for (RangeList::const_iterator irange = begin; irange != end; ++irange) {
-        for (Range::const_iterator i = irange->begin(); i != irange->end(); ++i) {
-            Cell &cell = grid[*i];
-            if (cell.get_num_choices() == 2 && cell.has_choice(value)
-                    && cell.get_idx() != cell_idx) {
-                cell_map[cell.get_idx()] = &cell;
-            }
+    for (RangeList::const_index_iterator i = begin; i != end; ++i) {
+        Cell &cell = grid[*i];
+        if (cell.get_num_choices() == 2 && cell.has_choice(value)
+                && cell.get_idx() != cell_idx) {
+            cells.push_back(&cell);
         }
-    }
-
-    for (std::map<int, Cell *>::iterator i = cell_map.begin(); i
-            != cell_map.end(); ++i) {
-        cells.push_back(i->second);
     }
 }
 
@@ -210,10 +203,6 @@ bool ForcingChainHintProducer::find_forcing_chain(Grid &grid,
         Conclusion *parent,
         std::map<int, std::vector<Conclusion *> > &concluded_values,
         HintConsumer &consumer) const {
-#if DEBUG
-    std::cout << "parent: " << print_row_col(parent->get_cell_idx()) << "="
-            << parent->get_value() << std::endl;
-#endif
     std::vector<Cell *> next_cells;
     find_next_cells(grid, parent->get_cell_idx(), parent->get_value(),
             next_cells);
@@ -230,9 +219,6 @@ bool ForcingChainHintProducer::find_forcing_chain(Grid &grid,
                         concluded_value);
                 parent->add_conclusion(c);
                 consume_contradiction_hint(grid, f->second.front(), c, consumer);
-#if DEBUG
-                std::cout << " contradiction ..." << std::endl;
-#endif
                 return false;
             } else {
                 continue;
@@ -278,9 +264,6 @@ void ForcingChainHintProducer::find_forcing_chains(Grid &grid,
             choices[0]);
     first_concluded_values[start_cell.get_idx()].push_back(first_conclusion);
 
-#if DEBUG
-    std::cout << "first ..." << std::endl;
-#endif
     if (!find_forcing_chain(grid, first_conclusion, first_concluded_values,
             consumer)) {
         return;
@@ -291,10 +274,6 @@ void ForcingChainHintProducer::find_forcing_chains(Grid &grid,
 
     std::map<int, std::vector<Conclusion *> > second_concluded_values;
     second_concluded_values[start_cell.get_idx()].push_back(second_conclusion);
-
-#if DEBUG
-    std::cout << "second..." << std::endl;
-#endif
 
     if (!find_forcing_chain(grid, second_conclusion, second_concluded_values,
             consumer)) {

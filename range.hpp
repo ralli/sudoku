@@ -25,9 +25,10 @@ class RangeList {
 public:
     typedef std::vector<Range>::iterator iterator;
     typedef std::vector<Range>::const_iterator const_iterator;
+    typedef std::vector<int>::const_iterator const_index_iterator;
 private:
     std::vector<Range> ranges;
-    std::vector<std::vector<Range> > field_ranges;
+    std::vector<std::vector<int> > field_neighbours;
     std::vector<Range> rows;
     std::vector<Range> columns;
     std::vector<Range> blocks;
@@ -39,10 +40,10 @@ public:
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
-    iterator field_begin(int idx);
-    iterator field_end(int idx);
-    const_iterator field_begin(int idx) const;
-    const_iterator field_end(int idx) const;
+
+    const_index_iterator field_begin(int idx) const;
+    const_index_iterator field_end(int idx) const;
+
     const Range &get_row(int row) const;
     const Range &get_column(int col) const;
     const Range &get_block(int block) const;
@@ -106,20 +107,12 @@ inline RangeList::const_iterator RangeList::end() const {
     return ranges.end();
 }
 
-inline RangeList::iterator RangeList::field_begin(int idx) {
-    return field_ranges[idx].begin();
+inline RangeList::const_index_iterator RangeList::field_begin(int idx) const {
+    return field_neighbours[idx].begin();
 }
 
-inline RangeList::iterator RangeList::field_end(int idx) {
-    return field_ranges[idx].end();
-}
-
-inline RangeList::const_iterator RangeList::field_begin(int idx) const {
-    return field_ranges[idx].begin();
-}
-
-inline RangeList::const_iterator RangeList::field_end(int idx) const {
-    return field_ranges[idx].end();
+inline RangeList::const_index_iterator RangeList::field_end(int idx) const {
+    return field_neighbours[idx].end();
 }
 
 inline const Range &RangeList::get_row(int row) const {

@@ -19,8 +19,7 @@ void SingleHint::print_description(std::ostream &out) const {
             + 1 << ") value: " << value << " range: " << range.get_name();
 }
 
-
-inline void SingleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) {
+void SingleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) {
 
     for (RangeList::const_iterator irange = RANGES.begin(); irange
             != RANGES.end(); ++irange) {

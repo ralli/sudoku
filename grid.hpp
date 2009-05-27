@@ -4,12 +4,30 @@
 #include <vector>
 #include <iosfwd>
 
+/*!
+ * \brief
+ * maintains a list of choices (possible values) for a given cell.
+ */
 class Choices {
     bool choices[10];
     int num_choices;
 public:
+    /*!
+     * \brief
+     * constructor
+     */
     Choices();
+
+    /*!
+     * \brief
+     * copy constructor
+     */
     Choices(const Choices &others);
+
+    /*!
+     * \brief
+     * assignment operator
+     */
     Choices & operator =(const Choices &others);
     int get_num_choices() const;
     bool has_choice(int value) const;
@@ -71,7 +89,6 @@ public:
     Cell & operator[](int idx);
     const Cell & operator[](int idx) const;
 };
-
 
 inline Choices::Choices() :
     num_choices(9) {
@@ -259,7 +276,6 @@ inline Cell &Grid::operator[](int idx) {
 inline const Cell & Grid::operator[](int idx) const {
     return cells[idx];
 }
-
 
 inline void Grid::cleanup_choices() {
     for (iterator i = begin(); i != end(); ++i) {

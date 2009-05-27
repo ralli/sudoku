@@ -89,12 +89,10 @@ void Grid::cleanup_choice(Cell &cell) {
 
     cell.clear_choices();
 
-    RangeList::const_iterator begin = RANGES.field_begin(cell.get_idx());
-    RangeList::const_iterator end = RANGES.field_end(cell.get_idx());
+    RangeList::const_index_iterator begin = RANGES.field_begin(cell.get_idx());
+    RangeList::const_index_iterator end = RANGES.field_end(cell.get_idx());
 
-    for (RangeList::const_iterator r = begin; r != end; ++r) {
-        for (Range::const_iterator j = r->begin(); j != r->end(); ++j) {
-            cells[*j].remove_choice(cell.get_value());
-        }
+    for (RangeList::const_index_iterator j = begin; j != end; ++j) {
+        cells[*j].remove_choice(cell.get_value());
     }
 }

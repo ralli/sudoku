@@ -1,5 +1,6 @@
 #include "range.hpp"
 #include <sstream>
+#include <set>
 
 const RangeList RANGES;
 
@@ -47,16 +48,33 @@ RangeList::RangeList() {
         }
     }
 
+    std::vector<std::vector<Range> > field_ranges;
     field_ranges.reserve(81);
     for (const_iterator i = begin(); i != end(); ++i) {
         for (Range::const_iterator j = i->begin(); j != i->end(); ++j) {
             field_ranges[*j].push_back(*i);
         }
     }
+
+    field_neighbours.resize(81);
+    for (int idx = 0; idx < 81; ++idx) {
+        const_iterator begin = field_ranges[idx].begin();
+        const_iterator end = field_ranges[idx].end();
+        std::set<int> neighbours;
+        for (const_iterator irange = begin; irange != end; ++irange) {
+            for (Range::const_iterator j = irange->begin(); j != irange->end(); ++j) {
+                if (*j != idx) {
+                    neighbours.insert(*j);
+                }
+            }
+        }
+        std::copy(neighbours.begin(), neighbours.end(), std::back_inserter(
+                field_neighbours[idx]));
+    }
 }
 
 RangeList::RangeList(const RangeList &other) :
-    ranges(other.ranges), field_ranges(other.field_ranges), rows(other.rows),
+    ranges(other.ranges), field_neighbours(other.field_neighbours), rows(other.rows),
             columns(other.columns), blocks(other.blocks) {
 }
 
@@ -65,10 +83,10 @@ RangeList &RangeList::operator =(const RangeList &other) {
         return *this;
 
     ranges = other.ranges;
-    field_ranges = other.field_ranges;
     rows = other.rows;
     columns = other.columns;
     blocks = other.blocks;
+    field_neighbours = other.field_neighbours;
 
     return *this;
 }
