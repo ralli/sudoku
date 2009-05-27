@@ -7,40 +7,77 @@
 #include "boxlinereduction.hpp"
 #include "hintconsumer.hpp"
 
-BoxLineReductionHint::BoxLineReductionHint(Grid &grid, int value,
-        int first_block, int second_block, int third_block,
-        int rowcol_to_remove1, int rowcol_to_remove2, int rowcol_to_keep,
-        bool isrow) :
+BoxLineRowReductionHint::BoxLineRowReductionHint(Grid &grid, int value,
+        int first_block, int second_block, int third_block, int row_to_remove1,
+        int row_to_remove2, int row_to_keep) :
     grid(grid), value(value), first_block(first_block), second_block(
-            second_block), third_block(third_block), rowcol_to_remove1(
-            rowcol_to_remove1), rowcol_to_remove2(rowcol_to_remove2),
-            rowcol_to_keep(rowcol_to_keep) {
+            second_block), third_block(third_block), row_to_remove1(
+            row_to_remove1), row_to_remove2(row_to_remove2), row_to_keep(
+            row_to_keep) {
 
 }
+void BoxLineRowReductionHint::apply() {
+    int start_col = third_block * 3;
+    int start_row = row_to_remove1 / 3 * 3;
 
-void BoxLineReductionHint::apply() {
-
-}
-
-void BoxLineReductionHint::print_description(std::ostream &out) const {
-    out << "boxline: ";
-    if (isrow) {
-        int row = rowcol_to_remove1 / 3 * 3;
-        out << "block1(" << row << "," << first_block * 3 << ") ";
-        out << "block2(" << row << "," << second_block * 3 << ") ";
-        out << "block3(" << row << "," << third_block * 3 << ") ";
-        out << "row to remove 1: " << rowcol_to_remove1;
-        out << "row to remove 2: " << rowcol_to_remove2;
-        out << "row to keep: " << rowcol_to_keep;
-    } else {
-        int col = rowcol_to_remove1 / 3 * 3;
-        out << "block1(" << first_block * 3 << "," << col << ") ";
-        out << "block2(" << second_block * 3 << "," << col << ") ";
-        out << "block3(" << third_block * 3 << "," << col << ") ";
-        out << "col to remove 1: " << rowcol_to_remove1;
-        out << "col to remove 2: " << rowcol_to_remove2;
-        out << "col to keep: " << rowcol_to_keep;
+    for (int row = start_row; row < start_row + 3; ++row) {
+        if (row != row_to_keep) {
+            for (int col = start_col; col < start_col + 3; ++start_col) {
+                int idx = row * 9 + col;
+                Cell &cell = grid[idx];
+                cell.remove_choice(value);
+            }
+        }
     }
+}
+
+void BoxLineRowReductionHint::print_description(std::ostream &out) const {
+    int row = row_to_remove1 / 3 * 3;
+    out << "boxlinereduction(row): ";
+    out << "value: " << value << ' ';
+    out << "block1(" << row << "," << first_block * 3 << ") ";
+    out << "block2(" << row << "," << second_block * 3 << ") ";
+    out << "block3(" << row << "," << third_block * 3 << ") ";
+    out << "row to keep: " << row_to_keep;
+    out << " row to remove 1: " << row_to_remove1;
+    out << " row to remove 2: " << row_to_remove2;
+}
+
+BoxLineColumnReductionHint::BoxLineColumnReductionHint(Grid &grid, int value,
+        int first_block, int second_block, int third_block, int col_to_remove1,
+        int col_to_remove2, int col_to_keep) :
+    grid(grid), value(value), first_block(first_block), second_block(
+            second_block), third_block(third_block), col_to_remove1(
+            col_to_remove1), col_to_remove2(col_to_remove2), col_to_keep(
+            col_to_keep) {
+}
+
+void BoxLineColumnReductionHint::apply() {
+    int start_row = third_block * 3;
+    int start_col = col_to_remove1 / 3 * 3;
+
+    for (int col = start_col; col < start_col + 3; ++col) {
+        if (col != col_to_keep) {
+            for (int row = start_row; row < start_row + 3; ++row) {
+                int idx = row * 9 + col;
+                Cell &cell = grid[idx];
+                cell.remove_choice(value);
+            }
+        }
+    }
+}
+
+void BoxLineColumnReductionHint::print_description(std::ostream &out) const {
+    int col = col_to_remove1 / 3 * 3;
+
+    out << "boxlinereduction(col): ";
+    out << "value: " << value;
+    out << "block1(" << first_block * 3 << "," << col << ") ";
+    out << "block2(" << second_block * 3 << "," << col << ") ";
+    out << "block3(" << third_block * 3 << "," << col << ") ";
+    out << "column to keep: " << col_to_keep;
+    out << " column to remove 1: " << col_to_remove1;
+    out << " column to remove 2: " << col_to_remove2;
 }
 
 void BoxLineReductionHintProducer::find_hints(Grid &grid,
@@ -91,11 +128,17 @@ void BoxLineReductionHintProducer::process_sets(Grid &grid, int row, int value,
                                     rowsets[k].end(), std::back_inserter(
                                             kintersection));
                             if (kintersection.size() > 0) {
-                                if (!consumer.consume_hint(
-                                        new BoxLineReductionHint(grid, value,
-                                                i, j, k, intersection[0],
-                                                intersection[1], difference[0],
-                                                isrow)))
+                                Hint *hint;
+                                if (isrow) {
+                                    hint = new BoxLineRowReductionHint(grid,
+                                            value, i, j, k, intersection[0],
+                                            intersection[1], difference[0]);
+                                } else {
+                                    hint = new BoxLineColumnReductionHint(grid,
+                                            value, i, j, k, intersection[0],
+                                            intersection[1], difference[0]);
+                                }
+                                if (!consumer.consume_hint(hint))
                                     return;
                             }
                         }

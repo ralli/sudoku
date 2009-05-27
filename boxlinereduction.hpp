@@ -5,20 +5,36 @@
 #include <set>
 #include <vector>
 
-class BoxLineReductionHint: public Hint {
+class BoxLineRowReductionHint: public Hint {
     Grid &grid;
     int value;
     int first_block;
     int second_block;
     int third_block;
-    int rowcol_to_remove1;
-    int rowcol_to_remove2;
-    int rowcol_to_keep;
-    bool isrow;
+    int row_to_remove1;
+    int row_to_remove2;
+    int row_to_keep;
 public:
-    BoxLineReductionHint(Grid &grid, int value, int first_block,
+    BoxLineRowReductionHint(Grid &grid, int value, int first_block,
             int second_block, int third_block, int rowcol_to_remove1,
-            int rowcol_to_remove2, int rowcol_to_keep, bool isrow);
+            int rowcol_to_remove2, int rowcol_to_keep);
+    void apply();
+    void print_description(std::ostream &out) const;
+};
+
+class BoxLineColumnReductionHint: public Hint {
+    Grid &grid;
+    int value;
+    int first_block;
+    int second_block;
+    int third_block;
+    int col_to_remove1;
+    int col_to_remove2;
+    int col_to_keep;
+public:
+    BoxLineColumnReductionHint(Grid &grid, int value, int first_block,
+            int second_block, int third_block, int col_to_remove1,
+            int col_to_remove2, int col_to_keep);
     void apply();
     void print_description(std::ostream &out) const;
 };

@@ -47,8 +47,8 @@ int main(int argc, char *argv[]) {
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
     hintproducers.push_back(new PointingHintProducer());
+    hintproducers.push_back(new BoxLineReductionHintProducer());
     hintproducers.push_back(new XWingHintProducer());
-//    hintproducers.push_back(new BoxLineReductionHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);
