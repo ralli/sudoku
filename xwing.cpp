@@ -82,12 +82,12 @@ int XWingHintProducer::count_row_value(Grid &grid, int row, int value) const {
     return count;
 }
 
-bool XWingHintProducer::check_second_row(int row2, int col1, int col2,
+bool XWingHintProducer::check_second_row(int row, int col1, int col2,
         Grid & grid, int value) const {
-    int idx1 = row2 * 9 + col1;
-    int idx2 = row2 * 9 + col2;
+    int idx1 = row * 9 + col1;
+    int idx2 = row * 9 + col2;
     return grid[idx1].has_choice(value) && grid[idx2].has_choice(value)
-            && count_row_value(grid, row2, value) == 2 && (count_col_value(
+            && count_row_value(grid, row, value) == 2 && (count_col_value(
             grid, col1, value) > 2 || count_col_value(grid, col2, value) > 2);
 }
 
@@ -102,7 +102,7 @@ bool XWingHintProducer::check_second_col(int col, int row1, int row2,
 
 void XWingHintProducer::find_row_hints(Grid &grid, HintConsumer &consumer) const {
     std::vector<std::vector<Cell *> > freq(10);
-    for (int row = 0; row < 10; ++row) {
+    for (int row = 0; row < 9; ++row) {
         fill_row_freq(grid, row, freq);
         for (int value = 1; value < 10; ++value) {
             if (freq[value].size() == 2) {
@@ -135,7 +135,7 @@ void XWingHintProducer::fill_row_freq(Grid &grid, int row, std::vector<
 
 void XWingHintProducer::find_col_hints(Grid &grid, HintConsumer &consumer) const {
     std::vector<std::vector<Cell *> > freq(10);
-    for (int col = 0; col < 10; ++col) {
+    for (int col = 0; col < 9; ++col) {
         fill_col_freq(grid, col, freq);
         for (int value = 1; value < 10; ++value) {
             if (freq[value].size() == 2) {
