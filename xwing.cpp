@@ -101,14 +101,14 @@ bool XWingHintProducer::check_second_col(int col, int row1, int row2,
 }
 
 void XWingHintProducer::find_row_hints(Grid &grid, HintConsumer &consumer) const {
-    std::vector<std::vector<Cell *> > freq(10);
     for (int row = 0; row < 9; ++row) {
+        std::vector<std::vector<Cell *> > freq(10);
         fill_row_freq(grid, row, freq);
         for (int value = 1; value < 10; ++value) {
             if (freq[value].size() == 2) {
-                int col1 = freq[value][0]->get_idx();
-                int col2 = freq[value][1]->get_idx();
-                for (int row2 = row + 1; row2 < 10; ++row2) {
+                int col1 = freq[value][0]->get_col();
+                int col2 = freq[value][1]->get_col();
+                for (int row2 = row + 1; row2 < 9; ++row2) {
                     if (check_second_row(row2, col1, col2, grid, value)) {
                         if (!consumer.consume_hint(new XWingRowHint(grid, row,
                                 row2, col1, col2, value)))
@@ -134,14 +134,14 @@ void XWingHintProducer::fill_row_freq(Grid &grid, int row, std::vector<
 }
 
 void XWingHintProducer::find_col_hints(Grid &grid, HintConsumer &consumer) const {
-    std::vector<std::vector<Cell *> > freq(10);
     for (int col = 0; col < 9; ++col) {
+        std::vector<std::vector<Cell *> > freq(10);
         fill_col_freq(grid, col, freq);
         for (int value = 1; value < 10; ++value) {
             if (freq[value].size() == 2) {
-                int row1 = freq[value][0]->get_idx();
-                int row2 = freq[value][1]->get_idx();
-                for (int col2 = col + 1; col2 < 10; ++col2) {
+                int row1 = freq[value][0]->get_row();
+                int row2 = freq[value][1]->get_row();
+                for (int col2 = col + 1; col2 < 9; ++col2) {
                     if (check_second_col(col2, row1, row2, grid, value)) {
                         if (!consumer.consume_hint(new XWingColumnHint(grid,
                                 row1, row2, col, col2, value)))

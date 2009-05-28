@@ -31,7 +31,7 @@ void Grid::load(std::istream &in) {
 
     for (int i = 0; i < 81; ++i) {
         in >> ch;
-        int v = std::isdigit(ch) ? ch - '0' : 0;
+        int v = isdigit(ch) ? ch - '0' : 0;
         cells[i].set_value(v);
     }
 

@@ -12,4 +12,8 @@ aclocal.m4
 Makefile
 Makefile.in
 *.swp
-
+*.obj
+*.pch
+Debug/*
+Release/*
+./*.user

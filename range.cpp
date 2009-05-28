@@ -48,8 +48,7 @@ RangeList::RangeList() {
         }
     }
 
-    std::vector<std::vector<Range> > field_ranges;
-    field_ranges.reserve(81);
+    std::vector<std::vector<Range> > field_ranges(81);
     for (const_iterator i = begin(); i != end(); ++i) {
         for (Range::const_iterator j = i->begin(); j != i->end(); ++j) {
             field_ranges[*j].push_back(*i);
