@@ -9,23 +9,6 @@
 #include "hint.hpp"
 #include "hintconsumer.hpp"
 
-struct print_row_col {
-    int idx;
-
-    print_row_col(int idx) :
-        idx(idx) {
-    }
-
-    void print(std::ostream &out) const {
-        out << '(' << idx / 9 + 1 << ',' << idx % 9 + 1 << ')';
-    }
-};
-
-inline std::ostream &operator <<(std::ostream &out,
-        const print_row_col &row_col) {
-    row_col.print(out);
-    return out;
-}
 
 struct print_forcing_chain {
     const std::vector<Conclusion *> &conclusions;

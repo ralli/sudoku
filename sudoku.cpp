@@ -14,6 +14,7 @@
 #include "pointing.hpp"
 #include "boxlinereduction.hpp"
 #include "xwing.hpp"
+#include "hiddentriple.hpp"
 
 int main(int argc, char *argv[]) {
 #if 0
@@ -37,17 +38,22 @@ int main(int argc, char *argv[]) {
     "385694..21465729832973814566148.3..97531.96.8829.6...147193826553...6.9796......4";
 
 #endif
-#if 1
+#if 0
     std::string
             s =
                     "9..6.2..4.7.9.428...43789..4..5.9..2.9.....4.56.4.1.98..9145637735896421146...859";
 #endif
+#if 1
+    std::string s = "37.4.81.....9.37.494.1...8342......5...5.4...8......46.1..49...5.96..4....42..931";
+#endif
+
     std::istringstream in(s);
     Grid grid;
     std::vector<HintProducer *> hintproducers;
 
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
+    hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new PointingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
     hintproducers.push_back(new XWingHintProducer());
@@ -62,6 +68,7 @@ int main(int argc, char *argv[]) {
     int iteration = 0;
     while (true) {
         ++iteration;
+        std::cout << "iteration: " << iteration << std::endl;
         SingleHintConsumer consumer;
         for (std::vector<HintProducer *>::const_iterator i =
                 hintproducers.begin(); i != hintproducers.end(); ++i) {
@@ -79,7 +86,6 @@ int main(int argc, char *argv[]) {
             (*i)->apply();
         }
 #endif
-        std::cout << "iteration: " << iteration << std::endl;
         grid.print_choices(std::cout);
         grid.print_status(std::cout);
         std::cout << std::endl;
