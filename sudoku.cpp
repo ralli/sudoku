@@ -43,8 +43,18 @@ int main(int argc, char *argv[]) {
             s =
                     "9..6.2..4.7.9.428...43789..4..5.9..2.9.....4.56.4.1.98..9145637735896421146...859";
 #endif
-#if 1
+#if 0
     std::string s = "37.4.81.....9.37.494.1...8342......5...5.4...8......46.1..49...5.96..4....42..931";
+#endif
+#if 0
+    std::string s = "4..27.6..798156234.2.84...7237468951849531726561792843.82.15479.7..243....4.87..2";
+
+#endif
+#if 0
+   std::string s = ".14..9...76.2.....5..7..........1.4..57.6.91..2.5..........8..6.....5.38...9..15.";
+#endif
+#if 1
+   std::string s = "....4.2...46..1.3..386.2........8.1.3.......2.9.4........5.946..8.1..75...5.6....";
 #endif
 
     std::istringstream in(s);
@@ -53,9 +63,9 @@ int main(int argc, char *argv[]) {
 
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
-    hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new PointingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
+    hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
