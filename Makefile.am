@@ -1,23 +1,24 @@
 bin_PROGRAMS=sudoku
-sudoku_SOURCES= boxlinereduction.hpp \
-hiddendouble.hpp \
-pointing.hpp \
-util.hpp \
-forcingchain.hpp \
-hintconsumer.hpp \
-range.hpp \
-xwing.hpp \
-grid.hpp \
-hint.hpp \
-singlehint.hpp \
-boxlinereduction.cpp \
-hiddendouble.cpp \
-range.cpp \
-xwing.cpp \
+sudoku_SOURCES= boxlinereduction.cpp \
+boxlinereduction.hpp \
 forcingchain.cpp \
-hintconsumer.cpp \
-singlehint.cpp \
+forcingchain.hpp \
 grid.cpp \
+grid.hpp \
+hiddendouble.cpp \
+hiddendouble.hpp \
+hiddentriple.cpp \
+hiddentriple.hpp \
+hintconsumer.cpp \
+hintconsumer.hpp \
+hint.hpp \
 pointing.cpp \
-sudoku.cpp
-
+pointing.hpp \
+range.cpp \
+range.hpp \
+singlehint.cpp \
+singlehint.hpp \
+sudoku.cpp \
+util.hpp \
+xwing.cpp \
+xwing.hpp 
