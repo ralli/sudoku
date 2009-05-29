@@ -15,6 +15,7 @@
 #include "boxlinereduction.hpp"
 #include "xwing.hpp"
 #include "hiddentriple.hpp"
+#include "forcingchain.hpp"
 
 int main(int argc, char *argv[]) {
 #if 0
@@ -68,6 +69,7 @@ int main(int argc, char *argv[]) {
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
     hintproducers.push_back(new SimpleForcingChainHintProducer());
+    hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);
     grid.print(std::cout);

@@ -28,6 +28,7 @@ public:
     typedef std::vector<int>::const_iterator const_index_iterator;
 private:
     std::vector<Range> ranges;
+    std::vector<std::vector<Range> > field_ranges;
     std::vector<std::vector<int> > field_neighbours;
     std::vector<Range> rows;
     std::vector<Range> columns;
@@ -47,6 +48,7 @@ public:
     const Range &get_row(int row) const;
     const Range &get_column(int col) const;
     const Range &get_block(int block) const;
+    const std::vector<Range> &get_field_ranges(int idx) const;
 };
 
 extern const RangeList RANGES;
@@ -125,6 +127,11 @@ inline const Range &RangeList::get_column(int col) const {
 
 inline const Range &RangeList::get_block(int block) const {
     return blocks[block];
+}
+
+inline const std::vector<Range> &RangeList::get_field_ranges(int idx) const 
+{
+    return field_ranges[idx];
 }
 
 #endif /* RANGE_HPP_ */

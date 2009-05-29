@@ -175,6 +175,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\forcingchain.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\grid.cpp"
 				>
 			</File>
@@ -242,6 +246,10 @@
 			>
 			<File
 				RelativePath=".\boxlinereduction.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\forcingchain.hpp"
 				>
 			</File>
 			<File
