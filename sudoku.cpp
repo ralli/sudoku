@@ -10,7 +10,7 @@
 #include "hintconsumer.hpp"
 #include "singlehint.hpp"
 #include "hiddendouble.hpp"
-#include "forcingchain.hpp"
+#include "simpleforcing.hpp"
 #include "pointing.hpp"
 #include "boxlinereduction.hpp"
 #include "xwing.hpp"
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
-    hintproducers.push_back(new ForcingChainHintProducer());
+    hintproducers.push_back(new SimpleForcingChainHintProducer());
 
     grid.load(in);
     grid.print(std::cout);

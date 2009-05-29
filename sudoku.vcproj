@@ -175,10 +175,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\forcingchain.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\grid.cpp"
 				>
 			</File>
@@ -200,6 +196,10 @@
 			</File>
 			<File
 				RelativePath=".\range.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\simpleforcing.cpp"
 				>
 			</File>
 			<File
@@ -245,10 +245,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\forcingchain.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\grid.hpp"
 				>
 			</File>
@@ -274,6 +270,10 @@
 			</File>
 			<File
 				RelativePath=".\range.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\simpleforcing.hpp"
 				>
 			</File>
 			<File
