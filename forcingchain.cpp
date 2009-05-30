@@ -20,7 +20,7 @@ struct print_link {
 
     print_link(const Link *link) : link(link) {}
     void print(std::ostream &out) const {
-        print_row_col(link->get_cell_idx());
+        out << print_row_col(link->get_cell_idx());
         if(link->is_strong_link())
             out << "=" ;
         else
@@ -176,20 +176,20 @@ LinkMap::LinkMap() : strong_links(81), weak_links(81)
 
 Link *LinkMap::find_contradiction(const Link *link)
 {
-    return link->is_strong_link() ?
-        find_strong_contradiction(link): find_weak_contradiction(link);
+    if(link->is_strong_link())
+        return find_strong_contradiction(link);
+    else
+        return find_weak_contradiction(link);
 }
 
 Link *LinkMap::find_strong_contradiction(const Link *link)
 {
-    std::vector<Link *> &links = strong_links[link->get_cell_idx()];
-    for(std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
+    for(std::vector<Link *>::iterator i = strong_links[link->get_cell_idx()].begin(); i != strong_links[link->get_cell_idx()].end(); ++i) {
         if((*i)->get_value() != link->get_value())
             return *i;
     }
 
-    links = weak_links[link->get_cell_idx()];
-    for(std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
+    for(std::vector<Link *>::iterator i = weak_links[link->get_cell_idx()].begin(); i != weak_links[link->get_cell_idx()].end(); ++i) {
         if((*i)->get_value() == link->get_value())
             return *i;
     }
@@ -209,29 +209,25 @@ Link *LinkMap::find_weak_contradiction(const Link *link)
     return 0;
 }
 
+inline bool insert_into(std::vector<std::vector<Link *> > &linkmap, Link *link) {
+    std::vector<Link *> &links = linkmap[link->get_cell_idx()];
+
+    for(std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
+        if((*i)->get_value() == link->get_value())
+            return false;
+    }
+    links.push_back(link);
+    return true;
+}
 
 bool LinkMap::insert(Link *link)
 {
     if(link->is_strong_link()) {
-        std::vector<Link *> &links = strong_links[link->get_cell_idx()];
-
-        for(std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
-            if((*i)->get_value() == link->get_value())
-                return false;
-        }
-        links.push_back(link);
+        return insert_into(strong_links, link);
     }
     else {
-        std::vector<Link *> &links = weak_links[link->get_cell_idx()];
-
-        for(std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
-            if((*i)->get_value() == link->get_value())
-                return false;
-        }
-        links.push_back(link);
+        return insert_into(weak_links, link);
     }
-
-    return true;
 }
 
 void LinkMap::insert_all(LinkMap &other) 
@@ -291,7 +287,8 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid, HintCo
         if(cell.has_choice(value)) {
             StrongLink *link = new StrongLink(0, cell.get_idx(), value);
             LinkMap linkMap;
-            if(find_contradiction(link, linkMap, grid,  consumer)) {
+            Grid backup(grid);
+            if(find_contradiction(link, linkMap, backup, grid, consumer)) {
                 std::for_each(links.begin(), links.end(), destroy<Link *>());
                 return;
             }
@@ -305,14 +302,17 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid, HintCo
     }
 }
 
-bool ForcingChainHintProducer::find_contradiction(Link *link, LinkMap &linkMap, Grid &grid,                                                    
+bool ForcingChainHintProducer::find_contradiction(Link *link, 
+                                                  LinkMap &linkMap, 
+                                                  Grid &grid, 
+                                                  Grid &original,                                                    
                                                   HintConsumer &consumer) const
 {
     std::vector<Link *> links;
     Link *contradiction = linkMap.find_contradiction(link);
 
     if(contradiction) {
-        consumer.consume_hint(new ForcingChainContradictionHint(grid, link, contradiction));
+        consumer.consume_hint(new ForcingChainContradictionHint(original, link, contradiction));
         return true;
     }
 
@@ -321,13 +321,19 @@ bool ForcingChainHintProducer::find_contradiction(Link *link, LinkMap &linkMap, 
 
     if(link->is_strong_link()) {
         find_weak_links(link, links, grid);
+        Cell &cell = grid[link->get_cell_idx()];
+        cell.set_value(link->get_value());
+        grid.cleanup_choice(cell);
+        find_links_with_one_choice_left(link, links, grid);
     }
     else {
+        Cell &cell = grid[link->get_cell_idx()];
+        cell.remove_choice(link->get_value());
         find_strong_links(link, links, grid);
     }
 
     for(std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
-        if(find_contradiction(*i, linkMap, grid, consumer))
+        if(find_contradiction(*i, linkMap, grid, original, consumer))
             return true;
     }
 
@@ -357,11 +363,10 @@ void ForcingChainHintProducer::find_strong_links(Link *link, std::vector<Link *>
 {
     Cell &cell = grid[link->get_cell_idx()];
 
-    if(cell.has_choice(link->get_value()) && cell.get_num_choices() == 2) {
+    if(cell.get_num_choices() == 1) {
         links.push_back(new StrongLink(link, cell.get_idx(), get_opposite_value(cell, link->get_value())));
     }
 
-    find_links_with_one_choice_left(link, links, grid);
     find_links_in_ranges(link, links, grid);
 }
 
@@ -373,8 +378,8 @@ void ForcingChainHintProducer::find_links_with_one_choice_left(Link *link, std::
 
     for(RangeList::const_index_iterator i = begin; i != end; ++i) {
         Cell &cell = grid[*i];
-        if(cell.has_choice(link->get_value()) && cell.get_num_choices() == 2) {
-            links.push_back(new StrongLink(link, cell.get_idx(), get_opposite_value(cell, link->get_value())));
+        if(cell.get_num_choices() == 1) {
+            links.push_back(new StrongLink(link, cell.get_idx(), cell.first_choice()));
         }            
     }
 }
@@ -385,7 +390,7 @@ void ForcingChainHintProducer::fill_range_frequencies(const Range &range, Grid &
         Cell &cell = grid[*i];
 
         for(int value = 1;  value < 10; ++value) {
-            if(cell.has_choice(value)) {
+            if(!cell.has_value() && cell.has_choice(value)) {
                 frequencies[value].push_back(&cell);
             }
         }
@@ -399,13 +404,10 @@ void ForcingChainHintProducer::find_links_in_ranges(Link *link, std::vector<Link
 
     for(std::vector<Range>::const_iterator irange = ranges.begin(); irange != ranges.end(); ++irange) {
         fill_range_frequencies(*irange, grid, frequencies); 
-        std::vector<Cell *> &cells = frequencies[link->get_value()];
-        if(cells.size() == 2) {
-            for(std::vector<Cell *>::iterator i = cells.begin(); i != cells.end(); ++i) {
-                Cell &cell = **i;
-                if(cell.get_idx() != link->get_cell_idx()) {
-                    links.push_back(new StrongLink(link, cell.get_idx(), get_opposite_value(cell, link->get_value())));
-                }
+        for(int value = 1; value < 10; ++value) {
+            if(frequencies[value].size() == 1) {
+                Cell *cell = frequencies[value].front();
+                links.push_back(new StrongLink(link, cell->get_idx(), value));
             }
         }
     }

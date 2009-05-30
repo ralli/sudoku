@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     s =
     "59.8.2.67.........6..7.3..1..9...1.....186.....7...3..8..4.5..2.........32.6.8.45";
 #endif
-#if 0
+#if 1
     std::string
     s =
     "..........9.7.6.2..3..1..5...2.6.3..76.5.1.49..9.4.8...2..7..3..5.9.4.8..........";
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 #if 0
    std::string s = ".14..9...76.2.....5..7..........1.4..57.6.91..2.5..........8..6.....5.38...9..15.";
 #endif
-#if 1
+#if 0
    std::string s = "....4.2...46..1.3..386.2........8.1.3.......2.9.4........5.946..8.1..75...5.6....";
 #endif
 
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
     hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
-    hintproducers.push_back(new SimpleForcingChainHintProducer());
+//    hintproducers.push_back(new SimpleForcingChainHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);

@@ -89,7 +89,11 @@ public:
     void find_hints(Grid &grid, HintConsumer &consumer);
 private:
     void find_forcing_chain(Cell &cell, Grid &grid, HintConsumer &consumer) const;
-    bool find_contradiction(Link *link, LinkMap &linkMap, Grid &grid, HintConsumer &consumer) const;
+    bool ForcingChainHintProducer::find_contradiction(Link *link, 
+                                                  LinkMap &linkMap, 
+                                                  Grid &grid, 
+                                                  Grid &original,                                                    
+                                                  HintConsumer &consumer) const;
     bool find_common_conclusion(LinkMap &allLinks, size_t nconclusions, Grid &grid, HintConsumer &consumer) const;
     void find_strong_links(Link *link, std::vector<Link *> &links, Grid &grid) const;
     void find_weak_links(Link *link, std::vector<Link *> &links, Grid &grid) const;

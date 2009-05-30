@@ -61,6 +61,7 @@ public:
 
     int get_num_choices() const;
     void print_choices(std::ostream &out) const;
+    int first_choice() const;
 };
 
 class Grid {
@@ -210,6 +211,10 @@ inline void Cell::clear_choices() {
 
 inline int Cell::get_num_choices() const {
     return choices.get_num_choices();
+}
+
+inline int Cell::first_choice() const {
+    return choices.first_choice();
 }
 
 inline Grid::Grid() {
