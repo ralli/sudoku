@@ -89,7 +89,7 @@ public:
     void find_hints(Grid &grid, HintConsumer &consumer);
 private:
     void find_forcing_chain(Cell &cell, Grid &grid, HintConsumer &consumer) const;
-    bool ForcingChainHintProducer::find_contradiction(Link *link, 
+    bool find_contradiction(Link *link, 
                                                   LinkMap &linkMap, 
                                                   Grid &grid, 
                                                   Grid &original,                                                    

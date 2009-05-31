@@ -20,7 +20,7 @@ void BoxLineRowReductionHint::apply() {
     int start_col = third_block * 3;
     int start_row = row_to_remove1 / 3 * 3;
 
-    for (int row = start_row; row < start_row + 3; ++row) {
+    for (int row = start_row; (row-3) <= start_row; ++row) {
         if (row != row_to_keep) {
             for (int col = start_col; col < start_col + 3; ++start_col) {
                 int idx = row * 9 + col;

@@ -170,7 +170,7 @@ bool WeakLink::is_strong_link() const {
     return false;
 }
 
-LinkMap::LinkMap() : strong_links(81), weak_links(81)
+LinkMap::LinkMap() : weak_links(81), strong_links(81)
 {
 }
 
