@@ -57,7 +57,10 @@ int main(int argc, char *argv[]) {
 #if 0
    std::string s = "....4.2...46..1.3..386.2........8.1.3.......2.9.4........5.946..8.1..75...5.6....";
 #endif
-
+#if 0
+   /* easter monster */
+   std::string s = "1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1";
+#endif
     std::istringstream in(s);
     Grid grid;
     std::vector<HintProducer *> hintproducers;
