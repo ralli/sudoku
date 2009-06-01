@@ -195,6 +195,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\nakeddouble.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pointing.cpp"
 				>
 			</File>
@@ -270,6 +274,10 @@
 			</File>
 			<File
 				RelativePath=".\hintconsumer.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\nakeddouble.hpp"
 				>
 			</File>
 			<File
