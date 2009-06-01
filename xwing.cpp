@@ -36,8 +36,8 @@ XWingColumnHint::XWingColumnHint(Grid &grid, int row1, int row2, int col1,
 }
 
 void XWingColumnHint::apply() {
-    const Range &range1 = RANGES.get_column(row1);
-    const Range &range2 = RANGES.get_column(row2);
+    const Range &range1 = RANGES.get_row(row1);
+    const Range &range2 = RANGES.get_row(row2);
 
     for (int col = 0; col < 9; ++col) {
         if (col != col1 && col != col2) {
