@@ -21,4 +21,7 @@ singlehint.hpp \
 sudoku.cpp \
 util.hpp \
 xwing.cpp \
-xwing.hpp 
+xwing.hpp \
+nakeddouble.hpp \
+nakeddouble.cpp
+
