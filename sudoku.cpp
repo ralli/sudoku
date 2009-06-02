@@ -18,6 +18,7 @@
 #include "hiddentriple.hpp"
 #include "forcingchain.hpp"
 #include "nakeddouble.hpp"
+#include "claiming.hpp"
 
 void solve(const std::string &s) {
     std::istringstream in(s);
@@ -28,6 +29,7 @@ void solve(const std::string &s) {
     hintproducers.push_back(new NakedDoubleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
     hintproducers.push_back(new PointingHintProducer());
+    hintproducers.push_back(new ClaimingHintProducer());
     hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
