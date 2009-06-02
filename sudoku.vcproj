@@ -175,6 +175,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\claiming.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\forcingchain.cpp"
 				>
 			</File>
@@ -250,6 +254,10 @@
 			>
 			<File
 				RelativePath=".\boxlinereduction.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\claiming.hpp"
 				>
 			</File>
 			<File
