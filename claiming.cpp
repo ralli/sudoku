@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "claiming.hpp"
 #include "hintconsumer.hpp"
 #include "range.hpp"
@@ -27,7 +29,10 @@ void ClaimingRowHint::apply()
 void ClaimingRowHint::print_description(std::ostream &out) const
 {
     const Range &block = RANGES.get_block(block_idx);
-    out << "claiming(row): row: " << row + 1 << " block: " << block.get_name() << " value: " << value;
+    out << "claiming(row): row: " 
+	<< row + 1 
+	<< " block: " << block.get_name() 
+	<< " value: " << value;
 }
 
 void ClaimingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {

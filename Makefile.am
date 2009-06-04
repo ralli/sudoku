@@ -23,5 +23,8 @@ util.hpp \
 xwing.cpp \
 xwing.hpp \
 nakeddouble.hpp \
-nakeddouble.cpp
+nakeddouble.cpp \
+claiming.hpp \
+claiming.cpp
+
 
