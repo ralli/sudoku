@@ -1,4 +1,4 @@
-bin_PROGRAMS=sudoku
+bin_PROGRAMS=sudoku dancinglinks
 sudoku_SOURCES= boxlinereduction.cpp \
 boxlinereduction.hpp \
 forcingchain.cpp \
@@ -27,4 +27,5 @@ nakeddouble.cpp \
 claiming.hpp \
 claiming.cpp
 
+dancinglinks_SOURCES=dlxtest.cpp dancinglinks.hpp dancinglinks.cpp
 
