@@ -48,11 +48,18 @@ public:
     Node *create_child(int row);
 };
 
+class SolutionListener {
+public:
+    virtual ~SolutionListener();
+    virtual void solution_found(const std::vector<Node *> &rows) = 0;
+};
+
 class Solver {
     Column *head;
+    SolutionListener *solution_listener;
     std::vector<Node *> result;
 public:
-    Solver();
+    Solver(SolutionListener *solution_listener);
     void add_column(int idx);
     Column *get_head();
     const Column *get_head() const;

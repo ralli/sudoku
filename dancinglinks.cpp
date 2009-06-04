@@ -4,8 +4,8 @@
 #include <limits>
 #include "dancinglinks.hpp"
 
-Solver::Solver() :
-    head(new Column(-1)) {
+Solver::Solver(SolutionListener *solution_listener) :
+    head(new Column(-1)), solution_listener(solution_listener) {
 }
 
 void Solver::add_column(int idx) {
@@ -19,14 +19,7 @@ void Solver::add_column(int idx) {
 
 void Solver::solve() {
     if (head->get_right() == head) {
-        std::cout << "solution found: ";
-        for (std::vector<Node *>::const_iterator i = result.begin(); i
-                != result.end(); ++i) {
-            std::cout << "R" << (*i)->get_row() + 1;
-            if (i + 1 != result.end())
-                std::cout << ",";
-        }
-        std::cout << std::endl;
+        solution_listener->solution_found(result);
         return;
     }
     Column *column = choose_column();
@@ -110,4 +103,8 @@ Node *Column::create_child(int row) {
     Node *node = new Node(this, row);
     add_child(node);
     return node;
+}
+
+SolutionListener::~SolutionListener() {
+
 }
