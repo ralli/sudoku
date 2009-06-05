@@ -1,4 +1,5 @@
-bin_PROGRAMS=sudoku dancinglinks
+bin_PROGRAMS=sudoku dlxtest dancinglinks
+
 sudoku_SOURCES= boxlinereduction.cpp \
 boxlinereduction.hpp \
 forcingchain.cpp \
@@ -27,5 +28,14 @@ nakeddouble.cpp \
 claiming.hpp \
 claiming.cpp
 
-dancinglinks_SOURCES=dlxtest.cpp dancinglinks.hpp dancinglinks.cpp
+dlxtest_SOURCES=dlxtest.cpp dancinglinks.hpp dancinglinks.cpp
 
+dancinglinks_SOURCES=dlxsolver.hpp \
+dlxsolver.cpp \
+dancinglinks.hpp \
+dancinglinks.cpp \
+grid.cpp \
+grid.hpp \
+range.cpp \
+range.hpp \
+util.hpp 

@@ -2,19 +2,23 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <algorithm>
 #include "dancinglinks.hpp"
+#include "util.hpp"
 
-Solver::Solver(SolutionListener *solution_listener) :
-    head(new Column(-1)), solution_listener(solution_listener) {
+Solver::Solver(NodeFactory *node_factory, SolutionListener *solution_listener) :
+    node_factory(node_factory), head(node_factory->create_column(-1)),
+            solution_listener(solution_listener) {
 }
 
-void Solver::add_column(int idx) {
-    Column *column = new Column(idx);
+Column * Solver::add_column(int idx) {
+    Column *column = node_factory->create_column(idx);
     Node *left = head->get_left();
     left->set_right(column);
     column->set_left(left);
     column->set_right(head);
     head->set_left(column);
+    return column;
 }
 
 void Solver::solve() {
@@ -99,12 +103,10 @@ void Column::add_child(Node *node) {
     ++size;
 }
 
-Node *Column::create_child(int row) {
-    Node *node = new Node(this, row);
-    add_child(node);
-    return node;
-}
-
 SolutionListener::~SolutionListener() {
 
+}
+
+NodeFactory::~NodeFactory() {
+    std::for_each(nodes.begin(), nodes.end(), destroy<Node *> ());
 }

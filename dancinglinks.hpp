@@ -3,6 +3,7 @@
 
 #include <vector>
 
+class NodeFactory;
 class Column;
 class Node {
     int row;
@@ -48,6 +49,24 @@ public:
     Node *create_child(int row);
 };
 
+class NodeFactory {
+private:
+    std::vector<Node *> nodes;
+public:
+    NodeFactory();
+    virtual ~NodeFactory();
+    Node *create_node(Column *column, int row = -1);
+    Node *create_child(Column *column, int row = -1);
+    Column *create_column(int row = -1);
+private:
+    NodeFactory(const NodeFactory &other) {
+    }
+    NodeFactory &operator =(const NodeFactory &other) {
+        return *this;
+    }
+
+};
+
 class SolutionListener {
 public:
     virtual ~SolutionListener();
@@ -55,16 +74,22 @@ public:
 };
 
 class Solver {
+    NodeFactory *node_factory;
     Column *head;
     SolutionListener *solution_listener;
     std::vector<Node *> result;
 public:
-    Solver(SolutionListener *solution_listener);
-    void add_column(int idx);
+    Solver(NodeFactory *node_factory, SolutionListener *solution_listener);
+    Column *add_column(int idx);
     Column *get_head();
     const Column *get_head() const;
     void solve();
 private:
+    Solver(const Solver &other) {
+    }
+    Solver &operator =(const Solver &other) {
+        return *this;
+    }
     void cover(Column *column);
     void uncover(Column *column);
     Column *choose_column();
@@ -116,7 +141,7 @@ inline Node *Node::get_down() {
 }
 
 inline Column::Column(int idx) :
-    Node(this, idx) {
+    Node(this, idx), size(0) {
 }
 
 inline Column *Node::get_column() {
@@ -165,4 +190,25 @@ inline Column *Solver::get_head() {
 inline const Column *Solver::get_head() const {
     return head;
 }
+
+inline NodeFactory::NodeFactory() {
+}
+
+inline Node *NodeFactory::create_node(Column *column, int row) {
+    Node *node = new Node(column, row);
+    nodes.push_back(node);
+    return node;
+}
+inline Node *NodeFactory::create_child(Column *column, int row) {
+    Node *node = create_node(column, row);
+    column->add_child(node);
+    return node;
+}
+
+inline Column *NodeFactory::create_column(int row) {
+    Column *column = new Column(row);
+    nodes.push_back(column);
+    return column;
+}
+
 #endif
