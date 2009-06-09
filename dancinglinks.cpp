@@ -88,6 +88,14 @@ Column *Solver::choose_column() {
         if (c->get_column()->get_size() < min) {
             min = c->get_column()->get_size();
             found = c;
+            if(min == 1) {
+                /*
+                 * the solution cannot get better.
+                 * on my machine it is faster to have the
+                 * extra comparison here.
+                 */
+                return found->get_column();
+            }
         }
         c = c->get_right();
     }

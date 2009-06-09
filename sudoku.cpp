@@ -70,6 +70,11 @@ void solve(const std::string &s) {
 
 int main(int argc, char *argv[]) {
     std::string filename = "top95.txt";
+
+    if(argc > 1) {
+        filename = argv[1];
+    }
+
     std::ifstream in(filename.c_str());
     if(!in) {
         std::cerr << "cannot open file " << filename << std::endl;
@@ -79,7 +84,7 @@ int main(int argc, char *argv[]) {
     int i = 0;
     while(getline(in, line)) {
         ++i;
-        
+
         std::cout << i << ": " << line << std::endl;
         solve(line);
     }

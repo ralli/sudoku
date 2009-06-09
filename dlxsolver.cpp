@@ -106,13 +106,18 @@ void solve(const std::string &s) {
 
 int main(int argc, char *argv[]) {
     std::string filename("top1465.txt");
+
+    if (argc > 1) {
+        filename = argv[1];
+    }
+
     std::ifstream in(filename.c_str());
     if (!in) {
         std::cerr << "cannot open file " << filename << std::endl;
         return 1;
     }
     std::string line;
-    while(getline(in, line)) {
+    while (getline(in, line)) {
         solve(line);
     }
     return 0;

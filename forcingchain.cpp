@@ -66,7 +66,7 @@ ForcingChainHint::~ForcingChainHint() {
 void ForcingChainHint::apply() {
     Link *link = links.front();
     Cell &cell = grid[link->get_cell_idx()];
-   
+
     if(link->is_strong_link()) {
         cell.set_value(link->get_value());
         grid.cleanup_choice(cell);
@@ -80,11 +80,11 @@ void ForcingChainHint::print_description(std::ostream &out) const {
     out << "forcing chain: conclusion: " << print_link(links.front());
     out << " start cell: " << print_row_col(chains.front().front()->get_cell_idx());
     for(size_t i = 0; i < chains.size(); ++i) {
-        out << " chain " << i + 1 << ": " << print_chain(chains[i]); 
+        out << std::endl << " chain " << i + 1 << ": " << print_chain(chains[i]);
     }
 }
 
-ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid, Link *first_link, Link *second_link) 
+ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid, Link *first_link, Link *second_link)
 : grid(grid), first_link(first_link), second_link(second_link)
 {
     fill_chain(first_link, first_chain);
@@ -106,24 +106,24 @@ void ForcingChainContradictionHint::apply()
 void ForcingChainContradictionHint::print_description(std::ostream &out) const
 {
     Link *link = first_chain.front();
-    out << "contradiction: cell: " << print_row_col(link->get_cell_idx()) << " cannot have value " << link->get_value();
-    out << " first chain: " << print_chain(first_chain);
+    out << "contradiction: cell: " << print_row_col(link->get_cell_idx()) << " cannot have value " << link->get_value() << std::endl;
+    out << " first chain: " << print_chain(first_chain) << std::endl;
     out << " second chain: " << print_chain(second_chain);
 }
 
-Link::Link(Link *parent, int cell_idx, int value) 
+Link::Link(Link *parent, int cell_idx, int value)
 : parent(parent), cell_idx(cell_idx), value(value)
 {
     if(parent)
         parent->children.push_back(this);
 }
 
-Link::~Link() 
+Link::~Link()
 {
     std::for_each(children.begin(), children.end(), destroy<Link *>());
 }
 
-const Link *Link::get_parent() const 
+const Link *Link::get_parent() const
 {
     return parent;
 }
@@ -132,27 +132,27 @@ Link *Link::get_parent() {
     return parent;
 }
 
-int Link::get_cell_idx() const 
+int Link::get_cell_idx() const
 {
     return cell_idx;
 }
 
-int Link::get_value() const 
+int Link::get_value() const
 {
     return value;
 }
 
-Link::const_iterator Link::begin() const 
+Link::const_iterator Link::begin() const
 {
     return children.begin();
 }
 
-Link::const_iterator Link::end() const 
+Link::const_iterator Link::end() const
 {
     return children.end();
 }
 
-StrongLink::StrongLink(Link *parent, int cell_idx, int value) 
+StrongLink::StrongLink(Link *parent, int cell_idx, int value)
 : Link(parent, cell_idx, value)
 {
 }
@@ -161,7 +161,7 @@ bool StrongLink::is_strong_link() const {
     return true;
 }
 
-WeakLink::WeakLink(Link *parent, int cell_idx, int value) 
+WeakLink::WeakLink(Link *parent, int cell_idx, int value)
 : Link(parent, cell_idx, value)
 {
 }
@@ -230,7 +230,7 @@ bool LinkMap::insert(Link *link)
     }
 }
 
-void LinkMap::insert_all(LinkMap &other) 
+void LinkMap::insert_all(LinkMap &other)
 {
     for(int i = 0; i < 81; ++i) {
         std::copy(other.strong_links[i].begin(), other.strong_links[i].end(), std::back_inserter(strong_links[i]));
@@ -269,7 +269,7 @@ bool LinkMap::all_values_equal(const std::vector<Link *> &v) const {
 }
 
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
-    for(Grid::iterator i = grid.begin(); i != grid.end(); ++i) { 
+    for(Grid::iterator i = grid.begin(); i != grid.end(); ++i) {
         Cell &cell = *i;
         find_forcing_chain(cell, grid, consumer);
         if(!consumer.wants_more_hints()) {
@@ -293,7 +293,7 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid, HintCo
                 return;
             }
             links.push_back(link);
-            allLinks.insert_all(linkMap);    
+            allLinks.insert_all(linkMap);
         }
     }
 
@@ -302,10 +302,10 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid, HintCo
     }
 }
 
-bool ForcingChainHintProducer::find_contradiction(Link *link, 
-                                                  LinkMap &linkMap, 
-                                                  Grid &grid, 
-                                                  Grid &original,                                                    
+bool ForcingChainHintProducer::find_contradiction(Link *link,
+                                                  LinkMap &linkMap,
+                                                  Grid &grid,
+                                                  Grid &original,
                                                   HintConsumer &consumer) const
 {
     std::vector<Link *> links;
@@ -351,9 +351,9 @@ bool ForcingChainHintProducer::find_common_conclusion(LinkMap &allLinks, size_t 
 }
 
 
-inline int get_opposite_value(Cell &cell, int value) 
+inline int get_opposite_value(Cell &cell, int value)
 {
-    for(int v = 1; v < 10; ++v) 
+    for(int v = 1; v < 10; ++v)
         if(cell.has_choice(v) && v != value)
             return v;
     return 0;
@@ -380,11 +380,11 @@ void ForcingChainHintProducer::find_links_with_one_choice_left(Link *link, std::
         Cell &cell = grid[*i];
         if(cell.get_num_choices() == 1) {
             links.push_back(new StrongLink(link, cell.get_idx(), cell.first_choice()));
-        }            
+        }
     }
 }
 
-void ForcingChainHintProducer::fill_range_frequencies(const Range &range, Grid &grid, std::vector<std::vector<Cell *> > &frequencies) const 
+void ForcingChainHintProducer::fill_range_frequencies(const Range &range, Grid &grid, std::vector<std::vector<Cell *> > &frequencies) const
 {
     for(Range::const_iterator i = range.begin(); i != range.end(); ++i) {
         Cell &cell = grid[*i];
@@ -403,7 +403,7 @@ void ForcingChainHintProducer::find_links_in_ranges(Link *link, std::vector<Link
     std::vector<std::vector<Cell *> > frequencies(10);
 
     for(std::vector<Range>::const_iterator irange = ranges.begin(); irange != ranges.end(); ++irange) {
-        fill_range_frequencies(*irange, grid, frequencies); 
+        fill_range_frequencies(*irange, grid, frequencies);
         for(int value = 1; value < 10; ++value) {
             if(frequencies[value].size() == 1) {
                 Cell *cell = frequencies[value].front();
