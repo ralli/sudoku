@@ -33,7 +33,7 @@ void solve(const std::string &s) {
     hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
-    //    hintproducers.push_back(new SimpleForcingChainHintProducer());
+    hintproducers.push_back(new SimpleForcingChainHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);
