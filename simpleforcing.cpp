@@ -103,9 +103,9 @@ void SimpleForcingChainHint::apply() {
 
 void SimpleForcingChainHint::print_description(std::ostream &out) const {
     out << "forcing chain: start cell: " << print_row_col(start_cell_idx)
-            << " cell: " << print_row_col(cell_idx) << " value: " << value
-            << " first chain: " << print_forcing_chain(first_chain)
-            << " second chain: " << print_forcing_chain(second_chain);
+        << " cell: " << print_row_col(cell_idx) << " value: " << value << std::endl 
+        << "first chain: " << print_forcing_chain(first_chain) << std::endl 
+        << "second chain: " << print_forcing_chain(second_chain);
 }
 
 void SimpleForcingChainHintProducer::find_next_cells(Grid &grid, int cell_idx,
