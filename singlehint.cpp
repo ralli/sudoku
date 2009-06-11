@@ -2,6 +2,7 @@
 #include "grid.hpp"
 #include "range.hpp"
 #include "hintconsumer.hpp"
+#include "util.hpp"
 
 #include <iostream>
 
@@ -15,8 +16,10 @@ void SingleHint::apply() {
 }
 
 void SingleHint::print_description(std::ostream &out) const {
-    out << "single: cell: cell(" << cell.get_row() + 1 << "," << cell.get_col()
-            + 1 << ") value: " << value << " range: " << range.get_name();
+  out << "single: cell: " 
+      << print_row_col(cell.get_idx()) 
+      << " value: " << value 
+      << " range: " << range.get_name();
 }
 
 void SingleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) {

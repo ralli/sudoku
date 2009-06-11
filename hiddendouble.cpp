@@ -4,6 +4,7 @@
 #include "grid.hpp"
 #include "range.hpp"
 #include "hintconsumer.hpp"
+#include "util.hpp"
 
 HiddenDoubleHint::HiddenDoubleHint(std::vector<Cell *> cells, std::pair<int,
         int> pair, const Range &range) :
@@ -24,9 +25,9 @@ void HiddenDoubleHint::print_description(std::ostream &out) const {
     out << "hidden double: cells: ";
     for (std::vector<Cell *>::const_iterator i = cells.begin(); i
             != cells.end(); ++i) {
-        out << "(" << (*i)->get_row() + 1 << "," << (*i)->get_col() + 1 << ") ";
+      out << print_row_col((*i)->get_idx()) << ' ';
     }
-    out << " pair: (" << pair.first << "," << pair.second << ") range: "
+    out << "pair: (" << pair.first << "," << pair.second << ") range: "
             << range.get_name();
 }
 

@@ -18,7 +18,7 @@ struct print_row_col {
     }
 
     void print(std::ostream &out) const {
-        out << '(' << idx / 9 + 1 << ',' << idx % 9 + 1 << ')';
+      out << 'r' << idx / 9 + 1 << 'c' << idx % 9 + 1;
     }
 };
 
