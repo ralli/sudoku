@@ -261,6 +261,7 @@ private:
      * \brief tries finds to find a forcing chain (contradiction or
      * forcing chain) for a given cell.
      */
+    template <class Strategy>
     void
             find_forcing_chain(Cell &cell, Grid &grid, HintConsumer &consumer) const;
 
@@ -270,8 +271,10 @@ private:
      * \param linkMap the links found so far, wich are candidates for a contradiction
      * \return true, if a contradiction has been found
      */
+    template<class Strategy>
     bool find_contradiction(Link *link, LinkMap &linkMap, Grid &grid,
             Grid &original, HintConsumer &consumer) const;
+
 
     /*!
      * \brief tries to find a common conclusion

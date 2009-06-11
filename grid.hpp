@@ -5,33 +5,53 @@
 #include <iosfwd>
 
 /*!
- * \brief
- * maintains a list of choices (possible values) for a given cell.
- */
+* \brief
+* maintains a list of choices (possible values) for a given cell.
+*/
 class Choices {
     bool choices[10];
     int num_choices;
 public:
     /*!
-     * \brief
-     * constructor
-     */
+    * \brief
+    * constructor
+    */
     Choices();
 
     /*!
-     * \brief
-     * copy constructor
-     */
+    * \brief
+    * copy constructor
+    */
     Choices(const Choices &others);
 
     /*!
-     * \brief
-     * assignment operator
-     */
+    * \brief
+    * assignment operator
+    * \return this
+    */
     Choices & operator =(const Choices &others);
+
+    /*!
+    * \brief returns the number of choices left
+    * returns the number of choices left
+    */
     int get_num_choices() const;
+
+    /*!
+    * \brief 
+    * returns true, if the value given is a valid choice
+    * \param value the value to be tested
+    * \return true, if the value given is a valid choice
+    */
     bool has_choice(int value) const;
+
+    /*!
+    * \brief adds a choice to the list of valid choices
+    * \param value the value to be added
+    */
     void add_choice(int value);
+
+
     void remove_choice(int value);
     void clear();
     int first_choice() const;
@@ -92,12 +112,12 @@ public:
 };
 
 inline Choices::Choices() :
-    num_choices(9) {
+num_choices(9) {
     std::fill(choices, choices + 10, true);
 }
 
 inline Choices::Choices(const Choices &other) :
-    num_choices(other.num_choices) {
+num_choices(other.num_choices) {
     std::copy(other.choices, other.choices + 10, choices);
 }
 
@@ -151,11 +171,11 @@ inline int Choices::first_choice() const {
 }
 
 inline Cell::Cell(int idx) :
-    idx(idx), value(0), choices() {
+idx(idx), value(0), choices() {
 }
 
 inline Cell::Cell(const Cell &other) :
-    idx(other.idx), value(other.value), choices(other.choices) {
+idx(other.idx), value(other.value), choices(other.choices) {
 }
 
 inline Cell &Cell::operator =(const Cell &other) {

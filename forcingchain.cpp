@@ -1,5 +1,7 @@
 #include <iostream>
 #include <algorithm>
+#include <queue>
+#include <stack>
 #include "grid.hpp"
 #include "hintconsumer.hpp"
 #include "forcingchain.hpp"
@@ -75,7 +77,6 @@ std::ostream &operator <<(std::ostream &out, const print_chain &chain) {
 /*!
  * \brief constructor
  */
-
 ForcingChainHint::ForcingChainHint(Grid &grid, std::vector<Link *> links) :
     grid(grid), links(links), chains(links.size()) {
     for (size_t i = 0; i < links.size(); ++i) {
@@ -109,7 +110,7 @@ void ForcingChainHint::apply() {
 
 void ForcingChainHint::print_description(std::ostream &out) const {
     out << "forcing chain: conclusion: " << print_link(links.front());
-    out << "start cell: " << print_row_col(
+    out << " start cell: " << print_row_col(
             chains.front().front()->get_cell_idx());
     for (size_t i = 0; i < chains.size(); ++i) {
         out << std::endl << "chain " << i + 1 << ": "
@@ -292,16 +293,70 @@ bool LinkMap::all_values_equal(const std::vector<Link *> &v) const {
     return true;
 }
 
+/*!
+* these strategies are a bit silly. 
+* i just need a stack and a queue with compatible interfaces 
+* (std::queue uses "front" and std::stack uses "top").
+* the stack interface is used to implement a depth first search and
+* the queue interface is used to implement a breadth first search.
+*/
+struct StackStrategy {
+    std::stack<Link *> stack;
+
+    void push(Link *link) {
+        stack.push(link);
+    }
+
+    Link *pop() {
+        Link *link = stack.top();
+        stack.pop();
+        return link;
+    }
+
+    bool empty() const {
+        return stack.empty();
+    }
+};
+
+struct QueueStrategy {
+    std::queue<Link *> queue;
+
+    void push(Link *link) {
+        queue.push(link);
+    }
+
+    Link *pop() {
+        Link *link = queue.front();
+        queue.pop();
+        return link;
+    }
+
+    bool empty() const {
+        return queue.empty();
+    }
+};
+
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (Grid::iterator i = grid.begin(); i != grid.end(); ++i) {
         Cell &cell = *i;
-        find_forcing_chain(cell, grid, consumer);
+        find_forcing_chain<QueueStrategy>(cell, grid, consumer);
+        if (!consumer.wants_more_hints()) {
+            return;
+        }
+        find_forcing_chain<StackStrategy>(cell, grid, consumer);
         if (!consumer.wants_more_hints()) {
             return;
         }
     }
 }
+/*!
+ * generates all forcing chains starting from a certain starting cell.
+ * tries to find contradictions. uses different strategies (bfs-search or dfs-search) 
+ * since a bread first seach tends to find shorter chains and the dfs tends to find more
+ * contradictions. (this is just an obervation. i have not been trying to prove it).
+ */
 
+template<class Strategy>
 void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
         HintConsumer &consumer) const {
     std::vector<Link *> links;
@@ -312,7 +367,7 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
             StrongLink *link = new StrongLink(0, cell.get_idx(), value);
             LinkMap linkMap;
             Grid backup(grid);
-            if (find_contradiction(link, linkMap, backup, grid, consumer)) {
+            if (find_contradiction<Strategy>(link, linkMap, backup, grid, consumer)) {
                 std::for_each(links.begin(), links.end(), destroy<Link *> ());
                 return;
             }
@@ -326,37 +381,49 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
     }
 }
 
-bool ForcingChainHintProducer::find_contradiction(Link *link, LinkMap &linkMap,
-        Grid &grid, Grid &original, HintConsumer &consumer) const {
-    std::vector<Link *> links;
-    Link *contradiction = linkMap.find_contradiction(link);
+template <class Strategy>
+bool ForcingChainHintProducer::find_contradiction(Link *start, LinkMap &linkMap,
+                                                  Grid &grid, Grid &original, HintConsumer &consumer) const {
+    Strategy q;
 
-    if (contradiction) {
-        consumer.consume_hint(new ForcingChainContradictionHint(original, link,
+    q.push(start);
+    while(!q.empty()) {
+        Link *link = q.pop();
+
+        std::vector<Link *> links;
+        Link *contradiction = linkMap.find_contradiction(link);
+
+        if (contradiction) {
+            consumer.consume_hint(new ForcingChainContradictionHint(original, link,
                 contradiction));
-        return true;
-    }
-
-    if (!linkMap.insert(link))
-        return false;
-
-    if (link->is_strong_link()) {
-        find_weak_links(link, links, grid);
-        Cell &cell = grid[link->get_cell_idx()];
-        cell.set_value(link->get_value());
-        grid.cleanup_choice(cell);
-        find_links_with_one_choice_left(link, links, grid);
-    } else {
-        Cell &cell = grid[link->get_cell_idx()];
-        cell.remove_choice(link->get_value());
-        find_strong_links(link, links, grid);
-    }
-
-    for (std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
-        if (find_contradiction(*i, linkMap, grid, original, consumer))
             return true;
-    }
+        }
 
+        /*
+        * a return value of false means, the link has already been 
+        * found. since we will come to the same conclusions again, 
+        * I will cut the search here.
+        */
+
+        if (!linkMap.insert(link))
+            continue;
+
+        if (link->is_strong_link()) {
+            find_weak_links(link, links, grid);
+            Cell &cell = grid[link->get_cell_idx()];
+            cell.set_value(link->get_value());
+            grid.cleanup_choice(cell);
+            find_links_with_one_choice_left(link, links, grid);
+        } else {
+            Cell &cell = grid[link->get_cell_idx()];
+            cell.remove_choice(link->get_value());
+            find_strong_links(link, links, grid);
+        }
+
+        for (std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
+            q.push(*i);
+        }
+    }
     return false;
 }
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <ctime>
 
 #include "util.hpp"
 #include "range.hpp"
@@ -20,11 +21,11 @@
 #include "nakeddouble.hpp"
 #include "claiming.hpp"
 
-void solve(const std::string &s) {
+bool solve(const std::string &s) {
     std::istringstream in(s);
     Grid grid;
     std::vector<HintProducer *> hintproducers;
-
+    
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new NakedDoubleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
@@ -66,6 +67,8 @@ void solve(const std::string &s) {
 
     std::for_each(hintproducers.begin(), hintproducers.end(), destroy<
         HintProducer *> ());
+
+    return grid.get_to_do() == 0;
 }
 
 int main(int argc, char *argv[]) {
@@ -80,16 +83,27 @@ int main(int argc, char *argv[]) {
         std::cerr << "cannot open file " << filename << std::endl;
         exit(1);
     }
+
+    clock_t t1 = clock();
+
     std::string line;
     int i = 0;
+    int success_count = 0;
+    int failure_count = 0;
     while(getline(in, line)) {
         ++i;
 
         std::cout << i << ": " << line << std::endl;
-        solve(line);
+        if(solve(line))
+            ++success_count;
+        else
+            ++failure_count;
     }
 
-
+    clock_t t2 = clock();
+    double t = t2-t1;
+    t /= CLOCKS_PER_SEC;
+    std::cout << i << " sudokus success: " << success_count << " failures: " << failure_count << " time: " << t << " seconds" << std::endl;
     return 0;
 }
 
