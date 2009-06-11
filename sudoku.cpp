@@ -20,12 +20,13 @@
 #include "forcingchain.hpp"
 #include "nakeddouble.hpp"
 #include "claiming.hpp"
+#include "swordfish.hpp"
 
 bool solve(const std::string &s) {
     std::istringstream in(s);
     Grid grid;
     std::vector<HintProducer *> hintproducers;
-    
+
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new NakedDoubleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
@@ -35,6 +36,7 @@ bool solve(const std::string &s) {
     hintproducers.push_back(new XWingHintProducer());
     hintproducers.push_back(new BoxLineReductionHintProducer());
 //     hintproducers.push_back(new SimpleForcingChainHintProducer());
+    hintproducers.push_back(new SwordfishHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
 
     grid.load(in);

@@ -28,7 +28,9 @@ xwing.hpp \
 nakeddouble.hpp \
 nakeddouble.cpp \
 claiming.hpp \
-claiming.cpp
+claiming.cpp \
+swordfish.hpp \
+swordfish.cpp
 
 dlxtest_SOURCES=dlxtest.cpp dancinglinks.hpp dancinglinks.cpp
 

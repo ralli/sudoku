@@ -49,6 +49,10 @@ public:
     const Range &get_column(int col) const;
     const Range &get_block(int block) const;
     const std::vector<Range> &get_field_ranges(int idx) const;
+
+    const std::vector<Range> &get_rows() const;
+    const std::vector<Range> &get_columns() const;
+    const std::vector<Range> &get_blocks() const;
 };
 
 extern const RangeList RANGES;
@@ -129,9 +133,22 @@ inline const Range &RangeList::get_block(int block) const {
     return blocks[block];
 }
 
-inline const std::vector<Range> &RangeList::get_field_ranges(int idx) const 
+inline const std::vector<Range> &RangeList::get_field_ranges(int idx) const
 {
     return field_ranges[idx];
+}
+
+inline const std::vector<Range> &RangeList::get_rows() const
+{
+    return rows;
+}
+
+inline const std::vector<Range> &RangeList::get_columns() const {
+    return columns;
+}
+
+inline const std::vector<Range> &RangeList::get_blocks() const {
+    return blocks;
 }
 
 #endif /* RANGE_HPP_ */
