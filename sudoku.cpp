@@ -21,6 +21,7 @@
 #include "nakeddouble.hpp"
 #include "claiming.hpp"
 #include "swordfish.hpp"
+#include "xywing.hpp"
 
 bool solve(const std::string &s) {
     std::istringstream in(s);
@@ -34,10 +35,11 @@ bool solve(const std::string &s) {
     hintproducers.push_back(new ClaimingHintProducer());
     hintproducers.push_back(new HiddenTripleHintProducer());
     hintproducers.push_back(new XWingHintProducer());
-    hintproducers.push_back(new BoxLineReductionHintProducer());
-//     hintproducers.push_back(new SimpleForcingChainHintProducer());
+    hintproducers.push_back(new XYWingHintProducer());
     hintproducers.push_back(new SwordfishHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
+    // hintproducers.push_back(new BoxLineReductionHintProducer());
+    //     hintproducers.push_back(new SimpleForcingChainHintProducer());
 
     grid.load(in);
     grid.print(std::cout);
@@ -51,10 +53,10 @@ bool solve(const std::string &s) {
         std::cout << "iteration: " << iteration << std::endl;
         SingleHintConsumer consumer;
         for (std::vector<HintProducer *>::const_iterator i =
-            hintproducers.begin(); i != hintproducers.end(); ++i) {
-                (*i)->find_hints(grid, consumer);
-                if (consumer.has_hints())
-                    break;
+                hintproducers.begin(); i != hintproducers.end(); ++i) {
+            (*i)->find_hints(grid, consumer);
+            if (consumer.has_hints())
+                break;
         }
         if (!consumer.has_hints())
             break;
@@ -68,20 +70,21 @@ bool solve(const std::string &s) {
     std::cout << std::endl;
 
     std::for_each(hintproducers.begin(), hintproducers.end(), destroy<
-        HintProducer *> ());
+            HintProducer *> ());
 
     return grid.get_to_do() == 0;
 }
 
 int main(int argc, char *argv[]) {
     std::string filename = "top95.txt";
+    std::vector<std::pair<int, std::string> > failed;
 
-    if(argc > 1) {
+    if (argc > 1) {
         filename = argv[1];
     }
 
     std::ifstream in(filename.c_str());
-    if(!in) {
+    if (!in) {
         std::cerr << "cannot open file " << filename << std::endl;
         exit(1);
     }
@@ -92,20 +95,29 @@ int main(int argc, char *argv[]) {
     int i = 0;
     int success_count = 0;
     int failure_count = 0;
-    while(getline(in, line)) {
+    while (getline(in, line)) {
         ++i;
 
         std::cout << i << ": " << line << std::endl;
-        if(solve(line))
+        if (solve(line))
             ++success_count;
-        else
+        else {
             ++failure_count;
+            failed.push_back(std::pair<int, std::string>(i, line));
+        }
     }
 
     clock_t t2 = clock();
-    double t = t2-t1;
+    double t = t2 - t1;
     t /= CLOCKS_PER_SEC;
-    std::cout << i << " sudokus success: " << success_count << " failures: " << failure_count << " time: " << t << " seconds" << std::endl;
+    std::cout << i << " sudokus success: " << success_count << " failures: "
+            << failure_count << " time: " << t << " seconds" << std::endl;
+    if(!failed.empty()) {
+        std::cout << std::endl << "failed sudokus:" << std::endl << std::endl;
+    }
+    for(std::vector<std::pair<int, std::string> >::const_iterator i = failed.begin(); i != failed.end(); ++i) {
+        std::cout << i->first << ": " << i->second << std::endl;
+    }
     return 0;
 }
 

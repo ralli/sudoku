@@ -38,7 +38,7 @@ public:
     int get_num_choices() const;
 
     /*!
-    * \brief 
+    * \brief
     * returns true, if the value given is a valid choice
     * \param value the value to be tested
     * \return true, if the value given is a valid choice
@@ -72,6 +72,7 @@ public:
 
     int get_row() const;
     int get_col() const;
+    int get_block_idx() const;
     int get_idx() const;
 
     bool has_choice(int value) const;
@@ -82,6 +83,8 @@ public:
     int get_num_choices() const;
     void print_choices(std::ostream &out) const;
     int first_choice() const;
+
+    const Choices &get_choices() const;
 };
 
 class Grid {
@@ -209,6 +212,10 @@ inline int Cell::get_col() const {
     return idx % 9;
 }
 
+inline int Cell::get_block_idx() const {
+    return get_row() / 3 * 3 + get_col() / 3;
+}
+
 inline int Cell::get_idx() const {
     return idx;
 }
@@ -235,6 +242,10 @@ inline int Cell::get_num_choices() const {
 
 inline int Cell::first_choice() const {
     return choices.first_choice();
+}
+
+inline const Choices &Cell::get_choices() const {
+    return choices;
 }
 
 inline Grid::Grid() {

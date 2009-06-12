@@ -30,7 +30,9 @@ nakeddouble.cpp \
 claiming.hpp \
 claiming.cpp \
 swordfish.hpp \
-swordfish.cpp
+swordfish.cpp \
+xywing.hpp \
+xywing.cpp
 
 dlxtest_SOURCES=dlxtest.cpp dancinglinks.hpp dancinglinks.cpp
 
