@@ -113,14 +113,16 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_SECURE_SCL=0"
+				EnableFiberSafeOptimizations="false"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="0"
 				ForceConformanceInForLoopScope="false"
 				UsePrecompiledHeader="0"
@@ -230,7 +232,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\swordfish.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\xwing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xywing.cpp"
 				>
 			</File>
 		</Filter>
@@ -292,6 +302,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\swordfish.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\targetver.h"
 				>
 			</File>
@@ -301,6 +315,10 @@
 			</File>
 			<File
 				RelativePath=".\xwing.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xywing.hpp"
 				>
 			</File>
 		</Filter>

@@ -20,4 +20,5 @@ Release/*
 ./*.user
 bla.txt
 dlxtest
+*.exe
 

@@ -132,7 +132,13 @@ ForcingChainContradictionHint::~ForcingChainContradictionHint() {
 void ForcingChainContradictionHint::apply() {
     Link *link = first_chain.front();
     Cell &cell = grid[link->get_cell_idx()];
-    cell.remove_choice(link->get_value());
+    if(link->is_strong_link()) {
+       cell.remove_choice(link->get_value());
+    }
+    else {
+        cell.set_value(link->get_value());
+        grid.cleanup_choice(cell);
+    }
 }
 
 void ForcingChainContradictionHint::print_description(std::ostream &out) const {
@@ -359,25 +365,40 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
 template<class Strategy>
 void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
         HintConsumer &consumer) const {
-    std::vector<Link *> links;
+    std::vector<Link *> strong_links;
+    std::vector<Link *> weak_links;
     LinkMap allLinks;
 
     for (int value = 1; value < 10; ++value) {
         if (cell.has_choice(value)) {
+            Grid weak_backup(grid);
+            WeakLink *weak_link = new WeakLink(0, cell.get_idx(), value);
+            LinkMap weak_link_map;
+            if (find_contradiction<Strategy>(weak_link, weak_link_map, weak_backup, grid, consumer)) {
+                std::for_each(strong_links.begin(), strong_links.end(), destroy<Link *> ());
+                std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
+                return;
+            }
+            
             StrongLink *link = new StrongLink(0, cell.get_idx(), value);
             LinkMap linkMap;
             Grid backup(grid);
             if (find_contradiction<Strategy>(link, linkMap, backup, grid, consumer)) {
-                std::for_each(links.begin(), links.end(), destroy<Link *> ());
+                std::for_each(strong_links.begin(), strong_links.end(), destroy<Link *> ());
+                std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
+                delete weak_link;
                 return;
             }
-            links.push_back(link);
+
+            weak_links.push_back(weak_link);
+            strong_links.push_back(link);
             allLinks.insert_all(linkMap);
         }
     }
 
-    if (!find_common_conclusion(allLinks, links.size(), grid, consumer)) {
-        std::for_each(links.begin(), links.end(), destroy<Link *> ());
+    if (!find_common_conclusion(allLinks, strong_links.size(), grid, consumer)) {
+        std::for_each(strong_links.begin(), strong_links.end(), destroy<Link *> ());
+        std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
     }
 }
 
