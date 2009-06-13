@@ -1,4 +1,4 @@
-bin_PROGRAMS=sudoku dlxtest dancinglinks
+bin_PROGRAMS=sudoku dancinglinks
 
 sudoku_SOURCES= boxlinereduction.cpp \
 boxlinereduction.hpp \
@@ -33,8 +33,6 @@ swordfish.hpp \
 swordfish.cpp \
 xywing.hpp \
 xywing.cpp
-
-dlxtest_SOURCES=dlxtest.cpp dancinglinks.hpp dancinglinks.cpp
 
 dancinglinks_SOURCES=dlxsolver.hpp \
 dlxsolver.cpp \
