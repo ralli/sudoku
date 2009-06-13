@@ -113,8 +113,7 @@ void ForcingChainHint::print_description(std::ostream &out) const {
     out << " start cell: " << print_row_col(
             chains.front().front()->get_cell_idx());
     for (size_t i = 0; i < chains.size(); ++i) {
-        out << std::endl << "chain " << i + 1 << ": "
-                << print_chain(chains[i]);
+        out << std::endl << "chain " << i + 1 << ": " << print_chain(chains[i]);
     }
 }
 
@@ -132,10 +131,9 @@ ForcingChainContradictionHint::~ForcingChainContradictionHint() {
 void ForcingChainContradictionHint::apply() {
     Link *link = first_chain.front();
     Cell &cell = grid[link->get_cell_idx()];
-    if(link->is_strong_link()) {
-       cell.remove_choice(link->get_value());
-    }
-    else {
+    if (link->is_strong_link()) {
+        cell.remove_choice(link->get_value());
+    } else {
         cell.set_value(link->get_value());
         grid.cleanup_choice(cell);
     }
@@ -299,13 +297,60 @@ bool LinkMap::all_values_equal(const std::vector<Link *> &v) const {
     return true;
 }
 
+inline Link *LinkMap::find_weak_link(const Link *link) {
+    std::vector<Link *> &links = weak_links[link->get_cell_idx()];
+    for (std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
+        if ((*j)->get_value() == link->get_value())
+            return *j;
+    }
+    return 0;
+}
+
+inline Link *LinkMap::find_strong_link(const Link *link) {
+    std::vector<Link *> &links = strong_links[link->get_cell_idx()];
+    for (std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
+        if ((*j)->get_value() == link->get_value())
+            return *j;
+    }
+    return 0;
+}
+
+bool LinkMap::find_conlusion(LinkMap &link_map,
+        std::vector<Link *> &links_found) {
+    for (int i = 0; i < 81; ++i) {
+        std::vector<Link *> &links = strong_links[i];
+        for (std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
+            Link *link = link_map.find_strong_link(*j);
+            if (link != 0) {
+                links_found.push_back(*j);
+                links_found.push_back(link);
+                return true;
+            }
+        }
+    }
+
+    for (int i = 0; i < 81; ++i) {
+        std::vector<Link *> &links = weak_links[i];
+        for (std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
+            Link *link = link_map.find_weak_link(*j);
+            if (link != 0) {
+                links_found.push_back(*j);
+                links_found.push_back(link);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 /*!
-* these strategies are a bit silly. 
-* i just need a stack and a queue with compatible interfaces 
-* (std::queue uses "front" and std::stack uses "top").
-* the stack interface is used to implement a depth first search and
-* the queue interface is used to implement a breadth first search.
-*/
+ * these strategies are a bit silly.
+ * i just need a stack and a queue with compatible interfaces
+ * (std::queue uses "front" and std::stack uses "top").
+ * the stack interface is used to implement a depth first search and
+ * the queue interface is used to implement a breadth first search.
+ */
 struct StackStrategy {
     std::stack<Link *> stack;
 
@@ -345,11 +390,11 @@ struct QueueStrategy {
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (Grid::iterator i = grid.begin(); i != grid.end(); ++i) {
         Cell &cell = *i;
-        find_forcing_chain<QueueStrategy>(cell, grid, consumer);
+        find_forcing_chain<QueueStrategy> (cell, grid, consumer);
         if (!consumer.wants_more_hints()) {
             return;
         }
-        find_forcing_chain<StackStrategy>(cell, grid, consumer);
+        find_forcing_chain<StackStrategy> (cell, grid, consumer);
         if (!consumer.wants_more_hints()) {
             return;
         }
@@ -357,7 +402,7 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
 }
 /*!
  * generates all forcing chains starting from a certain starting cell.
- * tries to find contradictions. uses different strategies (bfs-search or dfs-search) 
+ * tries to find contradictions. uses different strategies (bfs-search or dfs-search)
  * since a bread first seach tends to find shorter chains and the dfs tends to find more
  * contradictions. (this is just an obervation. i have not been trying to prove it).
  */
@@ -374,57 +419,90 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
             Grid weak_backup(grid);
             WeakLink *weak_link = new WeakLink(0, cell.get_idx(), value);
             LinkMap weak_link_map;
-            if (find_contradiction<Strategy>(weak_link, weak_link_map, weak_backup, grid, consumer)) {
-                std::for_each(strong_links.begin(), strong_links.end(), destroy<Link *> ());
-                std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
+
+            if (find_contradiction<Strategy> (weak_link, weak_link_map,
+                    weak_backup, grid, consumer)) {
+                std::for_each(strong_links.begin(), strong_links.end(),
+                        destroy<Link *> ());
+                std::for_each(weak_links.begin(), weak_links.end(), destroy<
+                        Link *> ());
                 return;
             }
-            
-            StrongLink *link = new StrongLink(0, cell.get_idx(), value);
-            LinkMap linkMap;
-            Grid backup(grid);
-            if (find_contradiction<Strategy>(link, linkMap, backup, grid, consumer)) {
-                std::for_each(strong_links.begin(), strong_links.end(), destroy<Link *> ());
-                std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
+
+            StrongLink *strong_link = new StrongLink(0, cell.get_idx(), value);
+            LinkMap strong_link_map;
+            Grid strong_backup(grid);
+            if (find_contradiction<Strategy> (strong_link, strong_link_map,
+                    strong_backup, grid, consumer)) {
+                std::for_each(strong_links.begin(), strong_links.end(),
+                        destroy<Link *> ());
+                std::for_each(weak_links.begin(), weak_links.end(), destroy<
+                        Link *> ());
                 delete weak_link;
                 return;
             }
 
+            if (find_conclusion(weak_link, strong_link, weak_link_map,
+                    strong_link_map, grid, consumer)) {
+                std::for_each(strong_links.begin(), strong_links.end(),
+                        destroy<Link *> ());
+                std::for_each(weak_links.begin(), weak_links.end(), destroy<
+                        Link *> ());
+                return;
+            }
+
             weak_links.push_back(weak_link);
-            strong_links.push_back(link);
-            allLinks.insert_all(linkMap);
+            strong_links.push_back(strong_link);
+            allLinks.insert_all(strong_link_map);
         }
     }
 
     if (!find_common_conclusion(allLinks, strong_links.size(), grid, consumer)) {
-        std::for_each(strong_links.begin(), strong_links.end(), destroy<Link *> ());
+        std::for_each(strong_links.begin(), strong_links.end(),
+                destroy<Link *> ());
         std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
     }
 }
 
-template <class Strategy>
-bool ForcingChainHintProducer::find_contradiction(Link *start, LinkMap &linkMap,
-                                                  Grid &grid, Grid &original, HintConsumer &consumer) const {
+bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
+        Link *strong_link, LinkMap &weak_link_map, LinkMap &strong_link_map,
+        Grid &grid, HintConsumer &consumer) const {
+    std::vector<Link *> links;
+    if (!weak_link_map.find_conlusion(strong_link_map, links))
+        return false;
+    ForcingChainHint *hint = new ForcingChainHint(grid, links);
+    consumer.consume_hint(hint);
+    return true;
+}
+
+/*!
+ * \brief given a starting assumption, this method tries to find a contradiction,
+ * i.e. two conclusions which cannot be true at the same time.
+ *
+ */
+template<class Strategy>
+bool ForcingChainHintProducer::find_contradiction(Link *start,
+        LinkMap &linkMap, Grid &grid, Grid &original, HintConsumer &consumer) const {
     Strategy q;
 
     q.push(start);
-    while(!q.empty()) {
+    while (!q.empty()) {
         Link *link = q.pop();
 
         std::vector<Link *> links;
         Link *contradiction = linkMap.find_contradiction(link);
 
         if (contradiction) {
-            consumer.consume_hint(new ForcingChainContradictionHint(original, link,
-                contradiction));
+            consumer.consume_hint(new ForcingChainContradictionHint(original,
+                    link, contradiction));
             return true;
         }
 
         /*
-        * a return value of false means, the link has already been 
-        * found. since we will come to the same conclusions again, 
-        * I will cut the search here.
-        */
+         * a return value of false means, the link has already been
+         * found. since we will come to the same conclusions again,
+         * I will cut the search here.
+         */
 
         if (!linkMap.insert(link))
             continue;

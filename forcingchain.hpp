@@ -231,6 +231,17 @@ public:
      *  \return true, if a conclusion has been found
      */
     bool find_common_conclusion(size_t size, std::vector<Link *> &conclusions);
+
+    /*!
+     * \brief
+     *  checks all links strored in this map, if there is a matching link in the
+     *  other map. if such a link is found returns a vector containing the matching
+     *  links from both link maps.
+     *
+     *  \param link_map the other link map
+     *  \return a vector either containing the two matching links or an empty vector.
+     */
+    bool find_conlusion(LinkMap &link_map, std::vector<Link *> &links_found);
 private:
     LinkMap(const LinkMap &other) {
     }
@@ -240,6 +251,8 @@ private:
     Link *find_strong_contradiction(const Link *link);
     Link *find_weak_contradiction(const Link *link);
     bool all_values_equal(const std::vector<Link *> &v) const;
+    Link *find_weak_link(const Link *link);
+    Link *find_strong_link(const Link *link);
 };
 
 /*!
@@ -261,7 +274,7 @@ private:
      * \brief tries finds to find a forcing chain (contradiction or
      * forcing chain) for a given cell.
      */
-    template <class Strategy>
+    template<class Strategy>
     void
             find_forcing_chain(Cell &cell, Grid &grid, HintConsumer &consumer) const;
 
@@ -274,7 +287,6 @@ private:
     template<class Strategy>
     bool find_contradiction(Link *link, LinkMap &linkMap, Grid &grid,
             Grid &original, HintConsumer &consumer) const;
-
 
     /*!
      * \brief tries to find a common conclusion
@@ -314,6 +326,17 @@ private:
 
     void fill_range_frequencies(const Range &range, Grid &grid, std::vector<
             std::vector<Cell *> > &frequencies) const;
+
+    /*!
+     * \brief
+     *    given a weak assumption (rncm <> x) and a strong assumption (rncm == x)
+     *    and all conclusions from these assumptions. find a common conclusion.
+     *    this means regardless of wich valus the cell rncm contains,
+     *    this conclusion is true.
+     */
+    bool find_conclusion(Link *weak_link, Link *strong_link,
+            LinkMap &weak_link_map, LinkMap &strong_link_map, Grid &grid,
+            HintConsumer &consumer) const;
 };
 
 #endif
