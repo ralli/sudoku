@@ -24,10 +24,10 @@ void HiddenTripleHint::apply() {
 }
 
 void HiddenTripleHint::print_description(std::ostream &out) const {
-    out << "hidden triple: cells: ";
+    out << "hidden triple: cells:";
     for (std::vector<Cell *>::const_iterator i = cells.begin(); i
             != cells.end(); ++i)
-        out << print_row_col((*i)->get_idx());
+        out << ' ' << print_row_col((*i)->get_idx());
     out << " values: (" << value1 << "," << value2 << "," << value3 << ") ";
     out << "range: " << range.get_name();
 }

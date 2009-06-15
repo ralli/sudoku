@@ -31,6 +31,7 @@ bool solve(const std::string &s) {
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new NakedDoubleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());
+    hintproducers.push_back(new BoxLineReductionHintProducer());
     hintproducers.push_back(new PointingHintProducer());
     hintproducers.push_back(new ClaimingHintProducer());
     hintproducers.push_back(new HiddenTripleHintProducer());
@@ -38,7 +39,6 @@ bool solve(const std::string &s) {
     hintproducers.push_back(new XYWingHintProducer());
     hintproducers.push_back(new SwordfishHintProducer());
     hintproducers.push_back(new ForcingChainHintProducer());
-    // hintproducers.push_back(new BoxLineReductionHintProducer());
     //     hintproducers.push_back(new SimpleForcingChainHintProducer());
 
     grid.load(in);
