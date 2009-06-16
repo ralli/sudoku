@@ -77,7 +77,7 @@ std::ostream &operator <<(std::ostream &out, const print_chain &chain) {
 /*!
  * \brief constructor
  */
-ForcingChainHint::ForcingChainHint(Grid &grid, std::vector<Link *> links) :
+ForcingChainHint::ForcingChainHint(Grid &grid, const std::vector<Link *> &links) :
     grid(grid), links(links), chains(links.size()) {
     for (size_t i = 0; i < links.size(); ++i) {
         fill_chain(links[i], chains[i]);

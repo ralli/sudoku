@@ -27,7 +27,7 @@ public:
      * \param grid the Grid, this hint will be applied to
      * \param links the list of the ends of the forcing chains.
      */
-    ForcingChainHint(Grid &grid, std::vector<Link *> links);
+    ForcingChainHint(Grid &grid, const std::vector<Link *> &links);
     /*!
      * \brief destructor
      */
