@@ -575,9 +575,8 @@ void ForcingChainHintProducer::fill_range_frequencies(const Range &range,
         Grid &grid, std::vector<std::vector<Cell *> > &frequencies) const {
     for (Range::const_iterator i = range.begin(); i != range.end(); ++i) {
         Cell &cell = grid[*i];
-
         for (int value = 1; value < 10; ++value) {
-            if (!cell.has_value() && cell.has_choice(value)) {
+            if (cell.has_choice(value)) {
                 frequencies[value].push_back(&cell);
             }
         }
