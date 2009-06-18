@@ -666,8 +666,8 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
             Cell &cell = grid[link->get_cell_idx()];
             cell.set_value(link->get_value());
             grid.cleanup_choice(cell);
-            find_links_in_ranges(link, links, grid);
-            // find_links_with_one_choice_left(link, links, grid);
+            // find_links_in_ranges(link, links, grid);
+            find_links_with_one_choice_left(link, links, grid);
         } else {
             Cell &cell = grid[link->get_cell_idx()];
             cell.remove_choice(link->get_value());
