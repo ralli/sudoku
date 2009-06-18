@@ -266,9 +266,29 @@ private:
     }
     Link *find_strong_contradiction(const Link *link);
     Link *find_weak_contradiction(const Link *link);
+    /*!
+     * \brief returns true, if all values in a given list are equal
+     * \param v the list of links
+     * \return true all links have equal values
+     */
     bool all_values_equal(const std::vector<Link *> &v) const;
+    /*!
+     * \brief finds a matching weak link in the list of weak links
+     * \param link the link to find
+     * \return the link found or null if no matching link has been found
+     */
     Link *find_weak_link(const Link *link);
+    /*!
+     * \brief finds a matching strong link in the list of strong links
+     * \param link the link to find
+     * \return the link found or null if no matching link has been found
+     */
     Link *find_strong_link(const Link *link);
+    /*!
+     * \brief builds a histogram of all values in a given list of links
+     * \param links the list of links to compute the histogram of
+     * \param frequencies the histogram of values
+     */
     void build_frequencies(const std::vector<Link *> &links,
             size_t frequencies[10]) const;
 

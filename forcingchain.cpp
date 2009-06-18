@@ -314,6 +314,10 @@ void LinkMap::insert_all(LinkMap &other) {
 
 bool LinkMap::find_common_conclusion(size_t size,
         std::vector<Link *> &conclusions) {
+    if(size == 0) {
+        return false;
+    }
+
     for (int i = 0; i < 81; ++i) {
         if (strong_links[i].size() == size && all_values_equal(strong_links[i])) {
             std::copy(strong_links[i].begin(), strong_links[i].end(),
@@ -321,13 +325,12 @@ bool LinkMap::find_common_conclusion(size_t size,
             return true;
         }
     }
-
     for (int i = 0; i < 81; ++i) {
         size_t frequencies[10];
-        build_frequencies(weak_links[i], frequencies);
+        std::vector<Link *> &links = weak_links[i];
+        build_frequencies(links, frequencies);
         for(int value = 1; value < 10; ++value) {
             if(frequencies[value] == size) {
-                std::vector<Link *> &links = weak_links[i];
                 for(std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
                     if((*j)->get_value() == value) {
                         conclusions.push_back(*j);
@@ -337,14 +340,14 @@ bool LinkMap::find_common_conclusion(size_t size,
             }
         }
     }
-
     return false;
 }
 
 void LinkMap::build_frequencies(const std::vector<Link *> &links,
         size_t frequencies[10]) const {
+
     std::fill(frequencies, frequencies + 10, 0);
-    for (std::vector<Link *>::const_iterator i = links.begin; i != links.end(); ++i) {
+    for (std::vector<Link *>::const_iterator i = links.begin(); i != links.end(); ++i) {
         ++frequencies[(*i)->get_value()];
     }
 }
@@ -540,7 +543,7 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
 
         std::vector<Link *> conclusions;
         if (all_links.find_common_conclusion(count, conclusions)) {
-#if 1
+#if 0
             Link *p = conclusions.front()->get_head();
             std::vector<Link *> &bla = cell_links[p->get_cell_idx()];
             std::cout << "xxx size: " << count << " size2: "
@@ -663,7 +666,8 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
             Cell &cell = grid[link->get_cell_idx()];
             cell.set_value(link->get_value());
             grid.cleanup_choice(cell);
-            find_links_with_one_choice_left(link, links, grid);
+            find_links_in_ranges(link, links, grid);
+            // find_links_with_one_choice_left(link, links, grid);
         } else {
             Cell &cell = grid[link->get_cell_idx()];
             cell.remove_choice(link->get_value());
@@ -679,6 +683,8 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
 
 bool ForcingChainHintProducer::find_common_conclusion(LinkMap &allLinks,
         size_t nconclusions, Grid &grid, HintConsumer &consumer) const {
+    if(nconclusions == 0)
+        return false;
     std::vector<Link *> conclusions;
     if (allLinks.find_common_conclusion(nconclusions, conclusions)) {
         consumer.consume_hint(new ForcingChainHint(grid, conclusions));
