@@ -385,6 +385,7 @@ bool LinkMap::find_conclusion(LinkMap &link_map,
 
 void LinkMap::insert_unique_children(Link *link) {
     std::queue<Link *> q;
+    insert(link);
     for (Link::const_iterator i = link->begin(); i != link->end(); ++i) {
         q.push(*i);
     }
@@ -441,32 +442,47 @@ struct QueueStrategy {
     }
 };
 
+template<class T>
+inline void clear(T &links) {
+    std::for_each(links.begin(), links.end(), destroy<Link *> ());
+    links.clear();
+}
+
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (int value = 1; value < 10; ++value) {
-        std::vector<Link *> links;
+        std::vector<Link *> queue_links;
+        std::vector<Link *> stack_links;
 
-        find_forcing_chain<QueueStrategy> (value, grid, consumer, links);
+        find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links);
         if (!consumer.wants_more_hints()) {
-            std::for_each(links.begin(), links.end(), destroy<Link *> ());
-            links.clear();
+            clear(queue_links);
+            clear(stack_links);
             return;
         }
 
-        find_forcing_chain<StackStrategy> (value, grid, consumer, links);
+        find_forcing_chain<StackStrategy> (value, grid, consumer, stack_links);
         if (!consumer.wants_more_hints()) {
-            std::for_each(links.begin(), links.end(), destroy<Link *> ());
-            links.clear();
+            clear(queue_links);
+            clear(stack_links);
             return;
         }
 
-        analyze_links(links, value, grid, consumer);
+        analyze_links(queue_links, value, grid, consumer);
         if (!consumer.wants_more_hints()) {
-            std::for_each(links.begin(), links.end(), destroy<Link *> ());
+            clear(queue_links);
+            clear(stack_links);
             return;
         }
 
-        std::for_each(links.begin(), links.end(), destroy<Link *> ());
-        links.clear();
+        analyze_links(stack_links, value, grid, consumer);
+        if (!consumer.wants_more_hints()) {
+            clear(queue_links);
+            clear(stack_links);
+            return;
+        }
+
+        clear(queue_links);
+        clear(stack_links);
     }
 }
 
@@ -500,27 +516,25 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
 
         std::vector<Link *> conclusions;
         if (all_links.find_common_conclusion(count, conclusions)) {
-            if (!range.is_in_range(conclusions.front()->get_cell_idx())) {
-#if 0
-                Link *p = conclusions.front()->get_head();
-                std::vector<Link *> &bla = cell_links[p->get_cell_idx()];
-                std::cout << "xxx size: " << count << " size2: "
-                        << cell_links[p->get_cell_idx()].size();
-                for (std::vector<Link *>::const_iterator i = bla.begin(); i
-                        != bla.end(); ++i)
-                    std::cout << ' ' << print_link(*i);
-                std::cout << std::endl;
-                std::cout << "links: ";
-                for (std::vector<Link *>::const_iterator i = links.begin(); i
-                        != links.end(); ++i)
-                    std::cout << ' ' << print_link(*i);
-                std::cout << std::endl;
+#if 1
+            Link *p = conclusions.front()->get_head();
+            std::vector<Link *> &bla = cell_links[p->get_cell_idx()];
+            std::cout << "xxx size: " << count << " size2: "
+                    << cell_links[p->get_cell_idx()].size();
+            for (std::vector<Link *>::const_iterator i = bla.begin(); i
+                    != bla.end(); ++i)
+                std::cout << ' ' << print_link(*i);
+            std::cout << std::endl;
+            std::cout << "links: ";
+            for (std::vector<Link *>::const_iterator i = links.begin(); i
+                    != links.end(); ++i)
+                std::cout << ' ' << print_link(*i);
+            std::cout << std::endl;
 #endif
-                ForcingChainRangeHint *hint = new ForcingChainRangeHint(grid,
-                        range, conclusions);
-                if (!consumer.consume_hint(hint))
-                    return;
-            }
+            ForcingChainRangeHint *hint = new ForcingChainRangeHint(grid,
+                    range, conclusions);
+            if (!consumer.consume_hint(hint))
+                return;
         }
     }
 }
@@ -720,6 +734,14 @@ void ForcingChainHintProducer::find_weak_links(Link *link,
             link->get_cell_idx());
     RangeList::const_index_iterator end =
             RANGES.field_end(link->get_cell_idx());
+    Cell &c = grid[link->get_cell_idx()];
+
+    for (int value = 1; value < 10; ++value) {
+        if (value != link->get_value() && c.has_choice(value)) {
+            links.push_back(new WeakLink(link, c.get_idx(), value));
+
+        }
+    }
 
     for (RangeList::const_index_iterator i = begin; i != end; ++i) {
         Cell &cell = grid[*i];
