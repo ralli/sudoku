@@ -321,7 +321,32 @@ bool LinkMap::find_common_conclusion(size_t size,
             return true;
         }
     }
+
+    for (int i = 0; i < 81; ++i) {
+        size_t frequencies[10];
+        build_frequencies(weak_links[i], frequencies);
+        for(int value = 1; value < 10; ++value) {
+            if(frequencies[value] == size) {
+                std::vector<Link *> &links = weak_links[i];
+                for(std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
+                    if((*j)->get_value() == value) {
+                        conclusions.push_back(*j);
+                    }
+                }
+                return true;
+            }
+        }
+    }
+
     return false;
+}
+
+void LinkMap::build_frequencies(const std::vector<Link *> &links,
+        size_t frequencies[10]) const {
+    std::fill(frequencies, frequencies + 10, 0);
+    for (std::vector<Link *>::const_iterator i = links.begin; i != links.end(); ++i) {
+        ++frequencies[(*i)->get_value()];
+    }
 }
 
 bool LinkMap::all_values_equal(const std::vector<Link *> &v) const {
@@ -456,7 +481,6 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
         find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links);
         if (!consumer.wants_more_hints()) {
             clear(queue_links);
-            clear(stack_links);
             return;
         }
 

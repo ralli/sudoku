@@ -269,6 +269,9 @@ private:
     bool all_values_equal(const std::vector<Link *> &v) const;
     Link *find_weak_link(const Link *link);
     Link *find_strong_link(const Link *link);
+    void build_frequencies(const std::vector<Link *> &links,
+            size_t frequencies[10]) const;
+
 };
 
 /*!
