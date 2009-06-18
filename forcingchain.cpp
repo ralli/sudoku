@@ -117,6 +117,37 @@ void ForcingChainHint::print_description(std::ostream &out) const {
     }
 }
 
+ForcingChainRangeHint::ForcingChainRangeHint(Grid &grid, const Range &range,
+        std::vector<Link *> &conclusions) :
+    grid(grid), range(range), conclusions(conclusions), chains(
+            conclusions.size()) {
+    for (size_t i = 0; i < conclusions.size(); ++i) {
+        fill_chain(conclusions[i], chains[i]);
+    }
+}
+
+void ForcingChainRangeHint::apply() {
+    Link *link = conclusions.front();
+    Cell &cell = grid[link->get_cell_idx()];
+
+    if (link->is_strong_link()) {
+        cell.set_value(link->get_value());
+        grid.cleanup_choice(cell);
+    } else {
+        cell.remove_choice(link->get_value());
+    }
+}
+
+void ForcingChainRangeHint::print_description(std::ostream &out) const {
+    out << "range forcing chain: range: " << range.get_name()
+            << " conclusion: " << print_link(conclusions.front());
+    out << " start cell: " << print_row_col(
+            chains.front().front()->get_cell_idx());
+    for (size_t i = 0; i < chains.size(); ++i) {
+        out << std::endl << "chain " << i + 1 << ": " << print_chain(chains[i]);
+    }
+}
+
 ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid,
         Link *first_link, Link *second_link) :
     grid(grid), first_link(first_link), second_link(second_link) {
@@ -179,6 +210,14 @@ Link::const_iterator Link::begin() const {
 
 Link::const_iterator Link::end() const {
     return children.end();
+}
+
+Link *Link::get_head() {
+    Link *p = this;
+    while (p->get_parent() != 0) {
+        p = p->get_parent();
+    }
+    return p;
 }
 
 StrongLink::StrongLink(Link *parent, int cell_idx, int value) :
@@ -315,7 +354,7 @@ inline Link *LinkMap::find_strong_link(const Link *link) {
     return 0;
 }
 
-bool LinkMap::find_conlusion(LinkMap &link_map,
+bool LinkMap::find_conclusion(LinkMap &link_map,
         std::vector<Link *> &links_found) {
     for (int i = 0; i < 81; ++i) {
         std::vector<Link *> &links = strong_links[i];
@@ -342,6 +381,21 @@ bool LinkMap::find_conlusion(LinkMap &link_map,
     }
 
     return false;
+}
+
+void LinkMap::insert_unique_children(Link *link) {
+    std::queue<Link *> q;
+    for (Link::const_iterator i = link->begin(); i != link->end(); ++i) {
+        q.push(*i);
+    }
+    while (!q.empty()) {
+        Link *l = q.front();
+        q.pop();
+        insert(l);
+        for (Link::const_iterator i = l->begin(); i != l->end(); ++i) {
+            q.push(*i);
+        }
+    }
 }
 
 /*!
@@ -388,18 +442,89 @@ struct QueueStrategy {
 };
 
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
-    for (Grid::iterator i = grid.begin(); i != grid.end(); ++i) {
-        Cell &cell = *i;
-        find_forcing_chain<QueueStrategy> (cell, grid, consumer);
+    for (int value = 1; value < 10; ++value) {
+        std::vector<Link *> links;
+
+        find_forcing_chain<QueueStrategy> (value, grid, consumer, links);
         if (!consumer.wants_more_hints()) {
+            std::for_each(links.begin(), links.end(), destroy<Link *> ());
+            links.clear();
             return;
         }
-        find_forcing_chain<StackStrategy> (cell, grid, consumer);
+
+        find_forcing_chain<StackStrategy> (value, grid, consumer, links);
         if (!consumer.wants_more_hints()) {
+            std::for_each(links.begin(), links.end(), destroy<Link *> ());
+            links.clear();
             return;
+        }
+
+        analyze_links(links, value, grid, consumer);
+        if (!consumer.wants_more_hints()) {
+            std::for_each(links.begin(), links.end(), destroy<Link *> ());
+            return;
+        }
+
+        std::for_each(links.begin(), links.end(), destroy<Link *> ());
+        links.clear();
+    }
+}
+
+void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
+        int value, Grid &grid, HintConsumer &consumer) const {
+    std::vector<std::vector<Link *> > cell_links(81);
+
+    for (std::vector<Link *>::iterator x = links.begin(); x != links.end(); ++x) {
+        Link *p = *x;
+        if (p->is_strong_link())
+            cell_links[p->get_cell_idx()].push_back(p);
+    }
+
+    for (RangeList::const_iterator irange = RANGES.begin(); irange
+            != RANGES.end(); ++irange) {
+        const Range &range = *irange;
+        LinkMap all_links;
+        size_t count = 0;
+
+        for (Range::const_iterator i = range.begin(); i != range.end(); ++i) {
+            std::vector<Link *> &range_links = cell_links[*i];
+            for (std::vector<Link *>::const_iterator j = range_links.begin(); j
+                    != range_links.end(); ++j) {
+                Link *l = *j;
+                LinkMap link_map;
+                link_map.insert_unique_children(l);
+                ++count;
+                all_links.insert_all(link_map);
+            }
+        }
+
+        std::vector<Link *> conclusions;
+        if (all_links.find_common_conclusion(count, conclusions)) {
+            if (!range.is_in_range(conclusions.front()->get_cell_idx())) {
+#if 0
+                Link *p = conclusions.front()->get_head();
+                std::vector<Link *> &bla = cell_links[p->get_cell_idx()];
+                std::cout << "xxx size: " << count << " size2: "
+                        << cell_links[p->get_cell_idx()].size();
+                for (std::vector<Link *>::const_iterator i = bla.begin(); i
+                        != bla.end(); ++i)
+                    std::cout << ' ' << print_link(*i);
+                std::cout << std::endl;
+                std::cout << "links: ";
+                for (std::vector<Link *>::const_iterator i = links.begin(); i
+                        != links.end(); ++i)
+                    std::cout << ' ' << print_link(*i);
+                std::cout << std::endl;
+#endif
+                ForcingChainRangeHint *hint = new ForcingChainRangeHint(grid,
+                        range, conclusions);
+                if (!consumer.consume_hint(hint))
+                    return;
+            }
         }
     }
 }
+
 /*!
  * generates all forcing chains starting from a certain starting cell.
  * tries to find contradictions. uses different strategies (bfs-search or dfs-search)
@@ -408,24 +533,22 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
  */
 
 template<class Strategy>
-void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
-        HintConsumer &consumer) const {
-    std::vector<Link *> strong_links;
-    std::vector<Link *> weak_links;
+void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
+        HintConsumer &consumer, std::vector<Link *> &links) const {
     LinkMap allLinks;
+    int link_count = 0;
+    std::vector<Link *> local_links;
 
-    for (int value = 1; value < 10; ++value) {
+    for (Grid::iterator i = grid.begin(); i != grid.end(); ++i) {
+        Cell &cell = *i;
         if (cell.has_choice(value)) {
+            ++link_count;
             Grid weak_backup(grid);
             WeakLink *weak_link = new WeakLink(0, cell.get_idx(), value);
             LinkMap weak_link_map;
 
             if (find_contradiction<Strategy> (weak_link, weak_link_map,
                     weak_backup, grid, consumer)) {
-                std::for_each(strong_links.begin(), strong_links.end(),
-                        destroy<Link *> ());
-                std::for_each(weak_links.begin(), weak_links.end(), destroy<
-                        Link *> ());
                 return;
             }
 
@@ -434,33 +557,23 @@ void ForcingChainHintProducer::find_forcing_chain(Cell &cell, Grid &grid,
             Grid strong_backup(grid);
             if (find_contradiction<Strategy> (strong_link, strong_link_map,
                     strong_backup, grid, consumer)) {
-                std::for_each(strong_links.begin(), strong_links.end(),
-                        destroy<Link *> ());
-                std::for_each(weak_links.begin(), weak_links.end(), destroy<
-                        Link *> ());
-                delete weak_link;
                 return;
             }
 
             if (find_conclusion(weak_link, strong_link, weak_link_map,
                     strong_link_map, grid, consumer)) {
-                std::for_each(strong_links.begin(), strong_links.end(),
-                        destroy<Link *> ());
-                std::for_each(weak_links.begin(), weak_links.end(), destroy<
-                        Link *> ());
                 return;
             }
 
-            weak_links.push_back(weak_link);
-            strong_links.push_back(strong_link);
+            local_links.push_back(weak_link);
+            local_links.push_back(strong_link);
             allLinks.insert_all(strong_link_map);
         }
     }
 
-    if (!find_common_conclusion(allLinks, strong_links.size(), grid, consumer)) {
-        std::for_each(strong_links.begin(), strong_links.end(),
-                destroy<Link *> ());
-        std::for_each(weak_links.begin(), weak_links.end(), destroy<Link *> ());
+    if (!find_common_conclusion(allLinks, link_count, grid, consumer)) {
+        std::copy(local_links.begin(), local_links.end(), std::back_inserter(
+                links));
     }
 }
 
@@ -468,7 +581,7 @@ bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
         Link *strong_link, LinkMap &weak_link_map, LinkMap &strong_link_map,
         Grid &grid, HintConsumer &consumer) const {
     std::vector<Link *> links;
-    if (!weak_link_map.find_conlusion(strong_link_map, links))
+    if (!weak_link_map.find_conclusion(strong_link_map, links))
         return false;
     ForcingChainHint *hint = new ForcingChainHint(grid, links);
     consumer.consume_hint(hint);

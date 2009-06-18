@@ -36,6 +36,18 @@ public:
     void print_description(std::ostream &out) const;
 };
 
+class ForcingChainRangeHint: public Hint {
+    Grid &grid;
+    const Range &range;
+    std::vector<Link *> &conclusions;
+    std::vector<std::vector<Link *> > chains;
+public:
+    ForcingChainRangeHint(Grid &grid, const Range &range,
+            std::vector<Link *> &conclusions);
+    void apply();
+    void print_description(std::ostream &out) const;
+};
+
 /*!
  * \brief a forcing chain contradiction.
  * This means, two branches of the same forcing chain come to different
@@ -163,6 +175,8 @@ public:
      * if this link is a weak link
      */
     virtual bool is_strong_link() const = 0;
+
+    Link *get_head();
 private:
     Link(const Link *other) {
     }
@@ -241,7 +255,9 @@ public:
      *  \param link_map the other link map
      *  \return a vector either containing the two matching links or an empty vector.
      */
-    bool find_conlusion(LinkMap &link_map, std::vector<Link *> &links_found);
+    bool find_conclusion(LinkMap &link_map, std::vector<Link *> &links_found);
+
+    void insert_unique_children(Link *link);
 private:
     LinkMap(const LinkMap &other) {
     }
@@ -270,13 +286,15 @@ class ForcingChainHintProducer: public HintProducer {
 public:
     void find_hints(Grid &grid, HintConsumer &consumer);
 private:
+    void analyze_links(std::vector<Link *> &links, int value, Grid &grid,
+            HintConsumer &consumer) const;
     /*!
      * \brief tries finds to find a forcing chain (contradiction or
      * forcing chain) for a given cell.
      */
     template<class Strategy>
-    void
-            find_forcing_chain(Cell &cell, Grid &grid, HintConsumer &consumer) const;
+    void find_forcing_chain(int value, Grid &grid, HintConsumer &consumer,
+            std::vector<Link *> &links) const;
 
     /*!
      * \brief tries to find a contradiction to a given link recursively.

@@ -19,6 +19,7 @@ public:
     const_iterator begin() const;
     const_iterator end() const;
     const std::string &get_name() const;
+    bool is_in_range(int idx) const;
 };
 
 class RangeList {
@@ -97,6 +98,14 @@ inline const std::string &Range::get_name() const {
     return name;
 }
 
+inline bool Range::is_in_range(int idx) const {
+    for (Range::const_iterator i = begin(); i != end(); ++i) {
+        if (*i == idx)
+            return true;
+    }
+    return false;
+}
+
 inline RangeList::iterator RangeList::begin() {
     return ranges.begin();
 }
@@ -133,13 +142,11 @@ inline const Range &RangeList::get_block(int block) const {
     return blocks[block];
 }
 
-inline const std::vector<Range> &RangeList::get_field_ranges(int idx) const
-{
+inline const std::vector<Range> &RangeList::get_field_ranges(int idx) const {
     return field_ranges[idx];
 }
 
-inline const std::vector<Range> &RangeList::get_rows() const
-{
+inline const std::vector<Range> &RangeList::get_rows() const {
     return rows;
 }
 
