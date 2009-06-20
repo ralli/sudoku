@@ -8,6 +8,9 @@
 #include "util.hpp"
 #include "range.hpp"
 
+#include "hiddendouble.hpp"
+#include "nakeddouble.hpp"
+
 class LinkFactory {
     std::vector<Link *> links;
 public:
@@ -511,7 +514,7 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
         LinkFactory factory;
 
         find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links,
-                factory);
+                factory, false);
         if (!consumer.wants_more_hints()) {
             return;
         }
@@ -521,6 +524,22 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
             return;
         }
     }
+
+    for (int value = 1; value < 10; ++value) {
+          std::vector<Link *> queue_links;
+          LinkFactory factory;
+
+          find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links,
+                  factory, true);
+          if (!consumer.wants_more_hints()) {
+              return;
+          }
+
+          analyze_links(queue_links, value, grid, consumer);
+          if (!consumer.wants_more_hints()) {
+              return;
+          }
+      }
 }
 
 void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
@@ -586,7 +605,7 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
 template<class Strategy>
 void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
         HintConsumer &consumer, std::vector<Link *> &links,
-        LinkFactory &factory) const {
+        LinkFactory &factory, bool advanced) const {
     LinkMap allLinks;
     int link_count = 0;
     std::vector<Link *> local_links;
@@ -601,7 +620,7 @@ void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
             LinkMap weak_link_map;
 
             if (find_contradiction<Strategy> (weak_link, weak_link_map,
-                    weak_backup, grid, consumer, factory)) {
+                    weak_backup, grid, consumer, factory, advanced)) {
                 return;
             }
 
@@ -610,7 +629,7 @@ void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
             LinkMap strong_link_map;
             Grid strong_backup(grid);
             if (find_contradiction<Strategy> (strong_link, strong_link_map,
-                    strong_backup, grid, consumer, factory)) {
+                    strong_backup, grid, consumer, factory, advanced)) {
                 return;
             }
 
@@ -650,7 +669,7 @@ bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
 template<class Strategy>
 bool ForcingChainHintProducer::find_contradiction(Link *start,
         LinkMap &linkMap, Grid &grid, Grid &original, HintConsumer &consumer,
-        LinkFactory &factory) const {
+        LinkFactory &factory, bool advanced) const {
     Strategy qstrong;
     Strategy qweak;
 
@@ -704,6 +723,16 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
                 qstrong.push(*i);
             else
                 qweak.push(*i);
+        }
+
+        if(qstrong.empty() && qweak.empty() && advanced) {
+            find_advanced_links(link, links, grid, factory);
+            for (std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
+                if ((*i)->is_strong_link())
+                    qstrong.push(*i);
+                else
+                    qweak.push(*i);
+            }
         }
     }
     return false;
@@ -807,4 +836,54 @@ void ForcingChainHintProducer::find_weak_links(Link *link,
             links.push_back(factory.create_weak_link(link, cell.get_idx(),
                     link->get_value()));
     }
+}
+
+class LinkCreatingHintConsumer : public HintConsumer {
+    Link *parent;
+    std::vector<Link *> links;
+    LinkFactory &factory;
+public:
+    LinkCreatingHintConsumer(Link *parent, LinkFactory &factory) : parent(parent), links(), factory(factory) {
+
+    }
+
+    bool consume_hint(Hint *hint)  {
+        IndirectHint *h = dynamic_cast<IndirectHint *>(hint);
+        std::vector<std::pair<Cell *, int> >::const_iterator begin = h->get_choices_to_remove().begin();
+        std::vector<std::pair<Cell *, int> >::const_iterator end = h->get_choices_to_remove().end();
+
+        for(std::vector<std::pair<Cell *, int> >::const_iterator i = begin; i != end; ++i) {
+            links.push_back(factory.create_weak_link(parent, i->first->get_idx(), i->second));
+        }
+
+        return false;
+    }
+
+    bool wants_more_hints() const {
+        return links.empty();
+    }
+
+    std::vector<Link *>::iterator begin() { return links.begin(); }
+    std::vector<Link *>::iterator end() { return links.end(); }
+};
+
+bool ForcingChainHintProducer::find_advanced_links(Link *parent, std::vector<Link *> &links, Grid &grid,
+        LinkFactory &factory) const {
+    std::vector<HintProducer *> hint_producers;
+    LinkCreatingHintConsumer consumer(parent, factory);
+
+    hint_producers.push_back(new NakedDoubleHintProducer());
+    hint_producers.push_back(new HiddenDoubleHintProducer());
+
+    for(std::vector<HintProducer *>::iterator i = hint_producers.begin(); i != hint_producers.end(); ++i) {
+        (*i)->find_hints(grid, consumer);
+        if(!consumer.wants_more_hints())
+            break;
+    }
+
+    std::copy(consumer.begin(), consumer.end(), std::back_inserter(links));
+
+    std::for_each(hint_producers.begin(), hint_producers.end(), destroy<HintProducer *>());
+
+    return !consumer.wants_more_hints();
 }

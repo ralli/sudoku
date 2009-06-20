@@ -22,8 +22,6 @@ public:
     virtual void apply() = 0;
 
     virtual void print_description(std::ostream &out) const = 0;
-
-    virtual void visit_consumer(HintConsumer *consumer) const;
 private:
 
     Hint(const Hint &other) {

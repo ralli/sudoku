@@ -318,7 +318,7 @@ private:
      */
     template<class Strategy>
     void find_forcing_chain(int value, Grid &grid, HintConsumer &consumer,
-            std::vector<Link *> &links, LinkFactory &factory) const;
+            std::vector<Link *> &links, LinkFactory &factory, bool advanced) const;
 
     /*!
      * \brief tries to find a contradiction to a given link recursively.
@@ -328,7 +328,7 @@ private:
      */
     template<class Strategy>
     bool find_contradiction(Link *start, LinkMap &linkMap, Grid &grid,
-            Grid &original, HintConsumer &consumer, LinkFactory &factory) const;
+            Grid &original, HintConsumer &consumer, LinkFactory &factory, bool advanced) const;
 
     /*!
      * \brief tries to find a common conclusion
@@ -366,6 +366,9 @@ private:
 
     void find_links_in_ranges(Link *link, std::vector<Link *> &links,
             Grid &grid,
+            LinkFactory &factory) const;
+
+    bool find_advanced_links(Link *parent, std::vector<Link *> &links, Grid &grid,
             LinkFactory &factory) const;
 
     void fill_range_frequencies(const Range &range, Grid &grid, std::vector<
