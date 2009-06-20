@@ -14,6 +14,7 @@ hiddentriple.cpp \
 hiddentriple.hpp \
 hintconsumer.cpp \
 hintconsumer.hpp \
+hint.cpp \
 hint.hpp \
 pointing.cpp \
 pointing.hpp \
@@ -32,7 +33,9 @@ claiming.cpp \
 swordfish.hpp \
 swordfish.cpp \
 xywing.hpp \
-xywing.cpp
+xywing.cpp \
+indirecthint.cpp \
+indirecthint.hpp 
 
 dancinglinks_SOURCES=dlxsolver.hpp \
 dlxsolver.cpp \

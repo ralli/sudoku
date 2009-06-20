@@ -7,27 +7,17 @@
 #include "grid.hpp"
 #include "util.hpp"
 
-NakedDoubleHint::NakedDoubleHint(Grid &grid, int first_cell_idx,
-        int second_cell_idx, int value1, int value2, const Range &range) :
-    grid(grid), first_cell_idx(first_cell_idx),
-            second_cell_idx(second_cell_idx), value1(value1), value2(value2),
-            range(range) {
-}
-
-void NakedDoubleHint::apply() {
-    for (int i = 0; i < 9; ++i) {
-        if (range[i] != first_cell_idx && range[i] != second_cell_idx) {
-            Cell &cell = grid[range[i]];
-            cell.remove_choice(value1);
-            cell.remove_choice(value2);
-        }
-    }
+NakedDoubleHint::NakedDoubleHint(int first_cell_idx, int second_cell_idx,
+        int value1, int value2, const Range &range) :
+    first_cell_idx(first_cell_idx), second_cell_idx(second_cell_idx), value1(
+            value1), value2(value2), range(range) {
 }
 
 void NakedDoubleHint::print_description(std::ostream &out) const {
     out << "naked double: cell1: " << print_row_col(first_cell_idx)
             << " cell2: " << print_row_col(second_cell_idx) << " in range: "
-            << range.get_name();
+            << range.get_name() << " removing: " << print_choices_to_remove(
+            get_choices_to_remove());
 }
 
 void fill_bitset(Cell &cell, std::bitset<10> &bits) {
@@ -65,10 +55,9 @@ void NakedDoubleHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
                                     int idx2 = (*irange)[j];
                                     std::vector<int> values;
                                     fill_values(grid[idx1], values);
-                                    if (!consumer.consume_hint(
-                                            new NakedDoubleHint(grid, idx1,
-                                                    idx2, values[0], values[1],
-                                                    *irange)))
+                                    if (!consumer.consume_hint(create_hint(
+                                            grid, idx1, idx2, values[0],
+                                            values[1], *irange)))
                                         return;
                                     break;
                                 }
@@ -81,3 +70,19 @@ void NakedDoubleHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     }
 }
 
+NakedDoubleHint *NakedDoubleHintProducer::create_hint(Grid &grid,
+        int first_cell_idx, int second_cell_idx, int value1, int value2,
+        const Range &range) const {
+    NakedDoubleHint *hint = new NakedDoubleHint(first_cell_idx,
+            second_cell_idx, value1, value2, range);
+
+    for (int i = 0; i < 9; ++i) {
+        if (range[i] != first_cell_idx && range[i] != second_cell_idx) {
+            Cell &cell = grid[range[i]];
+            hint->add_choice_to_remove(&cell, value1);
+            hint->add_choice_to_remove(&cell, value2);
+        }
+    }
+
+    return hint;
+}

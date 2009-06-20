@@ -12,23 +12,16 @@ HiddenDoubleHint::HiddenDoubleHint(std::vector<Cell *> cells, std::pair<int,
 
 }
 
-void HiddenDoubleHint::apply() {
-    for (std::vector<Cell *>::const_iterator i = cells.begin(); i
-            != cells.end(); ++i) {
-        (*i)->clear_choices();
-        (*i)->add_choice(pair.first);
-        (*i)->add_choice(pair.second);
-    }
-}
-
 void HiddenDoubleHint::print_description(std::ostream &out) const {
     out << "hidden double: cells: ";
     for (std::vector<Cell *>::const_iterator i = cells.begin(); i
             != cells.end(); ++i) {
-      out << print_row_col((*i)->get_idx()) << ' ';
+        out << print_row_col((*i)->get_idx()) << ' ';
     }
     out << "pair: (" << pair.first << "," << pair.second << ") range: "
             << range.get_name();
+
+    out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
 void HiddenDoubleHintProducer::build_frequencies(Grid &grid,
@@ -79,7 +72,7 @@ void HiddenDoubleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) 
                 for (std::vector<Cell *>::iterator i = cells.begin(); i
                         != cells.end(); ++i) {
                     if ((*i)->get_num_choices() > 2) {
-                        if(!consumer.consume_hint(new HiddenDoubleHint(cells,
+                        if (!consumer.consume_hint(create_hint(cells,
                                 ipair->first, *irange))) {
                             return;
                         }
@@ -89,4 +82,18 @@ void HiddenDoubleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) 
             }
         }
     }
+}
+
+HiddenDoubleHint *HiddenDoubleHintProducer::create_hint(const std::vector<Cell *> &cells,
+        const std::pair<int, int> &values, const Range &range) const {
+    HiddenDoubleHint *hint = new HiddenDoubleHint(cells, values, range);
+    for (std::vector<Cell *>::const_iterator i = cells.begin(); i
+            != cells.end(); ++i) {
+        for (int value = 1; value <= 9; ++value) {
+            if (value != values.first && value != values.second
+                    && (*i)->has_choice(value))
+                hint->add_choice_to_remove(*i, value);
+        }
+    }
+    return hint;
 }
