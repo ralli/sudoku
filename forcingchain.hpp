@@ -6,6 +6,7 @@
 
 class Range;
 class Link;
+class LinkFactory;
 
 /*!
  * \brief a forcing chain hint: for a given cell all choices come to the same
@@ -317,7 +318,7 @@ private:
      */
     template<class Strategy>
     void find_forcing_chain(int value, Grid &grid, HintConsumer &consumer,
-            std::vector<Link *> &links) const;
+            std::vector<Link *> &links, LinkFactory &factory) const;
 
     /*!
      * \brief tries to find a contradiction to a given link recursively.
@@ -326,8 +327,8 @@ private:
      * \return true, if a contradiction has been found
      */
     template<class Strategy>
-    bool find_contradiction(Link *link, LinkMap &linkMap, Grid &grid,
-            Grid &original, HintConsumer &consumer) const;
+    bool find_contradiction(Link *start, LinkMap &linkMap, Grid &grid,
+            Grid &original, HintConsumer &consumer, LinkFactory &factory) const;
 
     /*!
      * \brief tries to find a common conclusion
@@ -346,9 +347,8 @@ private:
      * \param links the links found
      * \param grid the grid to find the strong links in
      */
-    void
-            find_strong_links(Link *link, std::vector<Link *> &links,
-                    Grid &grid) const;
+    void find_strong_links(Link *link, std::vector<
+            Link *> &links, Grid &grid, LinkFactory &factory) const;
 
     /*!
      * \brief finds all weak links resulting as conclusion from a given link.
@@ -357,13 +357,16 @@ private:
      * \param grid the grid to find the links in
      */
     void
-            find_weak_links(Link *link, std::vector<Link *> &links, Grid &grid) const;
+            find_weak_links(Link *link, std::vector<Link *> &links, Grid &grid,
+            LinkFactory &factory) const;
 
     void find_links_with_one_choice_left(Link *link,
-            std::vector<Link *> &links, Grid &grid) const;
+            std::vector<Link *> &links, Grid &grid,
+            LinkFactory &factory) const;
 
     void find_links_in_ranges(Link *link, std::vector<Link *> &links,
-            Grid &grid) const;
+            Grid &grid,
+            LinkFactory &factory) const;
 
     void fill_range_frequencies(const Range &range, Grid &grid, std::vector<
             std::vector<Cell *> > &frequencies) const;

@@ -8,6 +8,42 @@
 #include "util.hpp"
 #include "range.hpp"
 
+class LinkFactory {
+    std::vector<Link *> links;
+public:
+    LinkFactory();
+    virtual ~LinkFactory();
+    StrongLink *create_strong_link(Link *parent, int cell_idx, int value);
+    WeakLink *create_weak_link(Link *parent, int cell_idx, int value);
+private:
+    LinkFactory(const LinkFactory &) {
+    }
+    LinkFactory &operator =(const LinkFactory &) {
+        return *this;
+    }
+};
+
+LinkFactory::LinkFactory() {
+
+}
+
+LinkFactory::~LinkFactory() {
+    std::for_each(links.begin(), links.end(), destroy<Link *> ());
+}
+
+StrongLink *LinkFactory::create_strong_link(Link *parent, int cell_idx,
+        int value) {
+    StrongLink *link = new StrongLink(parent, cell_idx, value);
+    links.push_back(link);
+    return link;
+}
+
+WeakLink *LinkFactory::create_weak_link(Link *parent, int cell_idx, int value) {
+    WeakLink *link = new WeakLink(parent, cell_idx, value);
+    links.push_back(link);
+    return link;
+}
+
 /*!
  * \brief builds a vector of a given forcing chain
  *
@@ -88,9 +124,7 @@ ForcingChainHint::ForcingChainHint(Grid &grid, const std::vector<Link *> &links)
  * \brief destructor
  */
 ForcingChainHint::~ForcingChainHint() {
-    for (std::vector<std::vector<Link *> >::iterator i = chains.begin(); i
-            != chains.end(); ++i)
-        delete i->front();
+
 }
 
 /*!
@@ -156,7 +190,6 @@ ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid,
 }
 
 ForcingChainContradictionHint::~ForcingChainContradictionHint() {
-    delete first_chain.front();
 }
 
 void ForcingChainContradictionHint::apply() {
@@ -185,7 +218,7 @@ Link::Link(Link *parent, int cell_idx, int value) :
 }
 
 Link::~Link() {
-    std::for_each(children.begin(), children.end(), destroy<Link *> ());
+
 }
 
 const Link *Link::get_parent() const {
@@ -472,29 +505,21 @@ struct QueueStrategy {
     }
 };
 
-template<class T>
-inline void clear(T &links) {
-    std::for_each(links.begin(), links.end(), destroy<Link *> ());
-    links.clear();
-}
-
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (int value = 1; value < 10; ++value) {
         std::vector<Link *> queue_links;
+        LinkFactory factory;
 
-        find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links);
+        find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links,
+                factory);
         if (!consumer.wants_more_hints()) {
-            clear(queue_links);
             return;
         }
 
         analyze_links(queue_links, value, grid, consumer);
         if (!consumer.wants_more_hints()) {
-            clear(queue_links);
             return;
         }
-
-        clear(queue_links);
     }
 }
 
@@ -560,7 +585,8 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
 
 template<class Strategy>
 void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
-        HintConsumer &consumer, std::vector<Link *> &links) const {
+        HintConsumer &consumer, std::vector<Link *> &links,
+        LinkFactory &factory) const {
     LinkMap allLinks;
     int link_count = 0;
     std::vector<Link *> local_links;
@@ -570,19 +596,21 @@ void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
         if (cell.has_choice(value)) {
             ++link_count;
             Grid weak_backup(grid);
-            WeakLink *weak_link = new WeakLink(0, cell.get_idx(), value);
+            WeakLink *weak_link = factory.create_weak_link(0, cell.get_idx(),
+                    value);
             LinkMap weak_link_map;
 
             if (find_contradiction<Strategy> (weak_link, weak_link_map,
-                    weak_backup, grid, consumer)) {
+                    weak_backup, grid, consumer, factory)) {
                 return;
             }
 
-            StrongLink *strong_link = new StrongLink(0, cell.get_idx(), value);
+            StrongLink *strong_link = factory.create_strong_link(0,
+                    cell.get_idx(), value);
             LinkMap strong_link_map;
             Grid strong_backup(grid);
             if (find_contradiction<Strategy> (strong_link, strong_link_map,
-                    strong_backup, grid, consumer)) {
+                    strong_backup, grid, consumer, factory)) {
                 return;
             }
 
@@ -621,7 +649,8 @@ bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
  */
 template<class Strategy>
 bool ForcingChainHintProducer::find_contradiction(Link *start,
-        LinkMap &linkMap, Grid &grid, Grid &original, HintConsumer &consumer) const {
+        LinkMap &linkMap, Grid &grid, Grid &original, HintConsumer &consumer,
+        LinkFactory &factory) const {
     Strategy qstrong;
     Strategy qweak;
 
@@ -657,21 +686,21 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
             continue;
 
         if (link->is_strong_link()) {
-            find_weak_links(link, links, grid);
+            find_weak_links(link, links, grid, factory);
             Cell &cell = grid[link->get_cell_idx()];
             cell.set_value(link->get_value());
             cell.clear_choices();
             grid.cleanup_choice(cell);
-            find_links_in_ranges(link, links, grid);
-            find_links_with_one_choice_left(link, links, grid);
+            find_links_in_ranges(link, links, grid, factory);
+            find_links_with_one_choice_left(link, links, grid, factory);
         } else {
             Cell &cell = grid[link->get_cell_idx()];
             cell.remove_choice(link->get_value());
-            find_strong_links(link, links, grid);
+            find_strong_links(link, links, grid, factory);
         }
 
         for (std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
-            if((*i)->is_strong_link())
+            if ((*i)->is_strong_link())
                 qstrong.push(*i);
             else
                 qweak.push(*i);
@@ -700,19 +729,19 @@ inline int get_opposite_value(Cell &cell, int value) {
 }
 
 void ForcingChainHintProducer::find_strong_links(Link *link,
-        std::vector<Link *> &links, Grid &grid) const {
+        std::vector<Link *> &links, Grid &grid, LinkFactory &factory) const {
     Cell &cell = grid[link->get_cell_idx()];
 
     if (cell.get_num_choices() == 1) {
-        links.push_back(new StrongLink(link, cell.get_idx(),
+        links.push_back(factory.create_strong_link(link, cell.get_idx(),
                 get_opposite_value(cell, link->get_value())));
     }
 
-    find_links_in_ranges(link, links, grid);
+    find_links_in_ranges(link, links, grid, factory);
 }
 
 void ForcingChainHintProducer::find_links_with_one_choice_left(Link *link,
-        std::vector<Link *> &links, Grid &grid) const {
+        std::vector<Link *> &links, Grid &grid, LinkFactory &factory) const {
     RangeList::const_index_iterator begin = RANGES.field_begin(
             link->get_cell_idx());
     RangeList::const_index_iterator end =
@@ -721,7 +750,7 @@ void ForcingChainHintProducer::find_links_with_one_choice_left(Link *link,
     for (RangeList::const_index_iterator i = begin; i != end; ++i) {
         Cell &cell = grid[*i];
         if (cell.get_num_choices() == 1) {
-            links.push_back(new StrongLink(link, cell.get_idx(),
+            links.push_back(factory.create_strong_link(link, cell.get_idx(),
                     cell.first_choice()));
         }
     }
@@ -740,7 +769,7 @@ void ForcingChainHintProducer::fill_range_frequencies(const Range &range,
 }
 
 void ForcingChainHintProducer::find_links_in_ranges(Link *link, std::vector<
-        Link *> &links, Grid &grid) const {
+        Link *> &links, Grid &grid, LinkFactory &factory) const {
     const std::vector<Range> &ranges = RANGES.get_field_ranges(
             link->get_cell_idx());
 
@@ -752,14 +781,14 @@ void ForcingChainHintProducer::find_links_in_ranges(Link *link, std::vector<
         for (int value = 1; value < 10; ++value) {
             if (frequencies[value].size() == 1) {
                 Cell *cell = frequencies[value].front();
-                links.push_back(new StrongLink(link, cell->get_idx(), value));
+                links.push_back(factory.create_strong_link(link, cell->get_idx(), value));
             }
         }
     }
 }
 
 void ForcingChainHintProducer::find_weak_links(Link *link,
-        std::vector<Link *> &links, Grid &grid) const {
+        std::vector<Link *> &links, Grid &grid, LinkFactory &factory) const {
     RangeList::const_index_iterator begin = RANGES.field_begin(
             link->get_cell_idx());
     RangeList::const_index_iterator end =
@@ -768,14 +797,14 @@ void ForcingChainHintProducer::find_weak_links(Link *link,
 
     for (int value = 1; value < 10; ++value) {
         if (value != link->get_value() && c.has_choice(value)) {
-            links.push_back(new WeakLink(link, c.get_idx(), value));
+            links.push_back(factory.create_weak_link(link, c.get_idx(), value));
         }
     }
 
     for (RangeList::const_index_iterator i = begin; i != end; ++i) {
         Cell &cell = grid[*i];
         if (cell.has_choice(link->get_value()))
-            links.push_back(new WeakLink(link, cell.get_idx(),
+            links.push_back(factory.create_weak_link(link, cell.get_idx(),
                     link->get_value()));
     }
 }
