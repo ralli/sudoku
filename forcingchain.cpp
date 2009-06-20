@@ -314,7 +314,7 @@ void LinkMap::insert_all(LinkMap &other) {
 
 bool LinkMap::find_common_conclusion(size_t size,
         std::vector<Link *> &conclusions) {
-    if(size == 0) {
+    if (size == 0) {
         return false;
     }
 
@@ -329,10 +329,11 @@ bool LinkMap::find_common_conclusion(size_t size,
         size_t frequencies[10];
         std::vector<Link *> &links = weak_links[i];
         build_frequencies(links, frequencies);
-        for(int value = 1; value < 10; ++value) {
-            if(frequencies[value] == size) {
-                for(std::vector<Link *>::iterator j = links.begin(); j != links.end(); ++j) {
-                    if((*j)->get_value() == value) {
+        for (int value = 1; value < 10; ++value) {
+            if (frequencies[value] == size) {
+                for (std::vector<Link *>::iterator j = links.begin(); j
+                        != links.end(); ++j) {
+                    if ((*j)->get_value() == value) {
                         conclusions.push_back(*j);
                     }
                 }
@@ -347,7 +348,8 @@ void LinkMap::build_frequencies(const std::vector<Link *> &links,
         size_t frequencies[10]) const {
 
     std::fill(frequencies, frequencies + 10, 0);
-    for (std::vector<Link *>::const_iterator i = links.begin(); i != links.end(); ++i) {
+    for (std::vector<Link *>::const_iterator i = links.begin(); i
+            != links.end(); ++i) {
         ++frequencies[(*i)->get_value()];
     }
 }
@@ -479,7 +481,6 @@ inline void clear(T &links) {
 void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (int value = 1; value < 10; ++value) {
         std::vector<Link *> queue_links;
-        std::vector<Link *> stack_links;
 
         find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links);
         if (!consumer.wants_more_hints()) {
@@ -487,29 +488,13 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
             return;
         }
 
-        find_forcing_chain<StackStrategy> (value, grid, consumer, stack_links);
-        if (!consumer.wants_more_hints()) {
-            clear(queue_links);
-            clear(stack_links);
-            return;
-        }
-
         analyze_links(queue_links, value, grid, consumer);
         if (!consumer.wants_more_hints()) {
             clear(queue_links);
-            clear(stack_links);
-            return;
-        }
-
-        analyze_links(stack_links, value, grid, consumer);
-        if (!consumer.wants_more_hints()) {
-            clear(queue_links);
-            clear(stack_links);
             return;
         }
 
         clear(queue_links);
-        clear(stack_links);
     }
 }
 
@@ -547,15 +532,15 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
             Link *p = conclusions.front()->get_head();
             std::vector<Link *> &bla = cell_links[p->get_cell_idx()];
             std::cout << "xxx size: " << count << " size2: "
-                    << cell_links[p->get_cell_idx()].size();
+            << cell_links[p->get_cell_idx()].size();
             for (std::vector<Link *>::const_iterator i = bla.begin(); i
                     != bla.end(); ++i)
-                std::cout << ' ' << print_link(*i);
+            std::cout << ' ' << print_link(*i);
             std::cout << std::endl;
             std::cout << "links: ";
             for (std::vector<Link *>::const_iterator i = links.begin(); i
                     != links.end(); ++i)
-                std::cout << ' ' << print_link(*i);
+            std::cout << ' ' << print_link(*i);
             std::cout << std::endl;
 #endif
             ForcingChainRangeHint *hint = new ForcingChainRangeHint(grid,
@@ -637,11 +622,21 @@ bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
 template<class Strategy>
 bool ForcingChainHintProducer::find_contradiction(Link *start,
         LinkMap &linkMap, Grid &grid, Grid &original, HintConsumer &consumer) const {
-    Strategy q;
+    Strategy qstrong;
+    Strategy qweak;
 
-    q.push(start);
-    while (!q.empty()) {
-        Link *link = q.pop();
+    if (start->is_strong_link())
+        qstrong.push(start);
+    else
+        qweak.push(start);
+
+    while (!(qstrong.empty() && qweak.empty())) {
+        Link * link;
+
+        if (!qstrong.empty())
+            link = qstrong.pop();
+        else
+            link = qweak.pop();
 
         std::vector<Link *> links;
         Link *contradiction = linkMap.find_contradiction(link);
@@ -665,8 +660,9 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
             find_weak_links(link, links, grid);
             Cell &cell = grid[link->get_cell_idx()];
             cell.set_value(link->get_value());
+            cell.clear_choices();
             grid.cleanup_choice(cell);
-            // find_links_in_ranges(link, links, grid);
+            find_links_in_ranges(link, links, grid);
             find_links_with_one_choice_left(link, links, grid);
         } else {
             Cell &cell = grid[link->get_cell_idx()];
@@ -675,7 +671,10 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
         }
 
         for (std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
-            q.push(*i);
+            if((*i)->is_strong_link())
+                qstrong.push(*i);
+            else
+                qweak.push(*i);
         }
     }
     return false;
@@ -683,7 +682,7 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
 
 bool ForcingChainHintProducer::find_common_conclusion(LinkMap &allLinks,
         size_t nconclusions, Grid &grid, HintConsumer &consumer) const {
-    if(nconclusions == 0)
+    if (nconclusions == 0)
         return false;
     std::vector<Link *> conclusions;
     if (allLinks.find_common_conclusion(nconclusions, conclusions)) {
@@ -744,10 +743,11 @@ void ForcingChainHintProducer::find_links_in_ranges(Link *link, std::vector<
         Link *> &links, Grid &grid) const {
     const std::vector<Range> &ranges = RANGES.get_field_ranges(
             link->get_cell_idx());
-    std::vector<std::vector<Cell *> > frequencies(10);
 
     for (std::vector<Range>::const_iterator irange = ranges.begin(); irange
             != ranges.end(); ++irange) {
+        std::vector<std::vector<Cell *> > frequencies(10);
+
         fill_range_frequencies(*irange, grid, frequencies);
         for (int value = 1; value < 10; ++value) {
             if (frequencies[value].size() == 1) {
@@ -769,7 +769,6 @@ void ForcingChainHintProducer::find_weak_links(Link *link,
     for (int value = 1; value < 10; ++value) {
         if (value != link->get_value() && c.has_choice(value)) {
             links.push_back(new WeakLink(link, c.get_idx(), value));
-
         }
     }
 
