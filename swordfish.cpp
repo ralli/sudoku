@@ -8,20 +8,11 @@
 #include "grid.hpp"
 #include "hintconsumer.hpp"
 
-SwordfishHint::SwordfishHint(Grid &grid, int value, const std::vector<
-        const Range *> &row_ranges,
-        const std::vector<const Range *> &col_ranges,
-        const std::vector<int> &cells_to_clear) :
-    grid(grid), value(value), row_ranges(row_ranges), col_ranges(col_ranges),
-            cells_to_clear(cells_to_clear) {
+SwordfishHint::SwordfishHint(int value,
+        const std::vector<const Range *> &row_ranges, const std::vector<
+                const Range *> &col_ranges) :
+    value(value), row_ranges(row_ranges), col_ranges(col_ranges) {
 
-}
-
-void SwordfishHint::apply() {
-    for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
-            != cells_to_clear.end(); ++i) {
-        grid[(*i)].remove_choice(value);
-    }
 }
 
 void SwordfishHint::print_description(std::ostream &out) const {
@@ -33,10 +24,7 @@ void SwordfishHint::print_description(std::ostream &out) const {
     for (std::vector<const Range *>::const_iterator i = col_ranges.begin(); i
             != col_ranges.end(); ++i)
         out << (*i)->get_name() << ' ';
-    out << "clearing:";
-    for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
-            != cells_to_clear.end(); ++i)
-        out << ' ' << print_row_col(*i);
+    out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
 void SwordfishHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
@@ -45,12 +33,10 @@ void SwordfishHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
                 consumer);
         if (!consumer.wants_more_hints())
             return;
-#if 1
         find_swordfishes(value, grid, RANGES.get_columns(), RANGES.get_rows(),
                 consumer);
         if (!consumer.wants_more_hints())
-        return;
-#endif
+            return;
     }
 }
 
@@ -123,8 +109,7 @@ SwordfishHint *SwordfishHintProducer::create_swordfish_hint(int value,
     col_ranges.push_back(&secondary_ranges[cols[1]]);
     col_ranges.push_back(&secondary_ranges[cols[2]]);
 
-    return new SwordfishHint(grid, value, row_ranges, col_ranges,
-            cells_to_clear);
+    return create_hint(grid, value, row_ranges, col_ranges, cells_to_clear);
 }
 
 void SwordfishHintProducer::fill_rowsets(int value, Grid &grid,
@@ -135,4 +120,16 @@ void SwordfishHintProducer::fill_rowsets(int value, Grid &grid,
             bitsets[i][j] = grid[range[j]].has_choice(value);
         }
     }
+}
+
+SwordfishHint *SwordfishHintProducer::create_hint(Grid &grid, int value,
+        const std::vector<const Range *> &row_ranges, const std::vector<
+                const Range *> &col_ranges,
+        const std::vector<int> &cells_to_clear) const {
+    SwordfishHint *hint = new SwordfishHint(value, row_ranges, col_ranges);
+    for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
+            != cells_to_clear.end(); ++i) {
+        hint->add_choice_to_remove(&grid[(*i)], value);
+    }
+    return hint;
 }

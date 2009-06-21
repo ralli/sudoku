@@ -3,22 +3,21 @@
 
 #include <vector>
 #include <bitset>
-#include "hint.hpp"
+#include "indirecthint.hpp"
 
 class Cell;
 class Grid;
 class Range;
 
-class HiddenTripleHint: public Hint {
-    std::vector<Cell *> &cells;
+class HiddenTripleHint: public IndirectHint {
+    std::vector<Cell *> cells;
     int value1;
     int value2;
     int value3;
     const Range &range;
 public:
-    HiddenTripleHint(std::vector<Cell *> &cells, int value1, int value2,
+    HiddenTripleHint(const std::vector<Cell *> &cells, int value1, int value2,
             int value3, const Range &range);
-    void apply();
     void print_description(std::ostream &out) const;
 };
 
@@ -38,5 +37,7 @@ private:
             HintConsumer &consumer) const;
     void find_sets_for_range(const Range &range, Grid &grid,
             HintConsumer &consumer) const;
+    HiddenTripleHint *create_hint(const std::vector<Cell *> &cells, int value1, int value2,
+            int value3, const Range &range) const;
 };
 #endif

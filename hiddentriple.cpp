@@ -9,18 +9,10 @@
 #include "util.hpp"
 #include "grid.hpp"
 
-HiddenTripleHint::HiddenTripleHint(std::vector<Cell *> &cells, int value1,
-        int value2, int value3, const Range &range) :
+HiddenTripleHint::HiddenTripleHint(const std::vector<Cell *> &cells,
+        int value1, int value2, int value3, const Range &range) :
     cells(cells), value1(value1), value2(value2), value3(value3), range(range) {
 
-}
-void HiddenTripleHint::apply() {
-    for (std::vector<Cell *>::iterator i = cells.begin(); i != cells.end(); ++i) {
-        for (int value = 1; value < 10; ++value) {
-            if (value != value1 && value != value2 && value != value3)
-                (*i)->remove_choice(value);
-        }
-    }
 }
 
 void HiddenTripleHint::print_description(std::ostream &out) const {
@@ -30,6 +22,7 @@ void HiddenTripleHint::print_description(std::ostream &out) const {
         out << ' ' << print_row_col((*i)->get_idx());
     out << " values: (" << value1 << "," << value2 << "," << value3 << ") ";
     out << "range: " << range.get_name();
+    out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
 void HiddenTripleHintProducer::fill_potential_values(const Range &range,
@@ -86,8 +79,7 @@ void HiddenTripleHintProducer::consume_possible_hint(const Range &range,
     }
     if (!ok)
         return;
-    consumer.consume_hint(new HiddenTripleHint(cells, value1, value2, value3,
-            range));
+    consumer.consume_hint(create_hint(cells, value1, value2, value3, range));
 }
 
 void HiddenTripleHintProducer::find_sets_for_range(const Range &range,
@@ -131,4 +123,23 @@ void HiddenTripleHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
         if (!consumer.wants_more_hints())
             return;
     }
+}
+
+HiddenTripleHint *HiddenTripleHintProducer::create_hint(const std::vector<
+        Cell *> &cells, int value1, int value2, int value3, const Range &range) const {
+    HiddenTripleHint *hint = new HiddenTripleHint(cells, value1, value2,
+            value3, range);
+
+    for (std::vector<Cell *>::const_iterator i = cells.begin(); i
+            != cells.end(); ++i) {
+        for (int value = 1; value < 10; ++value) {
+            if (value != value1 && value != value2 && value != value3) {
+                Cell &cell = *(*i);
+                if (cell.has_choice(value))
+                    hint->add_choice_to_remove(&cell, value);
+            }
+        }
+    }
+
+    return hint;
 }

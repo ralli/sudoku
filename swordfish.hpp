@@ -3,24 +3,19 @@
 
 #include <vector>
 
-#include "hint.hpp"
+#include "indirecthint.hpp"
 #include "range.hpp"
 
 class Grid;
 
-class SwordfishHint: public Hint {
-    Grid &grid;
+class SwordfishHint: public IndirectHint {
     int value;
     std::vector<const Range *> row_ranges;
     std::vector<const Range *> col_ranges;
-    std::vector<int> cells_to_clear;
 public:
-    SwordfishHint(Grid &grid,
-            int value,
+    SwordfishHint(int value,
             const std::vector<const Range *> &row_ranges,
-            const std::vector<const Range *> &col_ranges,
-            const std::vector<int> &cells_to_clear);
-    void apply();
+            const std::vector<const Range *> &col_ranges);
     void print_description(std::ostream &out) const;
 };
 
@@ -37,6 +32,11 @@ private:
             const std::vector<Range> &secondary_ranges, Grid &grid) const;
     void fill_rowsets(int value, Grid &grid, const std::vector<Range> &ranges,
             std::vector<std::bitset<9> > &bitsets) const;
+    SwordfishHint *create_hint(Grid &grid,
+            int value,
+            const std::vector<const Range *> &row_ranges,
+            const std::vector<const Range *> &col_ranges,
+            const std::vector<int> &cells_to_clear) const;
 };
 
 #endif
