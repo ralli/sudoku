@@ -14,6 +14,8 @@
 #include "claiming.hpp"
 #include "hiddentriple.hpp"
 #include "swordfish.hpp"
+#include "xwing.hpp"
+#include "xywing.hpp"
 
 class LinkFactory {
     std::vector<Link *> links;
@@ -884,6 +886,8 @@ bool ForcingChainHintProducer::find_advanced_links(Link *parent, std::vector<Lin
     hint_producers.push_back(new ClaimingHintProducer());
     hint_producers.push_back(new HiddenTripleHintProducer());
     hint_producers.push_back(new SwordfishHintProducer());
+    hint_producers.push_back(new XWingHintProducer());
+    hint_producers.push_back(new XYWingHintProducer());
 
     for(std::vector<HintProducer *>::iterator i = hint_producers.begin(); i != hint_producers.end(); ++i) {
         (*i)->find_hints(grid, consumer);

@@ -2,11 +2,11 @@
 #define XWING_HPP_
 
 #include <vector>
-#include "hint.hpp"
+#include "indirecthint.hpp"
 
 class Cell;
 
-class XWingRowHint: public Hint {
+class XWingRowHint: public IndirectHint {
     Grid &grid;
     int row1;
     int row2;
@@ -15,11 +15,10 @@ class XWingRowHint: public Hint {
     int value;
 public:
     XWingRowHint(Grid &grid, int row1, int row2, int col1, int col2, int value);
-    void apply();
     void print_description(std::ostream &out) const;
 };
 
-class XWingColumnHint: public Hint {
+class XWingColumnHint: public IndirectHint {
     Grid &grid;
     int row1;
     int row2;
@@ -29,7 +28,6 @@ class XWingColumnHint: public Hint {
 public:
     XWingColumnHint(Grid &grid, int row1, int row2, int col1, int col2,
             int value);
-    void apply();
     void print_description(std::ostream &out) const;
 };
 
@@ -47,8 +45,15 @@ private:
                     int value) const;
     void find_row_hints(Grid &grid, HintConsumer &consumer) const;
     void find_col_hints(Grid &grid, HintConsumer &consumer) const;
-    void fill_row_freq(Grid &grid, int row, std::vector<std::vector<Cell *> > &freq) const;
-    void fill_col_freq(Grid &grid, int col, std::vector<std::vector<Cell *> > &freq) const;
+    void fill_row_freq(Grid &grid, int row,
+            std::vector<std::vector<Cell *> > &freq) const;
+    void fill_col_freq(Grid &grid, int col,
+            std::vector<std::vector<Cell *> > &freq) const;
+    XWingRowHint *create_row_hint(Grid &grid, int row1, int row2, int col1,
+            int col2, int value) const;
+    XWingColumnHint *create_column_hint(Grid &grid, int row1, int row2,
+            int col1, int col2, int value) const;
+
 };
 
 #endif

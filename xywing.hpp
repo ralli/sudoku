@@ -3,24 +3,21 @@
 
 #include <vector>
 
-#include "hint.hpp"
+#include "indirecthint.hpp"
 
 class Grid;
 class Cell;
 
-class XYWingHint: public Hint {
+class XYWingHint: public IndirectHint {
     const Cell &xy;
     const Cell &yz;
     const Cell &xz;
     int x;
     int y;
     int z;
-    Grid &grid;
-    std::vector<int> cells_to_clear;
 public:
     XYWingHint(const Cell &xy, const Cell &yz, const Cell &xz, int x, int y,
-            int z, Grid &grid, const std::vector<int> &cells_to_clear);
-    void apply();
+            int z);
     void print_description(std::ostream &out) const;
 };
 
@@ -33,6 +30,8 @@ private:
     XYWingHint *create_xy_hint(Cell &xy, Cell &yz, Cell &xz, int x, int y,
             int z, Grid &grid) const;
     bool shares_region(const Cell &a, const Cell &b) const;
+    XYWingHint *create_hint(const Cell &xy, const Cell &yz, const Cell &xz, int x, int y,
+            int z, Grid &grid, const std::vector<int> &cells_to_clear) const;
 };
 
 #endif

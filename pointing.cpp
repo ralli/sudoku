@@ -120,18 +120,19 @@ PointingHint *PointingHintProducer::create_hint(Grid &grid, int start_row,
         for (int c = 0; c < 9; ++c) {
             if (c < start_col || c >= start_col + 3) {
                 int idx = 9 * r + c;
-                hint->add_choice_to_remove(&grid[idx], value);
+                if (grid[idx].has_choice(value))
+                    hint->add_choice_to_remove(&grid[idx], value);
             }
         }
-    }
-    else {
+    } else {
 
         int c = col;
 
         for (int r = 0; r < 9; ++r) {
             if (r < start_row || r >= start_row + 3) {
                 int idx = 9 * r + c;
-                hint->add_choice_to_remove(&grid[idx], value);
+                if (grid[idx].has_choice(value))
+                    hint->add_choice_to_remove(&grid[idx], value);
             }
         }
 

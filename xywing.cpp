@@ -9,27 +9,16 @@
 #include "util.hpp"
 
 XYWingHint::XYWingHint(const Cell &xy, const Cell &yz, const Cell &xz, int x,
-        int y, int z, Grid &grid, const std::vector<int> &cells_to_clear) :
-    xy(xy), yz(yz), xz(xz), x(x), y(y), z(z), grid(grid), cells_to_clear(
-            cells_to_clear) {
-}
-
-void XYWingHint::apply() {
-    for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
-            != cells_to_clear.end(); ++i) {
-        grid[*i].remove_choice(z);
-    }
+        int y, int z) :
+    xy(xy), yz(yz), xz(xz), x(x), y(y), z(z) {
 }
 
 void XYWingHint::print_description(std::ostream &out) const {
     out << "xy-wing: xy: " << print_row_col(xy.get_idx()) << ", yz: "
             << print_row_col(yz.get_idx()) << ", xz: " << print_row_col(
             xz.get_idx()) << " x=" << x << ", y=" << y << ", z=" << z
-            << ". cells to remove z from:";
-    for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
-            != cells_to_clear.end(); ++i) {
-        out << ' ' << print_row_col(*i);
-    }
+            << ". removing: " << print_choices_to_remove(
+            get_choices_to_remove());
 }
 
 void XYWingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
@@ -135,10 +124,24 @@ XYWingHint *XYWingHintProducer::create_xy_hint(Cell &xy, Cell &yz, Cell &xz,
     if (cells_to_clear.empty())
         return 0;
 
-    return new XYWingHint(xy, yz, xz, x, y, z, grid, cells_to_clear);
+    return create_hint(xy, yz, xz, x, y, z, grid, cells_to_clear);
 }
 
 bool XYWingHintProducer::shares_region(const Cell &a, const Cell &b) const {
     return a.get_row() == b.get_row() || a.get_col() == b.get_col()
             || a.get_block_idx() == b.get_block_idx();
+}
+
+XYWingHint *XYWingHintProducer::create_hint(const Cell &xy, const Cell &yz,
+        const Cell &xz, int x, int y, int z, Grid &grid,
+        const std::vector<int> &cells_to_clear) const {
+    XYWingHint *hint = new XYWingHint(xy, yz, xz, x, y, z);
+
+    for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
+            != cells_to_clear.end(); ++i) {
+        if (grid[*i].has_choice(z))
+            hint->add_choice_to_remove(&grid[*i], z);
+    }
+
+    return hint;
 }
