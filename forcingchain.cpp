@@ -381,11 +381,6 @@ void LinkMap::insert_all(LinkMap &other) {
     }
 }
 
-/**
- ** todo: find the common conclusion with the shortest forcing chains ...
- ** or find all of them ...
- */
-
 bool LinkMap::find_common_conclusion(size_t size,
         std::vector<Link *> &conclusions) {
     if (size == 0) {
@@ -552,7 +547,7 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
         LinkFactory factory;
 
         find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links,
-                factory, false);
+                factory, 0);
         if (!consumer.wants_more_hints()) {
             return;
         }
@@ -564,20 +559,36 @@ void ForcingChainHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     }
 
     for (int value = 1; value < 10; ++value) {
-          std::vector<Link *> queue_links;
-          LinkFactory factory;
+        std::vector<HintProducer *> hint_producers;
 
-          find_forcing_chain<QueueStrategy> (value, grid, consumer, queue_links,
-                  factory, true);
-          if (!consumer.wants_more_hints()) {
-              return;
-          }
+        hint_producers.push_back(new NakedDoubleHintProducer());
+        hint_producers.push_back(new HiddenDoubleHintProducer());
+        hint_producers.push_back(new PointingHintProducer());
+        hint_producers.push_back(new ClaimingHintProducer());
+        hint_producers.push_back(new HiddenTripleHintProducer());
+        hint_producers.push_back(new SwordfishHintProducer());
+        hint_producers.push_back(new XWingHintProducer());
+        hint_producers.push_back(new XYWingHintProducer());
 
-          analyze_links(queue_links, value, grid, consumer);
-          if (!consumer.wants_more_hints()) {
-              return;
-          }
-      }
+        for (std::vector<HintProducer *>::iterator i = hint_producers.begin(); i
+                != hint_producers.end(); ++i) {
+            std::vector<Link *> queue_links;
+            LinkFactory factory;
+
+            find_forcing_chain<QueueStrategy> (value, grid, consumer,
+                    queue_links, factory, *i);
+            if (!consumer.wants_more_hints()) {
+                return;
+            }
+            analyze_links(queue_links, value, grid, consumer);
+            if (!consumer.wants_more_hints()) {
+                return;
+            }
+        }
+
+        std::for_each(hint_producers.begin(), hint_producers.end(), destroy<
+                HintProducer *> ());
+    }
 }
 
 void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
@@ -643,7 +654,7 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
 template<class Strategy>
 void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
         HintConsumer &consumer, std::vector<Link *> &links,
-        LinkFactory &factory, bool advanced) const {
+        LinkFactory &factory, HintProducer *producer) const {
     LinkMap allLinks;
     int link_count = 0;
     std::vector<Link *> local_links;
@@ -658,7 +669,7 @@ void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
             LinkMap weak_link_map;
 
             if (find_contradiction<Strategy> (weak_link, weak_link_map,
-                    weak_backup, grid, consumer, factory, advanced)) {
+                    weak_backup, grid, consumer, factory, producer)) {
                 return;
             }
 
@@ -667,7 +678,7 @@ void ForcingChainHintProducer::find_forcing_chain(int value, Grid &grid,
             LinkMap strong_link_map;
             Grid strong_backup(grid);
             if (find_contradiction<Strategy> (strong_link, strong_link_map,
-                    strong_backup, grid, consumer, factory, advanced)) {
+                    strong_backup, grid, consumer, factory, producer)) {
                 return;
             }
 
@@ -707,7 +718,7 @@ bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
 template<class Strategy>
 bool ForcingChainHintProducer::find_contradiction(Link *start,
         LinkMap &linkMap, Grid &grid, Grid &original, HintConsumer &consumer,
-        LinkFactory &factory, bool advanced) const {
+        LinkFactory &factory, HintProducer *producer) const {
     Strategy qstrong;
     Strategy qweak;
 
@@ -763,9 +774,10 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
                 qweak.push(*i);
         }
 
-        if(qstrong.empty() && qweak.empty() && advanced) {
-            find_advanced_links(link, links, grid, factory);
-            for (std::vector<Link *>::iterator i = links.begin(); i != links.end(); ++i) {
+        if (qstrong.empty() && qweak.empty() && producer) {
+            find_advanced_links(link, links, grid, factory, producer);
+            for (std::vector<Link *>::iterator i = links.begin(); i
+                    != links.end(); ++i) {
                 if ((*i)->is_strong_link())
                     qstrong.push(*i);
                 else
@@ -848,7 +860,8 @@ void ForcingChainHintProducer::find_links_in_ranges(Link *link, std::vector<
         for (int value = 1; value < 10; ++value) {
             if (frequencies[value].size() == 1) {
                 Cell *cell = frequencies[value].front();
-                links.push_back(factory.create_strong_link(link, cell->get_idx(), value));
+                links.push_back(factory.create_strong_link(link,
+                        cell->get_idx(), value));
             }
         }
     }
@@ -876,22 +889,27 @@ void ForcingChainHintProducer::find_weak_links(Link *link,
     }
 }
 
-class LinkCreatingHintConsumer : public HintConsumer {
+class LinkCreatingHintConsumer: public HintConsumer {
     Link *parent;
     std::vector<Link *> links;
     LinkFactory &factory;
 public:
-    LinkCreatingHintConsumer(Link *parent, LinkFactory &factory) : parent(parent), links(), factory(factory) {
+    LinkCreatingHintConsumer(Link *parent, LinkFactory &factory) :
+        parent(parent), links(), factory(factory) {
 
     }
 
-    bool consume_hint(Hint *hint)  {
-        IndirectHint *h = dynamic_cast<IndirectHint *>(hint);
-        std::vector<std::pair<Cell *, int> >::const_iterator begin = h->get_choices_to_remove().begin();
-        std::vector<std::pair<Cell *, int> >::const_iterator end = h->get_choices_to_remove().end();
+    bool consume_hint(Hint *hint) {
+        IndirectHint *h = dynamic_cast<IndirectHint *> (hint);
+        std::vector<std::pair<Cell *, int> >::const_iterator begin =
+                h->get_choices_to_remove().begin();
+        std::vector<std::pair<Cell *, int> >::const_iterator end =
+                h->get_choices_to_remove().end();
 
-        for(std::vector<std::pair<Cell *, int> >::const_iterator i = begin; i != end; ++i) {
-            links.push_back(factory.create_weak_link(parent, i->first->get_idx(), i->second));
+        for (std::vector<std::pair<Cell *, int> >::const_iterator i = begin; i
+                != end; ++i) {
+            links.push_back(factory.create_weak_link(parent,
+                    i->first->get_idx(), i->second));
         }
 
         delete hint;
@@ -903,33 +921,20 @@ public:
         return links.empty();
     }
 
-    std::vector<Link *>::iterator begin() { return links.begin(); }
-    std::vector<Link *>::iterator end() { return links.end(); }
+    std::vector<Link *>::iterator begin() {
+        return links.begin();
+    }
+    std::vector<Link *>::iterator end() {
+        return links.end();
+    }
 };
 
-bool ForcingChainHintProducer::find_advanced_links(Link *parent, std::vector<Link *> &links, Grid &grid,
-        LinkFactory &factory) const {
-    std::vector<HintProducer *> hint_producers;
+bool ForcingChainHintProducer::find_advanced_links(Link *parent, std::vector<
+        Link *> &links, Grid &grid, LinkFactory &factory,
+        HintProducer *producer) const {
+
     LinkCreatingHintConsumer consumer(parent, factory);
-
-    hint_producers.push_back(new NakedDoubleHintProducer());
-    hint_producers.push_back(new HiddenDoubleHintProducer());
-    hint_producers.push_back(new PointingHintProducer());
-    hint_producers.push_back(new ClaimingHintProducer());
-    hint_producers.push_back(new HiddenTripleHintProducer());
-    hint_producers.push_back(new SwordfishHintProducer());
-    hint_producers.push_back(new XWingHintProducer());
-    hint_producers.push_back(new XYWingHintProducer());
-
-    for(std::vector<HintProducer *>::iterator i = hint_producers.begin(); i != hint_producers.end(); ++i) {
-        (*i)->find_hints(grid, consumer);
-        if(!consumer.wants_more_hints())
-            break;
-    }
-
+    producer->find_hints(grid, consumer);
     std::copy(consumer.begin(), consumer.end(), std::back_inserter(links));
-
-    std::for_each(hint_producers.begin(), hint_producers.end(), destroy<HintProducer *>());
-
     return !consumer.wants_more_hints();
 }

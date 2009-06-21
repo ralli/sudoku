@@ -350,7 +350,8 @@ private:
      */
     template<class Strategy>
     void find_forcing_chain(int value, Grid &grid, HintConsumer &consumer,
-            std::vector<Link *> &links, LinkFactory &factory, bool advanced) const;
+            std::vector<Link *> &links, LinkFactory &factory,
+            HintProducer *producer) const;
 
     /*!
      * \brief tries to find a contradiction to a given link recursively.
@@ -360,7 +361,8 @@ private:
      */
     template<class Strategy>
     bool find_contradiction(Link *start, LinkMap &linkMap, Grid &grid,
-            Grid &original, HintConsumer &consumer, LinkFactory &factory, bool advanced) const;
+            Grid &original, HintConsumer &consumer, LinkFactory &factory,
+            HintProducer *producer) const;
 
     /*!
      * \brief tries to find a common conclusion
@@ -379,8 +381,8 @@ private:
      * \param links the links found
      * \param grid the grid to find the strong links in
      */
-    void find_strong_links(Link *link, std::vector<
-            Link *> &links, Grid &grid, LinkFactory &factory) const;
+    void find_strong_links(Link *link, std::vector<Link *> &links, Grid &grid,
+            LinkFactory &factory) const;
 
     /*!
      * \brief finds all weak links resulting as conclusion from a given link.
@@ -388,20 +390,17 @@ private:
      * \param links the links found
      * \param grid the grid to find the links in
      */
-    void
-            find_weak_links(Link *link, std::vector<Link *> &links, Grid &grid,
+    void find_weak_links(Link *link, std::vector<Link *> &links, Grid &grid,
             LinkFactory &factory) const;
 
     void find_links_with_one_choice_left(Link *link,
-            std::vector<Link *> &links, Grid &grid,
-            LinkFactory &factory) const;
+            std::vector<Link *> &links, Grid &grid, LinkFactory &factory) const;
 
     void find_links_in_ranges(Link *link, std::vector<Link *> &links,
-            Grid &grid,
-            LinkFactory &factory) const;
+            Grid &grid, LinkFactory &factory) const;
 
-    bool find_advanced_links(Link *parent, std::vector<Link *> &links, Grid &grid,
-            LinkFactory &factory) const;
+    bool find_advanced_links(Link *parent, std::vector<Link *> &links,
+            Grid &grid, LinkFactory &factory, HintProducer *producer) const;
 
     void fill_range_frequencies(const Range &range, Grid &grid, std::vector<
             std::vector<Cell *> > &frequencies) const;
