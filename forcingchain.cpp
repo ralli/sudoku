@@ -858,6 +858,8 @@ public:
             links.push_back(factory.create_weak_link(parent, i->first->get_idx(), i->second));
         }
 
+        delete hint;
+
         return false;
     }
 
