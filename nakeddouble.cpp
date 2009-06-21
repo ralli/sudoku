@@ -79,8 +79,12 @@ NakedDoubleHint *NakedDoubleHintProducer::create_hint(Grid &grid,
     for (int i = 0; i < 9; ++i) {
         if (range[i] != first_cell_idx && range[i] != second_cell_idx) {
             Cell &cell = grid[range[i]];
-            hint->add_choice_to_remove(&cell, value1);
-            hint->add_choice_to_remove(&cell, value2);
+            if (cell.has_choice(value1)) {
+                hint->add_choice_to_remove(&cell, value1);
+            }
+            if (cell.has_choice(value2)) {
+                hint->add_choice_to_remove(&cell, value2);
+            }
         }
     }
 

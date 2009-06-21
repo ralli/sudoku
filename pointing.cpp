@@ -13,13 +13,6 @@ PointingHint::PointingHint(Grid &grid, int start_row, int start_col, int value,
             row), col(col) {
 }
 
-void PointingHint::apply() {
-    if (is_row_hint())
-        apply_row_hint();
-    else
-        apply_col_hint();
-}
-
 void PointingHint::print_description(std::ostream &out) const {
     out << "pointing: ";
     out << "block(" << start_row + 1 << "," << start_col + 1 << ") ";
@@ -29,6 +22,7 @@ void PointingHint::print_description(std::ostream &out) const {
     } else {
         out << " column: " << col + 1;
     }
+    out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
 bool PointingHint::is_row_hint() const {
@@ -37,27 +31,6 @@ bool PointingHint::is_row_hint() const {
 
 bool PointingHint::is_col_hint() const {
     return col != -1;
-}
-
-void PointingHint::apply_row_hint() {
-    int r = row;
-    for (int c = 0; c < 9; ++c) {
-        if (c < start_col || c >= start_col + 3) {
-            int idx = 9 * r + c;
-            grid[idx].remove_choice(value);
-        }
-    }
-}
-
-void PointingHint::apply_col_hint() {
-    int c = col;
-
-    for (int r = 0; r < 9; ++r) {
-        if (r < start_row || r >= start_row + 3) {
-            int idx = 9 * r + c;
-            grid[idx].remove_choice(value);
-        }
-    }
 }
 
 void PointingHintProducer::find_block_hint(int block_idx, Grid &grid,
@@ -89,8 +62,8 @@ void PointingHintProducer::find_block_hint(int block_idx, Grid &grid,
                 Cell &cell = grid[idx];
                 if (!cell.has_value() && (col < start_col || col >= start_col
                         + 3) && cell.has_choice(value)) {
-                    if (!consumer.consume_hint(new PointingHint(grid,
-                            start_row, start_col, value, row, -1)))
+                    if (!consumer.consume_hint(create_hint(grid, start_row,
+                            start_col, value, row, -1)))
                         return;
                 }
             }
@@ -105,7 +78,7 @@ void PointingHintProducer::find_block_hint(int block_idx, Grid &grid,
             if (!cell.has_value()) {
                 for (int value = 1; value < 10; ++value) {
                     if (cell.has_choice(value)) {
-                        value_cols[value].insert(start_col+col);
+                        value_cols[value].insert(start_col + col);
                     }
                 }
             }
@@ -120,8 +93,8 @@ void PointingHintProducer::find_block_hint(int block_idx, Grid &grid,
                     int idx = 9 * row + col;
                     Cell cell = grid[idx];
                     if (!cell.has_value() && cell.has_choice(value)) {
-                        if (!consumer.consume_hint(new PointingHint(grid,
-                                start_row, start_col, value, -1, col)))
+                        if (!consumer.consume_hint(create_hint(grid, start_row,
+                                start_col, value, -1, col)))
                             return;
                     }
                 }
@@ -136,4 +109,32 @@ void PointingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
         if (!consumer.wants_more_hints())
             return;
     }
+}
+
+PointingHint *PointingHintProducer::create_hint(Grid &grid, int start_row,
+        int start_col, int value, int row, int col) const {
+    PointingHint *hint = new PointingHint(grid, start_row, start_col, value,
+            row, col);
+    if (hint->is_row_hint()) {
+        int r = row;
+        for (int c = 0; c < 9; ++c) {
+            if (c < start_col || c >= start_col + 3) {
+                int idx = 9 * r + c;
+                hint->add_choice_to_remove(&grid[idx], value);
+            }
+        }
+    }
+    else {
+
+        int c = col;
+
+        for (int r = 0; r < 9; ++r) {
+            if (r < start_row || r >= start_row + 3) {
+                int idx = 9 * r + c;
+                hint->add_choice_to_remove(&grid[idx], value);
+            }
+        }
+
+    }
+    return hint;
 }

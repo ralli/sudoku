@@ -10,6 +10,8 @@
 
 #include "hiddendouble.hpp"
 #include "nakeddouble.hpp"
+#include "pointing.hpp"
+#include "claiming.hpp"
 
 class LinkFactory {
     std::vector<Link *> links;
@@ -874,6 +876,8 @@ bool ForcingChainHintProducer::find_advanced_links(Link *parent, std::vector<Lin
 
     hint_producers.push_back(new NakedDoubleHintProducer());
     hint_producers.push_back(new HiddenDoubleHintProducer());
+    hint_producers.push_back(new PointingHintProducer());
+    hint_producers.push_back(new ClaimingHintProducer());
 
     for(std::vector<HintProducer *>::iterator i = hint_producers.begin(); i != hint_producers.end(); ++i) {
         (*i)->find_hints(grid, consumer);
