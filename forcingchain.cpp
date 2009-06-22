@@ -749,6 +749,8 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
          * found. since we will come to the same conclusions again,
          * I will cut the search here.
          */
+        if (!linkMap.insert(link))
+            continue;
 
         if (link->is_strong_link()) {
             find_weak_links(link, links, grid, factory);
