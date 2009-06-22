@@ -750,9 +750,6 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
          * I will cut the search here.
          */
 
-        if (!linkMap.insert(link))
-            continue;
-
         if (link->is_strong_link()) {
             find_weak_links(link, links, grid, factory);
             Cell &cell = grid[link->get_cell_idx()];

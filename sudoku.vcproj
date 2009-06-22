@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\indirecthint.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\nakeddouble.cpp"
 				>
 			</File>
@@ -279,6 +283,10 @@
 			</File>
 			<File
 				RelativePath=".\hintconsumer.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\indirecthint.hpp"
 				>
 			</File>
 			<File
