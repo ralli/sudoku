@@ -2,6 +2,7 @@ syntax: glob
 *~
 *.o
 sudoku/sudoku
+gsudoku/gsudoku
 dancinglinks
 .deps/*
 autom4te.cache/*
@@ -22,4 +23,7 @@ bla.txt
 dlxtest
 *.exe
 ReadMe.txt
+top50000.txt
+pseudo.txt
+*.gmo
 

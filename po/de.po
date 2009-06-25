@@ -1,0 +1,45 @@
+# German translations for sudoku package
+# German messages for sudoku.
+# Copyright (C) 2009 Ralph Juhnke
+# This file is distributed under the same license as the sudoku package.
+# Ralph Juhnke <r_juhnke@gmx.de>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sudoku 0.1\n"
+"Report-Msgid-Bugs-To: r_juhnke@gmx.de\n"
+"POT-Creation-Date: 2009-06-25 21:01+0200\n"
+"PO-Revision-Date: 2009-06-25 21:02+0200\n"
+"Last-Translator: Ralph Juhnke <r_juhnke@gmx.de>\n"
+"Language-Team: German <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gsudoku/mainwindow.cpp:8
+msgid "Sudoku"
+msgstr "Sudoku"
+
+#: gsudoku/mainwindow.cpp:14
+msgid "_File"
+msgstr "_Datei"
+
+#: gsudoku/mainwindow.cpp:17
+msgid "_New"
+msgstr "_Neu"
+
+#: gsudoku/mainwindow.cpp:17
+msgid "Generates a new mountain"
+msgstr "Generiert einen neuen Berg"
+
+#: gsudoku/mainwindow.cpp:21
+msgid "E_xit"
+msgstr "_Beenden"
+
+#: gsudoku/mainwindow.cpp:21
+msgid "Exits the application"
+msgstr "Beendet die Anwendung"
+
+#~ msgid "Hello"
+#~ msgstr "Hallo"

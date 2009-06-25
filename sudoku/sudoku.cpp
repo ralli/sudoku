@@ -108,7 +108,7 @@ bool solve(const std::string &s) {
 }
 
 int main(int argc, char *argv[]) {
-    std::string filename = "top95.txt";
+    std::string filename = "../data/top95.txt";
     std::vector<std::pair<int, std::string> > failed;
 
     if (argc > 1) {

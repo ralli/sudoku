@@ -4,7 +4,7 @@
 AC_PREREQ([2.63])
 AC_INIT(sudoku, 0.1, [r_juhnke@gmx.de])
 AC_CONFIG_SRCDIR([sudoku/sudoku.cpp])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([include/config.h])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([foreign])
 
@@ -12,6 +12,16 @@ AM_INIT_AUTOMAKE([foreign])
 AC_PROG_CXX
 
 # Checks for libraries.
+# Checks for programs.
+AC_PROG_CXX
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
+
+GTKMM_CFLAGS=`pkg-config --cflags gtkmm-2.4`
+GTKMM_LIBS=`pkg-config --libs gtkmm-2.4`
+
+AC_SUBST(GTKMM_CFLAGS)
+AC_SUBST(GTKMM_LIBS)
 
 # Checks for header files.
 
@@ -21,5 +31,5 @@ AC_C_INLINE
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile sudoku/Makefile])
+AC_CONFIG_FILES([Makefile sudoku/Makefile gsudoku/Makefile po/Makefile.in include/Makefile])
 AC_OUTPUT
