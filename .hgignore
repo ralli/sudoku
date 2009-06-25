@@ -1,7 +1,6 @@
 syntax: glob
 *~
 *.o
-sudoku
 dancinglinks
 .deps/*
 autom4te.cache/*
