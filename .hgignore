@@ -26,4 +26,5 @@ ReadMe.txt
 top50000.txt
 pseudo.txt
 *.gmo
-
+po/POTFILES
+po/remove-potcdate.sed
