@@ -5,8 +5,11 @@
 
 class SudokuView: public Gtk::DrawingArea {
 public:
+    SudokuView();
     void on_realize();
     virtual bool on_expose_event(GdkEventExpose *event);
+    virtual bool on_button_release_event(GdkEventButton* event);
+    virtual bool on_key_release_event(GdkEventKey* event);
 private:
     void draw_border(Cairo::RefPtr<Cairo::Context> &cr) const;
 
@@ -22,6 +25,7 @@ private:
     void draw_field_choice(Cairo::RefPtr<Cairo::Context> &cr, int x, int y,
             int choice) const;
     void draw_field_choices(Cairo::RefPtr<Cairo::Context> &cr) const;
+    void init_matrix(Cairo::Matrix &m, int width, int height) const;
 };
 
 #endif

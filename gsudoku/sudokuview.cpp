@@ -1,11 +1,24 @@
 #include "sudokuview.hpp"
 #include <sstream>
+#include <iostream>
+
+SudokuView::SudokuView() {
+    signal_button_press_event().connect(sigc::mem_fun(*this,
+            &SudokuView::on_button_release_event));
+    signal_key_press_event().connect(sigc::mem_fun(*this,
+            &SudokuView::on_key_release_event));
+    set_flags(Gtk::CAN_FOCUS);
+    set_events(Gdk::EXPOSURE_MASK | Gdk::LEAVE_NOTIFY_MASK
+            | Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK
+            | Gdk::POINTER_MOTION_HINT_MASK | Gdk::KEY_PRESS_MASK);
+}
 
 void SudokuView::on_realize() {
     Gtk::DrawingArea::on_realize();
 
     Glib::RefPtr<Gdk::Window> window = get_window();
     window->set_background(get_style()->get_white());
+    grab_focus();
 }
 
 bool SudokuView::on_expose_event(GdkEventExpose *event) {
@@ -28,21 +41,12 @@ bool SudokuView::on_expose_event(GdkEventExpose *event) {
         cr->clip();
     }
 
-    int scale = width < height ? width : height;
-
     Cairo::Matrix m;
-    Cairo::Matrix helper;
-    cairo_matrix_init_identity(&m);
-    cairo_matrix_init_translate(&helper, -0.5, -0.5);
-    cairo_matrix_multiply(&m, &m, &helper);
-    cairo_matrix_init_scale(&helper, scale * 0.9, scale * 0.9);
-    cairo_matrix_multiply(&m, &m, &helper);
-    cairo_matrix_init_translate(&helper, width * 0.5, height * 0.5);
-    cairo_matrix_multiply(&m, &m, &helper);
+    init_matrix(m, width, height);
     cr->transform(m);
 
-        cr->select_font_face("Sans", Cairo::FONT_SLANT_NORMAL,
-                Cairo::FONT_WEIGHT_BOLD);
+    cr->select_font_face("Sans", Cairo::FONT_SLANT_NORMAL,
+            Cairo::FONT_WEIGHT_BOLD);
 
     cr->set_font_size(1.0 / 9.0 * 0.7);
 
@@ -62,6 +66,7 @@ void SudokuView::draw_border(Cairo::RefPtr<Cairo::Context> &cr) const {
     cr->save();
     cr->set_source_rgb(0.0, 0.0, 0.0);
     cr->set_line_width(0.007);
+    cr->set_antialias(Cairo::ANTIALIAS_NONE);
     cr->move_to(0.0, 0.0);
     cr->line_to(1.0, 0.0);
     cr->line_to(1.0, 1.0);
@@ -75,7 +80,8 @@ void SudokuView::draw_bold_grid(Cairo::RefPtr<Cairo::Context> &cr) const {
     double delta = 1.0 / 3.0;
 
     cr->save();
-    cr->set_line_width(0.004);
+    cr->set_antialias(Cairo::ANTIALIAS_NONE);
+    cr->set_line_width(0.007);
     draw_line(cr, 1 * delta, 0.0, 1 * delta, 1.0);
     draw_line(cr, 2 * delta, 0.0, 2 * delta, 1.0);
     draw_line(cr, 0.0, 1 * delta, 1.0, 1 * delta);
@@ -87,7 +93,15 @@ void SudokuView::draw_normal_grid(Cairo::RefPtr<Cairo::Context> &cr) const {
     double delta = 1.0 / 9.0;
 
     cr->save();
-    cr->set_line_width(0.001);
+#if 0
+    double w = 2, h = 2;
+    cr->device_to_user(w, h);
+    if(w < h)
+    w = h;
+    cr->set_line_width(w);
+#else
+    cr->set_line_width(0.003);
+#endif
     draw_line(cr, 1 * delta, 0.0, 1 * delta, 1.0);
     draw_line(cr, 2 * delta, 0.0, 2 * delta, 1.0);
     draw_line(cr, 4 * delta, 0.0, 4 * delta, 1.0);
@@ -107,7 +121,15 @@ void SudokuView::draw_normal_grid(Cairo::RefPtr<Cairo::Context> &cr) const {
 
 void SudokuView::draw_line(Cairo::RefPtr<Cairo::Context> &cr, double x1,
         double y1, double x2, double y2) const {
+    cr->user_to_device(x1, y1);
+    x1 = round(x1);
+    y1 = round(y1);
+    cr->device_to_user(x1, y1);
     cr->move_to(x1, y1);
+    cr->user_to_device(x2, y2);
+    x2 = round(x2);
+    y2 = round(y2);
+    cr->device_to_user(x2, y2);
     cr->line_to(x2, y2);
     cr->stroke();
 }
@@ -145,8 +167,10 @@ void SudokuView::draw_field_choice(Cairo::RefPtr<Cairo::Context> &cr, int x,
     double delta = 1.0 / 9.0;
     double choice_delta = delta / 3.0;
 
-    double px = x * delta + ((choice - 1) % 3) * choice_delta + 0.5 * choice_delta;
-    double py = y * delta + ((choice - 1) / 3) * choice_delta + 0.5 * choice_delta;
+    double px = x * delta + ((choice - 1) % 3) * choice_delta + 0.5
+            * choice_delta;
+    double py = y * delta + ((choice - 1) / 3) * choice_delta + 0.5
+            * choice_delta;
     std::ostringstream os;
     os << choice;
     draw_centered_text(cr, px, py, os.str());
@@ -160,4 +184,66 @@ void SudokuView::draw_field_choices(Cairo::RefPtr<Cairo::Context> &cr) const {
             }
         }
     }
+}
+
+bool SudokuView::on_button_release_event(GdkEventButton* event) {
+    Glib::RefPtr<Gdk::Window> window = get_window();
+    if (!window)
+        return true;
+    Gtk::Allocation allocation = get_allocation();
+    const int width = allocation.get_width();
+    const int height = allocation.get_height();
+    Cairo::RefPtr<Cairo::Context> cr = window->create_cairo_context();
+
+    Cairo::Matrix m;
+    init_matrix(m, width, height);
+    cr->transform(m);
+    gdouble x = event->x;
+    gdouble y = event->y;
+    cr->device_to_user(x, y);
+    int row = 9 * y;
+    int col = 9 * x;
+    int subrow = static_cast<int> (3 * 9 * y) % 3;
+    int subcol = static_cast<int> (3 * 9 * x) % 3;
+    int value = (subrow * 3 + subcol) + 1;
+    std::cout << "x= " << x << " y=" << y << " row=" << row << " col=" << col
+            << " subrow= " << subrow << " subcol=" << subcol << " value="
+            << value << std::endl;
+    return true;
+}
+
+void SudokuView::init_matrix(Cairo::Matrix &m, int width, int height) const {
+    int scale = width < height ? width : height;
+    Cairo::Matrix helper;
+    cairo_matrix_init_identity(&m);
+    cairo_matrix_init_translate(&helper, -0.5, -0.5);
+    cairo_matrix_multiply(&m, &m, &helper);
+    cairo_matrix_init_scale(&helper, scale * 0.9, scale * 0.9);
+    cairo_matrix_multiply(&m, &m, &helper);
+    cairo_matrix_init_translate(&helper, width * 0.5, height * 0.5);
+    cairo_matrix_multiply(&m, &m, &helper);
+}
+
+bool SudokuView::on_key_release_event(GdkEventKey* event) {
+    std::cout << "event->keyval=" << event->keyval;
+    bool handled = false;
+
+    if(event->keyval == GDK_Left) {
+        std::cout << " left";
+        handled = true;
+    }
+    else if(event->keyval == GDK_Right) {
+        std::cout << " right";
+        handled = true;
+    }
+    else if(event->keyval == GDK_Up) {
+        std::cout << " up";
+        handled = true;
+    }
+    else if(event->keyval == GDK_Down) {
+        std::cout << " down";
+        handled = true;
+    }
+    std::cout << std::endl;
+    return handled;
 }
