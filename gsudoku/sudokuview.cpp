@@ -1,8 +1,42 @@
+/*
+ * Copyright (c) 2009, Ralph Juhnke
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *    * Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *
+ *    * Neither the name of "Ralph Juhnke" nor the names of its
+ *      contributors may be used to endorse or promote products derived from
+ *      this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 #include "sudokuview.hpp"
+#include "sudokumodel.hpp"
 #include <sstream>
 #include <iostream>
 
-SudokuView::SudokuView() {
+SudokuView::SudokuView(const Glib::RefPtr<SudokuModel> &model) :
+    model(model) {
     signal_button_press_event().connect(sigc::mem_fun(*this,
             &SudokuView::on_button_release_event));
     signal_key_press_event().connect(sigc::mem_fun(*this,
@@ -50,14 +84,18 @@ bool SudokuView::on_expose_event(GdkEventExpose *event) {
 
     cr->set_font_size(1.0 / 9.0 * 0.7);
 
+    draw_selected_cell(cr);
+
     draw_border(cr);
     draw_bold_grid(cr);
     draw_normal_grid(cr);
     // draw_field_texts(cr);
 
+    cr->save();
     cr->set_source_rgb(0.5, 0.5, 0.5);
     cr->set_font_size(1.0 / 9.0 * 0.8 * 0.3);
     draw_field_choices(cr);
+    cr->restore();
 
     return true;
 }
@@ -228,22 +266,35 @@ bool SudokuView::on_key_release_event(GdkEventKey* event) {
     std::cout << "event->keyval=" << event->keyval;
     bool handled = false;
 
-    if(event->keyval == GDK_Left) {
+    if (event->keyval == GDK_Left) {
         std::cout << " left";
         handled = true;
-    }
-    else if(event->keyval == GDK_Right) {
+    } else if (event->keyval == GDK_Right) {
         std::cout << " right";
         handled = true;
-    }
-    else if(event->keyval == GDK_Up) {
+    } else if (event->keyval == GDK_Up) {
         std::cout << " up";
         handled = true;
-    }
-    else if(event->keyval == GDK_Down) {
+    } else if (event->keyval == GDK_Down) {
         std::cout << " down";
         handled = true;
     }
     std::cout << std::endl;
     return handled;
+}
+
+void SudokuView::draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const {
+    int selected_cell = 1;
+    int row = selected_cell / 9;
+    int col = selected_cell % 9;
+    const gdouble delta = 1.0 / 9.0;
+    cr->save();
+    cr->move_to(col * delta, row * delta);
+    cr->line_to((col + 1) * delta, row * delta);
+    cr->line_to((col + 1) * delta, (row + 1) * delta);
+    cr->line_to(col * delta, (row + 1) * delta);
+    cr->close_path();
+    cr->set_source_rgb(0.85, 0.85, 1.0);
+    cr->fill();
+    cr->restore();
 }
