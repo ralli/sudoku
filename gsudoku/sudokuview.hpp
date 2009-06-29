@@ -45,6 +45,7 @@ public:
     virtual bool on_expose_event(GdkEventExpose *event);
     virtual bool on_button_release_event(GdkEventButton* event);
     virtual bool on_key_release_event(GdkEventKey* event);
+    void on_model_changed_event();
 private:
     void draw_border(Cairo::RefPtr<Cairo::Context> &cr) const;
 

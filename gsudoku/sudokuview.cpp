@@ -33,10 +33,11 @@
 #include "sudokuview.hpp"
 #include "sudokumodel.hpp"
 #include <sstream>
-#include <iostream>
 
 SudokuView::SudokuView(const Glib::RefPtr<SudokuModel> &model) :
     model(model) {
+    model->signal_changed().connect(sigc::mem_fun(*this,
+            &SudokuView::on_model_changed_event));
     signal_button_press_event().connect(sigc::mem_fun(*this,
             &SudokuView::on_button_release_event));
     signal_key_press_event().connect(sigc::mem_fun(*this,
@@ -131,15 +132,9 @@ void SudokuView::draw_normal_grid(Cairo::RefPtr<Cairo::Context> &cr) const {
     double delta = 1.0 / 9.0;
 
     cr->save();
-#if 0
-    double w = 2, h = 2;
-    cr->device_to_user(w, h);
-    if(w < h)
-    w = h;
-    cr->set_line_width(w);
-#else
+
     cr->set_line_width(0.003);
-#endif
+
     draw_line(cr, 1 * delta, 0.0, 1 * delta, 1.0);
     draw_line(cr, 2 * delta, 0.0, 2 * delta, 1.0);
     draw_line(cr, 4 * delta, 0.0, 4 * delta, 1.0);
@@ -244,9 +239,9 @@ bool SudokuView::on_button_release_event(GdkEventButton* event) {
     int subrow = static_cast<int> (3 * 9 * y) % 3;
     int subcol = static_cast<int> (3 * 9 * x) % 3;
     int value = (subrow * 3 + subcol) + 1;
-    std::cout << "x= " << x << " y=" << y << " row=" << row << " col=" << col
-            << " subrow= " << subrow << " subcol=" << subcol << " value="
-            << value << std::endl;
+    int idx = row * 9 + col;
+    if(idx >= 0 && idx < 81)
+        model->set_selected_cell(idx);
     return true;
 }
 
@@ -263,28 +258,27 @@ void SudokuView::init_matrix(Cairo::Matrix &m, int width, int height) const {
 }
 
 bool SudokuView::on_key_release_event(GdkEventKey* event) {
-    std::cout << "event->keyval=" << event->keyval;
     bool handled = false;
-
+    if (event->type == Gdk::KEY_RELEASE)
+        return false;
     if (event->keyval == GDK_Left) {
-        std::cout << " left";
+        model->move_selection_left();
         handled = true;
     } else if (event->keyval == GDK_Right) {
-        std::cout << " right";
+        model->move_selection_right();
         handled = true;
     } else if (event->keyval == GDK_Up) {
-        std::cout << " up";
+        model->move_selection_up();
         handled = true;
     } else if (event->keyval == GDK_Down) {
-        std::cout << " down";
+        model->move_selection_down();
         handled = true;
     }
-    std::cout << std::endl;
     return handled;
 }
 
 void SudokuView::draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const {
-    int selected_cell = 1;
+    int selected_cell = model->get_selected_cell();
     int row = selected_cell / 9;
     int col = selected_cell % 9;
     const gdouble delta = 1.0 / 9.0;
@@ -297,4 +291,8 @@ void SudokuView::draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const {
     cr->set_source_rgb(0.85, 0.85, 1.0);
     cr->fill();
     cr->restore();
+}
+
+void SudokuView::on_model_changed_event() {
+    get_window()->invalidate(true);
 }

@@ -35,7 +35,7 @@
 
 #include "gtkmm.h"
 
-class SudokuModel : public Glib::Object {
+class SudokuModel: public Glib::Object {
 public:
     /*! \brief a signal with no arguments returning void */
     typedef sigc::signal<void> type_signal_changed;
@@ -44,12 +44,6 @@ private:
     type_signal_changed m_signal_changed;
 public:
     SudokuModel();
-private:
-    SudokuModel(const SudokuModel &other) {
-    }
-    SudokuModel &operator =(const SudokuModel &other) {
-        return *this;
-    }
     int get_selected_cell() const;
     bool is_cell_selected(int row, int col) const;
     void set_selected_cell(int selected_cell);
@@ -58,6 +52,13 @@ private:
     void move_selection_left();
     void move_selection_right();
     type_signal_changed &signal_changed();
+private:
+    SudokuModel(const SudokuModel &other) {
+    }
+    SudokuModel &operator =(const SudokuModel &other) {
+        return *this;
+    }
+
 };
 
 inline SudokuModel::SudokuModel() :
@@ -70,7 +71,7 @@ inline int SudokuModel::get_selected_cell() const {
 
 inline void SudokuModel::set_selected_cell(int selected_cell) {
     this->selected_cell = selected_cell;
-    ;
+    m_signal_changed.emit();
 }
 
 inline void SudokuModel::move_selection_up() {
@@ -78,6 +79,7 @@ inline void SudokuModel::move_selection_up() {
     int col = selected_cell % 9;
     row = (row == 0) ? 8 : row - 1;
     selected_cell = row * 9 + col;
+    m_signal_changed.emit();
 }
 
 inline void SudokuModel::move_selection_down() {
@@ -85,6 +87,7 @@ inline void SudokuModel::move_selection_down() {
     int col = selected_cell % 9;
     row = (row == 8) ? 0 : row + 1;
     selected_cell = row * 9 + col;
+    m_signal_changed.emit();
 }
 
 inline void SudokuModel::move_selection_left() {
@@ -92,6 +95,7 @@ inline void SudokuModel::move_selection_left() {
     int col = selected_cell % 9;
     col = (col == 0) ? 8 : col - 1;
     selected_cell = row * 9 + col;
+    m_signal_changed.emit();
 }
 
 inline void SudokuModel::move_selection_right() {
@@ -99,6 +103,7 @@ inline void SudokuModel::move_selection_right() {
     int col = selected_cell % 9;
     col = (col == 8) ? 0 : col + 1;
     selected_cell = row * 9 + col;
+    m_signal_changed.emit();
 }
 
 inline bool SudokuModel::is_cell_selected(int row, int col) const {
