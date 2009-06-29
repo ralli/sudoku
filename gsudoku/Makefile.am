@@ -1,5 +1,48 @@
 bin_PROGRAMS=gsudoku
-gsudoku_SOURCES=gsudoku.cpp mainwindow.cpp mainwindow.hpp sudokuview.cpp sudokuview.hpp sudokumodel.cpp sudokumodel.hpp
+gsudoku_SOURCES=gsudoku.cpp \
+mainwindow.cpp \
+mainwindow.hpp \
+sudokuview.cpp \
+sudokuview.hpp \
+sudokumodel.cpp \
+sudokumodel.hpp \
+../sudoku/boxlinereduction.cpp \
+../sudoku/claiming.cpp \
+../sudoku/forcingchain.cpp \
+../sudoku/grid.cpp \
+../sudoku/hiddendouble.cpp \
+../sudoku/hiddentriple.cpp \
+../sudoku/hintconsumer.cpp \
+../sudoku/hint.cpp \
+../sudoku/indirecthint.cpp \
+../sudoku/nakeddouble.cpp \
+../sudoku/pointing.cpp \
+../sudoku/range.cpp \
+../sudoku/simpleforcing.cpp \
+../sudoku/singlehint.cpp \
+../sudoku/swordfish.cpp \
+../sudoku/xwing.cpp \
+../sudoku/xywing.cpp \
+../sudoku/boxlinereduction.hpp \
+../sudoku/claiming.hpp \
+../sudoku/dancinglinks.hpp \
+../sudoku/forcingchain.hpp \
+../sudoku/grid.hpp \
+../sudoku/hiddendouble.hpp \
+../sudoku/hiddentriple.hpp \
+../sudoku/hintconsumer.hpp \
+../sudoku/hint.hpp \
+../sudoku/indirecthint.hpp \
+../sudoku/nakeddouble.hpp \
+../sudoku/pointing.hpp \
+../sudoku/range.hpp \
+../sudoku/simpleforcing.hpp \
+../sudoku/singlehint.hpp \
+../sudoku/swordfish.hpp \
+../sudoku/util.hpp \
+../sudoku/xwing.hpp \
+../sudoku/xywing.hpp
+
 AM_CXXFLAGS=-Wall @GTKMM_CFLAGS@
 gsudoku_LDADD=@LIBS@ @GTKMM_LIBS@ @LIBINTL@
 DEFS=-DLOCALEDIR=\"$(datadir)/locale\" @DEFS@

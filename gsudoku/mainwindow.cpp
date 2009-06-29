@@ -33,6 +33,7 @@
 #include "mainwindow.hpp"
 #include "gettext.h"
 #include <iostream>
+#include <string>
 
 #define _(X) gettext(X)
 
@@ -47,8 +48,12 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
 
     m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
-            _("_New"), _("Generates a new mountain")), sigc::mem_fun(
-            *this, &MainWindow::on_file_new));
+            _("_New"), _("Clears the board")), sigc::mem_fun(*this,
+            &MainWindow::on_file_new));
+
+    m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN,
+            _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(*this,
+            &MainWindow::on_file_open));
 
     m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT,
             _("E_xit"), _("Exits the application")), sigc::mem_fun(*this,
@@ -65,12 +70,14 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "  <menubar name='MenuBar'>"
             "    <menu action='FileMenu'>"
             "      <menuitem action='FileNew' />"
+            "      <menuitem action='FileOpen' />"
             "      <separator />"
             "      <menuitem action='FileExit' />"
             "    </menu>"
             "  </menubar>"
             "  <toolbar  name='ToolBar'>"
             "    <toolitem action='FileNew'/>"
+            "    <toolitem action='FileOpen'/>"
             "  </toolbar>"
             "</ui>";
 
@@ -96,9 +103,63 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
 }
 
 void MainWindow::on_file_new() {
-
+    model->clear();
 }
 
 void MainWindow::on_file_exit() {
     hide();
+}
+
+void MainWindow::on_file_open() {
+    Gtk::FileChooserDialog dialog("Please choose a file",
+            Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+
+    //Add response buttons the the dialog:
+    dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
+
+    //Add filters, so that only certain file types can be selected:
+
+    Gtk::FileFilter filter_text;
+    filter_text.set_name(_("Text files"));
+    filter_text.add_mime_type("text/plain");
+    dialog.add_filter(filter_text);
+
+    Gtk::FileFilter filter_cpp;
+    filter_cpp.set_name(_("C/C++ files"));
+    filter_cpp.add_mime_type("text/x-c");
+    filter_cpp.add_mime_type("text/x-c++");
+    filter_cpp.add_mime_type("text/x-c-header");
+    dialog.add_filter(filter_cpp);
+
+    Gtk::FileFilter filter_any;
+    filter_any.set_name(_("Any files"));
+    filter_any.add_pattern("*");
+    dialog.add_filter(filter_any);
+
+    //Show the dialog and wait for a user response:
+    int result = dialog.run();
+
+    //Handle the response:
+    switch (result) {
+    case (Gtk::RESPONSE_OK): {
+        std::string filename = dialog.get_filename();
+        try {
+            model->load(filename);
+        } catch (std::exception &ex) {
+            // Gtk::Window& parent, const Glib::ustring& message, bool use_markup = false, MessageType type = MESSAGE_INFO, ButtonsType buttons = BUTTONS_OK, bool modal = false
+            Gtk::MessageDialog dialog(*this, _("Error opening file"), false,
+                    Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+            dialog.set_secondary_text(_("Cannot open file: ") + filename);
+            dialog.run();
+
+        }
+        break;
+    }
+    case (Gtk::RESPONSE_CANCEL):
+        break;
+    default:
+        break;
+    }
 }

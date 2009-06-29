@@ -34,6 +34,7 @@
 #define SUDOKUMODEL_HPP_
 
 #include "gtkmm.h"
+#include "../sudoku/grid.hpp"
 
 class SudokuModel: public Glib::Object {
 public:
@@ -42,8 +43,17 @@ public:
 private:
     int selected_cell;
     type_signal_changed m_signal_changed;
+    Grid grid;
 public:
     SudokuModel();
+
+    void load(std::string &filename);
+    void clear();
+
+    bool has_value(int idx) const;
+    int get_value(int idx) const;
+    bool has_choice(int idx, int value) const;
+
     int get_selected_cell() const;
     bool is_cell_selected(int row, int col) const;
     void set_selected_cell(int selected_cell);
@@ -60,59 +70,5 @@ private:
     }
 
 };
-
-inline SudokuModel::SudokuModel() :
-    selected_cell(0) {
-}
-
-inline int SudokuModel::get_selected_cell() const {
-    return selected_cell;
-}
-
-inline void SudokuModel::set_selected_cell(int selected_cell) {
-    this->selected_cell = selected_cell;
-    m_signal_changed.emit();
-}
-
-inline void SudokuModel::move_selection_up() {
-    int row = selected_cell / 9;
-    int col = selected_cell % 9;
-    row = (row == 0) ? 8 : row - 1;
-    selected_cell = row * 9 + col;
-    m_signal_changed.emit();
-}
-
-inline void SudokuModel::move_selection_down() {
-    int row = selected_cell / 9;
-    int col = selected_cell % 9;
-    row = (row == 8) ? 0 : row + 1;
-    selected_cell = row * 9 + col;
-    m_signal_changed.emit();
-}
-
-inline void SudokuModel::move_selection_left() {
-    int row = selected_cell / 9;
-    int col = selected_cell % 9;
-    col = (col == 0) ? 8 : col - 1;
-    selected_cell = row * 9 + col;
-    m_signal_changed.emit();
-}
-
-inline void SudokuModel::move_selection_right() {
-    int row = selected_cell / 9;
-    int col = selected_cell % 9;
-    col = (col == 8) ? 0 : col + 1;
-    selected_cell = row * 9 + col;
-    m_signal_changed.emit();
-}
-
-inline bool SudokuModel::is_cell_selected(int row, int col) const {
-    int idx = row * 9 + col;
-    return selected_cell == idx;
-}
-
-inline SudokuModel::type_signal_changed &SudokuModel::signal_changed() {
-    return m_signal_changed;
-}
 
 #endif /* SUDOKUMODEL_HPP_ */

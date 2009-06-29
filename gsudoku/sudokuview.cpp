@@ -90,7 +90,7 @@ bool SudokuView::on_expose_event(GdkEventExpose *event) {
     draw_border(cr);
     draw_bold_grid(cr);
     draw_normal_grid(cr);
-    // draw_field_texts(cr);
+    draw_field_texts(cr);
 
     cr->save();
     cr->set_source_rgb(0.5, 0.5, 0.5);
@@ -188,9 +188,12 @@ void SudokuView::draw_field_text(Cairo::RefPtr<Cairo::Context> &cr, int x,
 void SudokuView::draw_field_texts(Cairo::RefPtr<Cairo::Context> &cr) const {
     for (int x = 0; x < 9; ++x) {
         for (int y = 0; y < 9; ++y) {
-            std::ostringstream os;
-            os << x + 1;
-            draw_field_text(cr, x, y, os.str());
+            int idx = 9 * y + x;
+            if (model->has_value(idx)) {
+                std::ostringstream os;
+                os << model->get_value(idx);
+                draw_field_text(cr, x, y, os.str());
+            }
         }
     }
 }
@@ -212,8 +215,12 @@ void SudokuView::draw_field_choice(Cairo::RefPtr<Cairo::Context> &cr, int x,
 void SudokuView::draw_field_choices(Cairo::RefPtr<Cairo::Context> &cr) const {
     for (int x = 0; x < 9; ++x) {
         for (int y = 0; y < 9; ++y) {
-            for (int choice = 1; choice <= 9; ++choice) {
-                draw_field_choice(cr, x, y, choice);
+            int idx = 9 * y + x;
+            if (!model->has_value(idx)) {
+                for (int choice = 1; choice <= 9; ++choice) {
+                    if (model->has_choice(idx, choice))
+                        draw_field_choice(cr, x, y, choice);
+                }
             }
         }
     }
@@ -236,11 +243,11 @@ bool SudokuView::on_button_release_event(GdkEventButton* event) {
     cr->device_to_user(x, y);
     int row = 9 * y;
     int col = 9 * x;
-    int subrow = static_cast<int> (3 * 9 * y) % 3;
-    int subcol = static_cast<int> (3 * 9 * x) % 3;
-    int value = (subrow * 3 + subcol) + 1;
+    //    int subrow = static_cast<int> (3 * 9 * y) % 3;
+    //    int subcol = static_cast<int> (3 * 9 * x) % 3;
+    //    int value = (subrow * 3 + subcol) + 1;
     int idx = row * 9 + col;
-    if(idx >= 0 && idx < 81)
+    if (idx >= 0 && idx < 81)
         model->set_selected_cell(idx);
     return true;
 }
@@ -259,7 +266,7 @@ void SudokuView::init_matrix(Cairo::Matrix &m, int width, int height) const {
 
 bool SudokuView::on_key_release_event(GdkEventKey* event) {
     bool handled = false;
-    if (event->type == Gdk::KEY_RELEASE)
+    if (event->type == static_cast<uint> (Gdk::KEY_RELEASE))
         return false;
     if (event->keyval == GDK_Left) {
         model->move_selection_left();

@@ -43,6 +43,7 @@ private:
 public:
     MainWindow(const Glib::RefPtr<SudokuModel> &model);
     void on_file_new();
+    void on_file_open();
     void on_file_exit();
 private:
      Gtk::VBox                      m_box;
