@@ -33,7 +33,7 @@
 #include "sudokuview.hpp"
 #include "sudokumodel.hpp"
 #include <sstream>
-
+#include <gdk/gdkkeysyms.h>
 SudokuView::SudokuView(const Glib::RefPtr<SudokuModel> &model) :
     model(model) {
     model->signal_changed().connect(sigc::mem_fun(*this,
@@ -265,21 +265,46 @@ void SudokuView::init_matrix(Cairo::Matrix &m, int width, int height) const {
 }
 
 bool SudokuView::on_key_release_event(GdkEventKey* event) {
-    bool handled = false;
     if (event->type == static_cast<uint> (Gdk::KEY_RELEASE))
         return false;
-    if (event->keyval == GDK_Left) {
+    bool handled = true;
+    switch (event->keyval) {
+    case GDK_Left:
+    case GDK_KP_Left:
         model->move_selection_left();
-        handled = true;
-    } else if (event->keyval == GDK_Right) {
+        break;
+    case GDK_Right:
+    case GDK_KP_Right:
         model->move_selection_right();
-        handled = true;
-    } else if (event->keyval == GDK_Up) {
+        break;
+    case GDK_Up:
+    case GDK_KP_Up:
         model->move_selection_up();
-        handled = true;
-    } else if (event->keyval == GDK_Down) {
+        break;
+    case GDK_Down:
+    case GDK_KP_Down:
         model->move_selection_down();
-        handled = true;
+        break;
+    case GDK_1:
+    case GDK_2:
+    case GDK_3:
+    case GDK_4:
+    case GDK_5:
+    case GDK_6:
+    case GDK_7:
+    case GDK_8:
+    case GDK_9:
+        if (event->state & GDK_CONTROL_MASK) {
+            model->toggle_current_cell_choice(event->keyval - GDK_1 + 1);
+        } else {
+            model->set_current_cell_value(event->keyval - GDK_1 + 1);
+        }
+        break;
+    case GDK_Delete:
+        model->clear_current_cell_value();
+        break;
+    default:
+        handled = false;
     }
     return handled;
 }

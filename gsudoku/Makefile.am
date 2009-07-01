@@ -6,6 +6,12 @@ sudokuview.cpp \
 sudokuview.hpp \
 sudokumodel.cpp \
 sudokumodel.hpp \
+../sudoku/gridchecker.hpp \
+../sudoku/gridchecker.cpp \
+../sudoku/dlxsolver.hpp \
+../sudoku/dlxsolver.cpp \
+../sudoku/dancinglinks.hpp \
+../sudoku/dancinglinks.cpp \
 ../sudoku/boxlinereduction.cpp \
 ../sudoku/claiming.cpp \
 ../sudoku/forcingchain.cpp \

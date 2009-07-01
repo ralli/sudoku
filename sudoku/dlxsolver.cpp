@@ -38,32 +38,17 @@
 #include "dlxsolver.hpp"
 #include "grid.hpp"
 
-DlxSudokuSolver::DlxSudokuSolver() {
-
+DlxSudokuSolver::DlxSudokuSolver(SolutionListener *solution_listener) :
+    solution_listener(solution_listener) {
 }
 
 DlxSudokuSolver::~DlxSudokuSolver() {
 
 }
 
-void DlxSudokuSolver::solution_found(const std::vector<Node *> &rows) {
-    assert(rows.size() == 81);
-    std::cout << std::endl;
-    Grid grid;
-    for (std::vector<Node *>::const_iterator i = rows.begin(); i != rows.end(); ++i) {
-        int idx = (*i)->get_row();
-        int value = idx % 9 + 1;
-        idx /= 9;
-        grid[idx].set_value(value);
-        grid[idx].clear_choices();
-    }
-    grid.print(std::cout);
-    std::cout << std::endl;
-}
-
 void DlxSudokuSolver::solve(Grid &grid) {
     NodeFactory node_factory;
-    Solver solver(&node_factory, this);
+    Solver solver(&node_factory, solution_listener);
     init_solver(node_factory, solver, grid);
     solver.solve();
 }
@@ -126,31 +111,3 @@ void DlxSudokuSolver::add_nodes(const Cell &cell, int value, std::vector<
     pfirst->add_sibling(node);
 }
 
-void solve(const std::string &s) {
-    std::istringstream in(s);
-    Grid grid;
-    grid.load(in);
-    grid.print(std::cout);
-    std::cout << std::endl;
-    DlxSudokuSolver solver;
-    solver.solve(grid);
-}
-
-int main(int argc, char *argv[]) {
-    std::string filename("top1465.txt");
-
-    if (argc > 1) {
-        filename = argv[1];
-    }
-
-    std::ifstream in(filename.c_str());
-    if (!in) {
-        std::cerr << "cannot open file " << filename << std::endl;
-        return 1;
-    }
-    std::string line;
-    while (getline(in, line)) {
-        solve(line);
-    }
-    return 0;
-}

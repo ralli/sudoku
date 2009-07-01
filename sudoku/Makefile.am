@@ -37,7 +37,8 @@ xywing.cpp \
 indirecthint.cpp \
 indirecthint.hpp 
 
-dancinglinks_SOURCES=dlxsolver.hpp \
+dancinglinks_SOURCES= dlxmain.cpp \
+dlxsolver.hpp \
 dlxsolver.cpp \
 dancinglinks.hpp \
 dancinglinks.cpp \

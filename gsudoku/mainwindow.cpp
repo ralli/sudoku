@@ -34,6 +34,7 @@
 #include "gettext.h"
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #define _(X) gettext(X)
 
@@ -46,10 +47,15 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup = Gtk::ActionGroup::create();
 
     m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
+    m_refActionGroup->add(Gtk::Action::create("EditMenu", _("_Edit")));
 
     m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
             _("_New"), _("Clears the board")), sigc::mem_fun(*this,
             &MainWindow::on_file_new));
+
+    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::YES,
+            _("_Check"), _("Checks the sudoku")), sigc::mem_fun(*this,
+            &MainWindow::on_file_check));
 
     m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN,
             _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(*this,
@@ -58,6 +64,14 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT,
             _("E_xit"), _("Exits the application")), sigc::mem_fun(*this,
             &MainWindow::on_file_exit));
+
+    m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY,
+            _("_Copy"), _("Copies the grid to the clipboard")),
+            sigc::mem_fun(*this, &MainWindow::on_edit_copy));
+
+    m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
+            _("_Paste"), _("Pastes a grid from the clipboard")),
+            sigc::mem_fun(*this, &MainWindow::on_edit_paste));
 
     m_refUIManager = Gtk::UIManager::create();
     m_refUIManager->insert_action_group(m_refActionGroup);
@@ -71,13 +85,21 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "    <menu action='FileMenu'>"
             "      <menuitem action='FileNew' />"
             "      <menuitem action='FileOpen' />"
+            "      <menuitem action='FileCheck' />"
             "      <separator />"
             "      <menuitem action='FileExit' />"
+            "    </menu>"
+            "    <menu action='EditMenu'>"
+            "      <menuitem action='EditCopy' />"
+            "      <menuitem action='EditPaste' />"
             "    </menu>"
             "  </menubar>"
             "  <toolbar  name='ToolBar'>"
             "    <toolitem action='FileNew'/>"
             "    <toolitem action='FileOpen'/>"
+            "    <toolitem action='FileCheck'/>"
+            "    <toolitem action='EditCopy'/>"
+            "    <toolitem action='EditPaste'/>"
             "  </toolbar>"
             "</ui>";
 
@@ -161,5 +183,43 @@ void MainWindow::on_file_open() {
         break;
     default:
         break;
+    }
+}
+
+void MainWindow::on_edit_copy() {
+    std::stringstream out;
+    model->print(out);
+    Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get();
+    clipboard->set_text(out.str());
+}
+
+void MainWindow::on_edit_paste() {
+    Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get();
+    clipboard->request_text(sigc::mem_fun(*this,
+            &MainWindow::on_clipboard_text_received));
+}
+
+void MainWindow::on_clipboard_text_received(const Glib::ustring& text) {
+    try {
+        model->load_from_string(text.c_str());
+    } catch (std::exception &ex) {
+        Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false,
+                     Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        dialog.set_secondary_text(_("The clipboad data does not contain a valid sudoku"));
+    }
+}
+
+void MainWindow::on_file_check() {
+    bool result = model->check();
+    if (result) {
+        Gtk::MessageDialog dialog(*this, _("Sudoku valid"));
+        dialog.set_secondary_text(
+                _("This Sudoku is valid and has one single solution"));
+        dialog.run();
+    } else {
+        Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false,
+                Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        dialog.set_secondary_text(_("This sudoku is not valid"));
+        dialog.run();
     }
 }

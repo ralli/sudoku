@@ -86,6 +86,7 @@ public:
 
     void remove_choice(int value);
     void clear();
+    void set_all();
     int first_choice() const;
 };
 
@@ -117,6 +118,7 @@ public:
     int first_choice() const;
 
     const Choices &get_choices() const;
+    void set_all_choices();
 };
 
 class Grid {
@@ -132,12 +134,15 @@ public:
     void init_cells();
     void load(std::istream &in);
     void print(std::ostream &out) const;
+    void println(std::ostream &out) const;
     void print_choices(std::ostream &out) const;
     void print_status(std::ostream &out) const;
     int get_to_do() const;
     int get_num_choices() const;
     void cleanup_choices();
     void cleanup_choice(Cell &cell);
+    void remove_invalid_cell_choices(Cell &cell);
+    void clear_cell_value(Cell &cell);
     iterator begin();
     iterator end();
     const_iterator begin() const;
@@ -192,6 +197,12 @@ inline void Choices::clear() {
     std::fill(choices, choices + 10, false);
     num_choices = 0;
 }
+
+inline void Choices::set_all() {
+    std::fill(choices, choices + 10, true);
+    num_choices = 9;
+}
+
 
 inline int Choices::first_choice() const {
     if (num_choices == 0)
@@ -278,6 +289,10 @@ inline int Cell::first_choice() const {
 
 inline const Choices &Cell::get_choices() const {
     return choices;
+}
+
+inline void Cell::set_all_choices() {
+    choices.set_all();
 }
 
 inline Grid::Grid() {

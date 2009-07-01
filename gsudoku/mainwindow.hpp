@@ -45,6 +45,11 @@ public:
     void on_file_new();
     void on_file_open();
     void on_file_exit();
+    void on_edit_copy();
+    void on_edit_paste();
+    void on_file_check();
+private:
+    void on_clipboard_text_received(const Glib::ustring& text);
 private:
      Gtk::VBox                      m_box;
      Glib::RefPtr<Gtk::UIManager>   m_refUIManager;

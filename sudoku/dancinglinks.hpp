@@ -102,7 +102,7 @@ private:
 class SolutionListener {
 public:
     virtual ~SolutionListener();
-    virtual void solution_found(const std::vector<Node *> &rows) = 0;
+    virtual bool solution_found(const std::vector<Node *> &rows) = 0;
 };
 
 class Solver {
@@ -115,7 +115,7 @@ public:
     Column *add_column(int idx);
     Column *get_head();
     const Column *get_head() const;
-    void solve();
+    bool solve();
 private:
     Solver(const Solver &other) {
     }

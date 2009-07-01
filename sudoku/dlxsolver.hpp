@@ -38,12 +38,13 @@
 class Grid;
 class Cell;
 
-class DlxSudokuSolver: public SolutionListener {
+class DlxSudokuSolver {
+private:
+    SolutionListener *solution_listener;
 public:
-    DlxSudokuSolver();
+    DlxSudokuSolver(SolutionListener *solution_listener);
     virtual ~DlxSudokuSolver();
     void solve(Grid &grid);
-    void solution_found(const std::vector<Node *> &rows);
 private:
     void init_solver(NodeFactory &node_factory, Solver &solver, Grid &grid);
     void add_nodes(const Cell &cell, int value, std::vector<Column *> &columns,

@@ -53,10 +53,9 @@ Column * Solver::add_column(int idx) {
     return column;
 }
 
-void Solver::solve() {
+bool Solver::solve() {
     if (head->get_right() == head) {
-        solution_listener->solution_found(result);
-        return;
+        return solution_listener->solution_found(result);
     }
     Column *column = choose_column();
     cover(column);
@@ -68,7 +67,8 @@ void Solver::solve() {
             cover(row_column->get_column());
             row_column = row_column->get_right();
         }
-        solve();
+        if(solve())
+            return true;
         result.pop_back();
         row_column = row->get_left();
         while (row_column != row) {
@@ -78,6 +78,7 @@ void Solver::solve() {
         row = row->get_down();
     }
     uncover(column);
+    return false;
 }
 
 void Solver::cover(Column *column) {

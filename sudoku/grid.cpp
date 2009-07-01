@@ -94,6 +94,16 @@ void Grid::print(std::ostream &out) const {
     }
 }
 
+void Grid::println(std::ostream &out) const {
+    for(int i = 0; i < 81; ++i) {
+        const Cell &cell = cells[i];
+        if(cell.has_value())
+            out << cell.get_value();
+        else
+            out << '.';
+    }
+}
+
 void Grid::print_choices(std::ostream &out) const {
     int i;
     int row;
@@ -126,5 +136,40 @@ void Grid::cleanup_choice(Cell &cell) {
 
     for (RangeList::const_index_iterator j = begin; j != end; ++j) {
         cells[*j].remove_choice(cell.get_value());
+    }
+}
+
+void Grid::remove_invalid_cell_choices(Cell &cell) {
+    if (cell.has_value()) {
+        cell.clear_choices();
+        return;
+    }
+
+    RangeList::const_index_iterator begin = RANGES.field_begin(cell.get_idx());
+    RangeList::const_index_iterator end = RANGES.field_end(cell.get_idx());
+    for (RangeList::const_index_iterator j = begin; j != end; ++j) {
+        if (cells[*j].has_value()) {
+            cell.remove_choice(cells[*j].get_value());
+        }
+    }
+}
+
+void Grid::clear_cell_value(Cell &cell) {
+    if (!cell.has_value())
+        return;
+
+    int value = cell.get_value();
+    cell.set_value(0);
+    cell.set_all_choices();
+    remove_invalid_cell_choices(cell);
+
+    RangeList::const_index_iterator begin = RANGES.field_begin(cell.get_idx());
+    RangeList::const_index_iterator end = RANGES.field_end(cell.get_idx());
+    for (RangeList::const_index_iterator j = begin; j != end; ++j) {
+        Cell &c = cells[*j];
+        if (!c.has_value()) {
+            c.add_choice(value);
+            remove_invalid_cell_choices(c);
+        }
     }
 }

@@ -30,51 +30,13 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SUDOKUMODEL_HPP_
-#define SUDOKUMODEL_HPP_
+#ifndef CHECKER_HPP_
+#define CHECKER_HPP_
 
-#include "gtkmm.h"
-#include <string>
-#include "../sudoku/grid.hpp"
+class Grid;
 
-class SudokuModel: public Glib::Object {
+class GridChecker {
 public:
-    /*! \brief a signal with no arguments returning void */
-    typedef sigc::signal<void> type_signal_changed;
-private:
-    int selected_cell;
-    type_signal_changed m_signal_changed;
-    Grid grid;
-public:
-    SudokuModel();
-
-    void load(std::string &filename);
-    void load_from_string(const std::string &s);
-    void clear();
-
-    bool has_value(int idx) const;
-    int get_value(int idx) const;
-    bool has_choice(int idx, int value) const;
-
-    int get_selected_cell() const;
-    bool is_cell_selected(int row, int col) const;
-    void set_selected_cell(int selected_cell);
-    void move_selection_up();
-    void move_selection_down();
-    void move_selection_left();
-    void move_selection_right();
-    void toggle_current_cell_choice(int value);
-    void set_current_cell_value(int value);
-    void clear_current_cell_value();
-    type_signal_changed &signal_changed();
-    void print(std::ostream &out) const;
-    bool check() const;
-private:
-    SudokuModel(const SudokuModel &other) {
-    }
-    SudokuModel &operator =(const SudokuModel &other) {
-        return *this;
-    }
+    bool check(const Grid &grid);
 };
-
-#endif /* SUDOKUMODEL_HPP_ */
+#endif
