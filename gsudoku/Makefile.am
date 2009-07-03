@@ -22,6 +22,8 @@ sudokumodel.hpp \
 ../sudoku/hint.cpp \
 ../sudoku/indirecthint.cpp \
 ../sudoku/nakeddouble.cpp \
+../sudoku/nakedsingle.hpp \
+../sudoku/nakedsingle.cpp \
 ../sudoku/pointing.cpp \
 ../sudoku/range.cpp \
 ../sudoku/simpleforcing.cpp \

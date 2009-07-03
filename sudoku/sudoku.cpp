@@ -54,12 +54,14 @@
 #include "claiming.hpp"
 #include "swordfish.hpp"
 #include "xywing.hpp"
+#include "nakedsingle.hpp"
 
 bool solve(const std::string &s) {
     std::istringstream in(s);
     Grid grid;
     std::vector<HintProducer *> hintproducers;
 
+    hintproducers.push_back(new NakedSingleHintProducer());
     hintproducers.push_back(new SingleHintProducer());
     hintproducers.push_back(new NakedDoubleHintProducer());
     hintproducers.push_back(new HiddenDoubleHintProducer());

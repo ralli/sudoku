@@ -28,6 +28,8 @@ xwing.cpp \
 xwing.hpp \
 nakeddouble.hpp \
 nakeddouble.cpp \
+nakedsingle.hpp \
+nakedsingle.cpp \
 claiming.hpp \
 claiming.cpp \
 swordfish.hpp \
