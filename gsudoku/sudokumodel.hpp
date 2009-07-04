@@ -51,6 +51,7 @@ public:
     void load(std::string &filename);
     void load_from_string(const std::string &s);
     void clear();
+    void generate();
 
     bool has_value(int idx) const;
     int get_value(int idx) const;

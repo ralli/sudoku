@@ -36,6 +36,7 @@
 #include <stdexcept>
 #include "sudokumodel.hpp"
 #include "../sudoku/gridchecker.hpp"
+#include "../sudoku/sudokugenerator.hpp"
 
 void SudokuModel::load(std::string &filename) {
     std::ifstream in(filename.c_str());
@@ -66,6 +67,12 @@ void SudokuModel::clear() {
     m_signal_changed.emit();
 }
 
+void SudokuModel::generate() {
+    SudokuGenerator generator;
+    generator.generate(grid);
+    m_signal_changed.emit();
+}
+
 SudokuModel::SudokuModel() :
     selected_cell(0) {
 }
@@ -92,7 +99,7 @@ void SudokuModel::toggle_current_cell_choice(int value) {
     Cell &cell = grid[selected_cell];
     if (cell.has_value())
         return;
-    if(cell.has_choice(value))
+    if (cell.has_choice(value))
         cell.remove_choice(value);
     else
         cell.add_choice(value);

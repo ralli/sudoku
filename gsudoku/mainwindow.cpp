@@ -125,7 +125,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
 }
 
 void MainWindow::on_file_new() {
-    model->clear();
+    model->generate();
 }
 
 void MainWindow::on_file_exit() {
