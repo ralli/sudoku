@@ -14,8 +14,6 @@ AC_PROG_CXX
 # Checks for libraries.
 # Checks for programs.
 AC_PROG_CXX
-AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.17])
 
 GTKMM_CFLAGS=`pkg-config --cflags gtkmm-2.4`
 GTKMM_LIBS=`pkg-config --libs gtkmm-2.4`
@@ -31,5 +29,5 @@ AC_C_INLINE
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile sudoku/Makefile gsudoku/Makefile po/Makefile.in include/Makefile])
+AC_CONFIG_FILES([Makefile sudoku/Makefile gsudoku/Makefile include/Makefile])
 AC_OUTPUT
