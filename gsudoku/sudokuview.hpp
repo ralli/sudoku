@@ -62,6 +62,8 @@ private:
             int choice) const;
     void draw_field_choices(Cairo::RefPtr<Cairo::Context> &cr) const;
     void draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const;
+    void draw_highlighted_cells(Cairo::RefPtr<Cairo::Context> &cr) const;
+    void draw_highlighted_cell(Cairo::RefPtr<Cairo::Context> &cr, int idx) const;
     void init_matrix(Cairo::Matrix &m, int width, int height) const;
 };
 

@@ -85,6 +85,7 @@ bool SudokuView::on_expose_event(GdkEventExpose *event) {
 
     cr->set_font_size(1.0 / 9.0 * 0.7);
 
+    draw_highlighted_cells(cr);
     draw_selected_cell(cr);
 
     draw_border(cr);
@@ -321,6 +322,33 @@ void SudokuView::draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const {
     cr->line_to(col * delta, (row + 1) * delta);
     cr->close_path();
     cr->set_source_rgb(0.85, 0.85, 1.0);
+    cr->fill();
+    cr->restore();
+}
+
+void SudokuView::draw_highlighted_cells(Cairo::RefPtr<Cairo::Context> &cr) const {
+    if(model->get_highlighted_choice() == 0)
+        return;
+
+    for(int i = 0; i < 81; ++i) {
+        if(!model->has_choice(i, model->get_highlighted_choice())) {
+            draw_highlighted_cell(cr, i);
+        }
+    }
+}
+
+void SudokuView::draw_highlighted_cell(Cairo::RefPtr<Cairo::Context> &cr, int idx) const {
+    int selected_cell = idx;
+    int row = selected_cell / 9;
+    int col = selected_cell % 9;
+    const gdouble delta = 1.0 / 9.0;
+    cr->save();
+    cr->move_to(col * delta, row * delta);
+    cr->line_to((col + 1) * delta, row * delta);
+    cr->line_to((col + 1) * delta, (row + 1) * delta);
+    cr->line_to(col * delta, (row + 1) * delta);
+    cr->close_path();
+    cr->set_source_rgb(1.0, 0.7, 0.7);
     cr->fill();
     cr->restore();
 }

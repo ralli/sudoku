@@ -48,6 +48,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
 
     m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
     m_refActionGroup->add(Gtk::Action::create("EditMenu", _("_Edit")));
+    m_refActionGroup->add(Gtk::Action::create("ViewMenu", _("_View")));
 
     m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
             _("_New"), _("Clears the board")), sigc::mem_fun(*this,
@@ -73,6 +74,59 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             _("_Paste"), _("Pastes a grid from the clipboard")),
             sigc::mem_fun(*this, &MainWindow::on_edit_paste));
 
+    Gtk::RadioAction::Group view_choices_group;
+
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewNone", _("Dont show cells"),
+            _("Removes all cell highlightings")), Gtk::AccelKey(
+            "<control><alt>0"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_nothing));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewOne", _("Highlight _1"),
+            _("Shows all cells having a one as candidate")),
+            Gtk::AccelKey("<control><alt>1"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_one));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewTwo", _("Highlight _2"),
+            _("Shows all cells having a two as candidate")),
+            Gtk::AccelKey("<control><alt>2"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_two));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewThree", _("Highlight _3"),
+            _("Shows all cells having a three as candidate")),
+            Gtk::AccelKey("<control><alt>3"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_three));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewFour", _("Highlight _4"),
+            _("Shows all cells having a four as candidate")),
+            Gtk::AccelKey("<control><alt>4"),sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_four));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewFive", _("Highlight _5"),
+            _("Shows all cells having a five as candidate")),
+            Gtk::AccelKey("<control><alt>5"),sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_five));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewSix", _("Highlight _6"),
+            _("Shows all cells having a six as candidate")),
+            Gtk::AccelKey("<control><alt>6"),sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_six));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewSeven", _("Highlight _7"),
+            _("Shows all cells having a seven as candidate")),
+            Gtk::AccelKey("<control><alt>7"),sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_seven));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewEight", _("Highlight _8"),
+            _("Shows all cells having a eight as candidate")),
+            Gtk::AccelKey("<control><alt>8"),sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_eight));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewNine", _("Highlight _9"),
+            _("Shows all cells having a nine as candidate")),
+            Gtk::AccelKey("<control><alt>9"),sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_nine));
+
     m_refUIManager = Gtk::UIManager::create();
     m_refUIManager->insert_action_group(m_refActionGroup);
 
@@ -92,6 +146,18 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "    <menu action='EditMenu'>"
             "      <menuitem action='EditCopy' />"
             "      <menuitem action='EditPaste' />"
+            "    </menu>"
+            "    <menu action='ViewMenu'>"
+            "      <menuitem action='ViewNone' />"
+            "      <menuitem action='ViewOne' />"
+            "      <menuitem action='ViewTwo' />"
+            "      <menuitem action='ViewThree' />"
+            "      <menuitem action='ViewFour' />"
+            "      <menuitem action='ViewFive' />"
+            "      <menuitem action='ViewSix' />"
+            "      <menuitem action='ViewSeven' />"
+            "      <menuitem action='ViewEight' />"
+            "      <menuitem action='ViewNine' />"
             "    </menu>"
             "  </menubar>"
             "  <toolbar  name='ToolBar'>"
@@ -204,8 +270,9 @@ void MainWindow::on_clipboard_text_received(const Glib::ustring& text) {
         model->load_from_string(text.c_str());
     } catch (std::exception &ex) {
         Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false,
-                     Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-        dialog.set_secondary_text(_("The clipboad data does not contain a valid sudoku"));
+                Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        dialog.set_secondary_text(
+                _("The clipboad data does not contain a valid sudoku"));
     }
 }
 
@@ -222,4 +289,44 @@ void MainWindow::on_file_check() {
         dialog.set_secondary_text(_("This sudoku is not valid"));
         dialog.run();
     }
+}
+
+void MainWindow::on_highlight_nothing() {
+    model->set_highlighted_choice(0);
+}
+
+void MainWindow::on_highlight_one() {
+    model->set_highlighted_choice(1);
+}
+
+void MainWindow::on_highlight_two() {
+    model->set_highlighted_choice(2);
+}
+
+void MainWindow::on_highlight_three() {
+    model->set_highlighted_choice(3);
+}
+
+void MainWindow::on_highlight_four() {
+    model->set_highlighted_choice(4);
+}
+
+void MainWindow::on_highlight_five() {
+    model->set_highlighted_choice(5);
+}
+
+void MainWindow::on_highlight_six() {
+    model->set_highlighted_choice(6);
+}
+
+void MainWindow::on_highlight_seven() {
+    model->set_highlighted_choice(7);
+}
+
+void MainWindow::on_highlight_eight() {
+    model->set_highlighted_choice(8);
+}
+
+void MainWindow::on_highlight_nine() {
+    model->set_highlighted_choice(9);
 }

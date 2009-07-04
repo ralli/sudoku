@@ -48,6 +48,16 @@ public:
     void on_edit_copy();
     void on_edit_paste();
     void on_file_check();
+    void on_highlight_nothing();
+    void on_highlight_one();
+    void on_highlight_two();
+    void on_highlight_three();
+    void on_highlight_four();
+    void on_highlight_five();
+    void on_highlight_six();
+    void on_highlight_seven();
+    void on_highlight_eight();
+    void on_highlight_nine();
 private:
     void on_clipboard_text_received(const Glib::ustring& text);
 private:

@@ -74,7 +74,7 @@ void SudokuModel::generate() {
 }
 
 SudokuModel::SudokuModel() :
-    selected_cell(0) {
+    selected_cell(0), highlighted_choice(0) {
 }
 
 int SudokuModel::get_selected_cell() const {
@@ -83,6 +83,15 @@ int SudokuModel::get_selected_cell() const {
 
 void SudokuModel::set_selected_cell(int selected_cell) {
     this->selected_cell = selected_cell;
+    m_signal_changed.emit();
+}
+
+int SudokuModel::get_highlighted_choice() const {
+    return highlighted_choice;
+}
+
+void SudokuModel::set_highlighted_choice(int highlighted_choice) {
+    this->highlighted_choice = highlighted_choice;
     m_signal_changed.emit();
 }
 

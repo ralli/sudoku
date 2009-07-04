@@ -43,6 +43,7 @@ public:
     typedef sigc::signal<void> type_signal_changed;
 private:
     int selected_cell;
+    int highlighted_choice;
     type_signal_changed m_signal_changed;
     Grid grid;
 public:
@@ -60,6 +61,10 @@ public:
     int get_selected_cell() const;
     bool is_cell_selected(int row, int col) const;
     void set_selected_cell(int selected_cell);
+
+    int get_highlighted_choice() const;
+    void set_highlighted_choice(int highlighted_choice);
+
     void move_selection_up();
     void move_selection_down();
     void move_selection_left();
