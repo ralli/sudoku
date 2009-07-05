@@ -49,6 +49,7 @@ void SudokuModel::load(std::string &filename) {
     copy.load(in);
     selected_cell = 0;
     grid = copy;
+    undo_manager.clear();
     m_signal_changed.emit();
 }
 
@@ -58,18 +59,43 @@ void SudokuModel::load_from_string(const std::string &s) {
     copy.load(in);
     selected_cell = 0;
     grid = copy;
+    undo_manager.clear();
     m_signal_changed.emit();
 }
 
 void SudokuModel::clear() {
     grid.init_cells();
     selected_cell = 0;
+    undo_manager.clear();
     m_signal_changed.emit();
 }
 
 void SudokuModel::generate() {
     SudokuGenerator generator;
     generator.generate(grid);
+    undo_manager.clear();
+    m_signal_changed.emit();
+}
+
+bool SudokuModel::can_undo() const {
+    return undo_manager.can_undo();
+}
+
+bool SudokuModel::can_redo() const {
+    return undo_manager.can_redo();
+}
+
+void SudokuModel::undo() {
+    if (!can_undo())
+        return;
+    undo_manager.undo();
+    m_signal_changed.emit();
+}
+
+void SudokuModel::redo() {
+    if(!can_redo())
+        return;
+    undo_manager.redo();
     m_signal_changed.emit();
 }
 
@@ -97,8 +123,12 @@ void SudokuModel::set_highlighted_choice(int highlighted_choice) {
 
 void SudokuModel::set_current_cell_value(int value) {
     Cell &cell = grid[selected_cell];
+    if (cell.get_value() == value)
+        return;
     if (cell.has_value())
         grid.clear_cell_value(grid[selected_cell]);
+    SetValueCommand *command = new SetValueCommand(grid, value, selected_cell);
+    undo_manager.add_undo_command(command);
     cell.set_value(value);
     grid.cleanup_choice(cell);
     m_signal_changed.emit();
@@ -108,14 +138,27 @@ void SudokuModel::toggle_current_cell_choice(int value) {
     Cell &cell = grid[selected_cell];
     if (cell.has_value())
         return;
-    if (cell.has_choice(value))
+    if (cell.has_choice(value)) {
+        RemoveChoiceCommand *command = new RemoveChoiceCommand(grid, value,
+                selected_cell);
+        undo_manager.add_undo_command(command);
         cell.remove_choice(value);
-    else
+    } else {
+        AddChoiceCommand *command = new AddChoiceCommand(grid, value,
+                selected_cell);
+        undo_manager.add_undo_command(command);
         cell.add_choice(value);
+    }
     m_signal_changed.emit();
 }
 
 void SudokuModel::clear_current_cell_value() {
+    if (!grid[selected_cell].has_value())
+        return;
+    int value = grid[selected_cell].get_value();
+    ClearValueCommand *command = new ClearValueCommand(grid, value,
+            selected_cell);
+    undo_manager.add_undo_command(command);
     grid.clear_cell_value(grid[selected_cell]);
     m_signal_changed.emit();
 }

@@ -37,15 +37,23 @@
 #include <string>
 #include "../sudoku/grid.hpp"
 
+#include "commands.hpp"
+
 class SudokuModel: public Glib::Object {
 public:
     /*! \brief a signal with no arguments returning void */
     typedef sigc::signal<void> type_signal_changed;
+    /*! \brief the difficulty level of a sudoku */
+    typedef enum {
+        EASY, MEDIUM, HARD
+    } DifficultyLevel;
 private:
     int selected_cell;
     int highlighted_choice;
+
     type_signal_changed m_signal_changed;
     Grid grid;
+    UndoManager undo_manager;
 public:
     SudokuModel();
 
@@ -53,6 +61,11 @@ public:
     void load_from_string(const std::string &s);
     void clear();
     void generate();
+
+    bool can_undo() const;
+    bool can_redo() const;
+    void undo();
+    void redo();
 
     bool has_value(int idx) const;
     int get_value(int idx) const;

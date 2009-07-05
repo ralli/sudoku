@@ -6,6 +6,8 @@ sudokuview.cpp \
 sudokuview.hpp \
 sudokumodel.cpp \
 sudokumodel.hpp \
+commands.hpp \
+commands.cpp \
 ../sudoku/sudokugenerator.hpp \
 ../sudoku/sudokugenerator.cpp \
 ../sudoku/gridchecker.hpp \

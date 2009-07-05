@@ -40,12 +40,20 @@ class Choices;
 class HintProducer;
 
 class SudokuGenerator {
+public:
+    typedef enum {EASY, MEDIUM} Difficulty;
+private:
     char field[81];
     std::vector<HintProducer *> hint_producers;
+    Difficulty difficulty;
+    int min_idx;
+    int max_idx;
 public:
     SudokuGenerator();
     ~SudokuGenerator();
     void generate(Grid &grid);
+    Difficulty get_difficulty() const;
+    void set_difficulty(Difficulty difficulty);
 private:
     SudokuGenerator(const SudokuGenerator &other) {
     }

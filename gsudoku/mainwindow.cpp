@@ -44,6 +44,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     set_default_size(800, 600);
     add(m_box);
 
+    model->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_model_changed));
     m_refActionGroup = Gtk::ActionGroup::create();
 
     m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
@@ -66,6 +67,19 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             _("E_xit"), _("Exits the application")), sigc::mem_fun(*this,
             &MainWindow::on_file_exit));
 
+    m_actionUndo = Gtk::Action::create("EditUndo", Gtk::Stock::UNDO,
+            _("_Undo"), _("Undoes the last command"));
+    m_actionUndo->set_sensitive(false);
+    m_refActionGroup->add(m_actionUndo,  Gtk::AccelKey("<control>Z"), sigc::mem_fun(*this,
+            &MainWindow::on_edit_undo));
+
+
+    m_actionRedo = Gtk::Action::create("EditRedo", Gtk::Stock::REDO,
+            _("_Redo"), _("Re executes the last undone command"));
+    m_actionRedo->set_sensitive(false);
+    m_refActionGroup->add(m_actionRedo,  Gtk::AccelKey("<control><shift>Z"), sigc::mem_fun(*this,
+            &MainWindow::on_edit_redo));
+
     m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY,
             _("_Copy"), _("Copies the grid to the clipboard")),
             sigc::mem_fun(*this, &MainWindow::on_edit_copy));
@@ -80,7 +94,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "ViewNone", _("Dont show cells"),
             _("Removes all cell highlightings")), Gtk::AccelKey(
             "<control><alt>0"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_nothing));
+            &MainWindow::on_highlight_nothing));
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewOne", _("Highlight _1"),
             _("Shows all cells having a one as candidate")),
@@ -99,32 +113,32 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewFour", _("Highlight _4"),
             _("Shows all cells having a four as candidate")),
-            Gtk::AccelKey("<control><alt>4"),sigc::mem_fun(*this,
+            Gtk::AccelKey("<control><alt>4"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_four));
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewFive", _("Highlight _5"),
             _("Shows all cells having a five as candidate")),
-            Gtk::AccelKey("<control><alt>5"),sigc::mem_fun(*this,
+            Gtk::AccelKey("<control><alt>5"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_five));
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewSix", _("Highlight _6"),
             _("Shows all cells having a six as candidate")),
-            Gtk::AccelKey("<control><alt>6"),sigc::mem_fun(*this,
+            Gtk::AccelKey("<control><alt>6"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_six));
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewSeven", _("Highlight _7"),
             _("Shows all cells having a seven as candidate")),
-            Gtk::AccelKey("<control><alt>7"),sigc::mem_fun(*this,
+            Gtk::AccelKey("<control><alt>7"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_seven));
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewEight", _("Highlight _8"),
             _("Shows all cells having a eight as candidate")),
-            Gtk::AccelKey("<control><alt>8"),sigc::mem_fun(*this,
+            Gtk::AccelKey("<control><alt>8"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_eight));
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
             "ViewNine", _("Highlight _9"),
             _("Shows all cells having a nine as candidate")),
-            Gtk::AccelKey("<control><alt>9"),sigc::mem_fun(*this,
+            Gtk::AccelKey("<control><alt>9"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_nine));
 
     m_refUIManager = Gtk::UIManager::create();
@@ -144,6 +158,8 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "      <menuitem action='FileExit' />"
             "    </menu>"
             "    <menu action='EditMenu'>"
+            "      <menuitem action='EditUndo' />"
+            "      <menuitem action='EditRedo' />"
             "      <menuitem action='EditCopy' />"
             "      <menuitem action='EditPaste' />"
             "    </menu>"
@@ -164,6 +180,8 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "    <toolitem action='FileNew'/>"
             "    <toolitem action='FileOpen'/>"
             "    <toolitem action='FileCheck'/>"
+            "    <toolitem action='EditUndo'/>"
+            "    <toolitem action='EditRedo'/>"
             "    <toolitem action='EditCopy'/>"
             "    <toolitem action='EditPaste'/>"
             "  </toolbar>"
@@ -250,6 +268,19 @@ void MainWindow::on_file_open() {
     default:
         break;
     }
+}
+
+void MainWindow::on_edit_undo() {
+    model->undo();
+}
+
+void MainWindow::on_edit_redo() {
+    model->redo();
+}
+
+void MainWindow::on_model_changed() {
+    m_actionUndo->set_sensitive(model->can_undo());
+    m_actionRedo->set_sensitive(model->can_redo());
 }
 
 void MainWindow::on_edit_copy() {

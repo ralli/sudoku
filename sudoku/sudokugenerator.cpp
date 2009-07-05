@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <ctime>
 #include "sudokugenerator.hpp"
 #include "grid.hpp"
 #include "hint.hpp"
@@ -39,6 +40,10 @@
 #include "hintconsumer.hpp"
 #include "nakedsingle.hpp"
 #include "singlehint.hpp"
+#include "nakeddouble.hpp"
+#include "hiddendouble.hpp"
+#include "claiming.hpp"
+#include "pointing.hpp"
 #include "range.hpp"
 #include "gridchecker.hpp"
 
@@ -60,9 +65,14 @@ public:
     }
 };
 
-SudokuGenerator::SudokuGenerator() {
+SudokuGenerator::SudokuGenerator() :
+    difficulty(SudokuGenerator::MEDIUM), min_idx(2), max_idx(5) {
     hint_producers.push_back(new NakedSingleHintProducer());
     hint_producers.push_back(new SingleHintProducer());
+    hint_producers.push_back(new NakedDoubleHintProducer());
+    hint_producers.push_back(new HiddenDoubleHintProducer());
+    hint_producers.push_back(new PointingHintProducer());
+    hint_producers.push_back(new ClaimingHintProducer());
 }
 
 SudokuGenerator::~SudokuGenerator() {
@@ -70,7 +80,23 @@ SudokuGenerator::~SudokuGenerator() {
             HintProducer *> ());
 }
 
+SudokuGenerator::Difficulty SudokuGenerator::get_difficulty() const {
+    return difficulty;
+}
+
+void SudokuGenerator::set_difficulty(SudokuGenerator::Difficulty difficulty) {
+    this->difficulty = difficulty;
+    if (difficulty == EASY) {
+        min_idx = 0;
+        max_idx = 1;
+    } else {
+        min_idx = 2;
+        max_idx = 5;
+    }
+}
+
 void SudokuGenerator::generate(Grid &grid) {
+    std::srand(std::time(0));
     do {
         do_generate(grid);
     } while (!check_difficulty(grid));
@@ -78,21 +104,28 @@ void SudokuGenerator::generate(Grid &grid) {
 
 bool SudokuGenerator::check_difficulty(const Grid &testgrid) {
     Grid grid = testgrid;
+    int max_found_idx = 0;
     while (grid.get_to_do() > 0) {
         bool success = false;
+        int found_idx = 0;
         for (std::vector<HintProducer *>::iterator i = hint_producers.begin(); i
                 != hint_producers.end(); ++i) {
             MyHintConsumer consumer;
             (*i)->find_hints(grid, consumer);
-            if(!consumer.wants_more_hints()) {
+            if (!consumer.wants_more_hints()) {
                 success = true;
                 break;
             }
+            ++found_idx;
+            if(found_idx > max_idx)
+                break;
         }
-        if(!success)
+        if (!success)
             return false;
+        if (found_idx > max_found_idx)
+            max_found_idx = found_idx;
     }
-    return true;
+    return max_found_idx >= min_idx && max_found_idx <= max_idx;
 }
 
 void SudokuGenerator::do_generate(Grid &grid) {

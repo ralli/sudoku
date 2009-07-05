@@ -45,6 +45,9 @@ public:
     void on_file_new();
     void on_file_open();
     void on_file_exit();
+    void on_edit_undo();
+    void on_edit_redo();
+    void on_model_changed();
     void on_edit_copy();
     void on_edit_paste();
     void on_file_check();
@@ -58,12 +61,15 @@ public:
     void on_highlight_seven();
     void on_highlight_eight();
     void on_highlight_nine();
+
 private:
     void on_clipboard_text_received(const Glib::ustring& text);
 private:
      Gtk::VBox                      m_box;
      Glib::RefPtr<Gtk::UIManager>   m_refUIManager;
      Glib::RefPtr<Gtk::ActionGroup> m_refActionGroup;
+     Glib::RefPtr<Gtk::Action>       m_actionUndo;
+     Glib::RefPtr<Gtk::Action>       m_actionRedo;
      Gtk::Statusbar                 m_statusbar;
      Glib::RefPtr<SudokuModel>      model;
      SudokuView                     sudokuView;
