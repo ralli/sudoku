@@ -30,11 +30,13 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "config.h"
 #include "mainwindow.hpp"
 #include "gettext.h"
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #define _(X) gettext(X)
 
@@ -50,6 +52,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
     m_refActionGroup->add(Gtk::Action::create("EditMenu", _("_Edit")));
     m_refActionGroup->add(Gtk::Action::create("ViewMenu", _("_View")));
+    m_refActionGroup->add(Gtk::Action::create("HelpMenu", _("_Help")));
 
     m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
             _("_New"), _("Clears the board")), sigc::mem_fun(*this,
@@ -141,6 +144,10 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             Gtk::AccelKey("<control><alt>9"), sigc::mem_fun(*this,
                     &MainWindow::on_highlight_nine));
 
+    m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT,
+                _("_About"), _("Shows information about gsudoku")),
+                sigc::mem_fun(*this, &MainWindow::on_help_about));
+
     m_refUIManager = Gtk::UIManager::create();
     m_refUIManager->insert_action_group(m_refActionGroup);
 
@@ -174,6 +181,9 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "      <menuitem action='ViewSeven' />"
             "      <menuitem action='ViewEight' />"
             "      <menuitem action='ViewNine' />"
+            "    </menu>"
+            "    <menu action='HelpMenu'>"
+            "      <menuitem action='HelpAbout' />"
             "    </menu>"
             "  </menubar>"
             "  <toolbar  name='ToolBar'>"
@@ -360,4 +370,46 @@ void MainWindow::on_highlight_eight() {
 
 void MainWindow::on_highlight_nine() {
     model->set_highlighted_choice(9);
+}
+
+void MainWindow::on_help_about() {
+    Gtk::AboutDialog dlg;
+    std::vector<Glib::ustring> a;
+    a.push_back("Ralph Juhnke");
+    Glib::StringArrayHandle authors(a);
+    dlg.set_name(PACKAGE);
+    dlg.set_version(VERSION);
+    dlg.set_copyright("Ralph Juhnke");
+    dlg.set_license("Copyright (c) 2009, Ralph Juhnke\n"
+            "All rights reserved.\n"
+            "\n"
+            "Redistribution and use in source and binary forms, with or\n"
+            "without modification, are permitted provided that the following conditions\n"
+            "are met:\n\n"
+            "  * Redistributions of source code must retain the above copyright notice,\n"
+            "    this list of conditions and the following disclaimer.\n"
+            "\n"
+            "  * Redistributions in binary form must reproduce the above copyright\n"
+            "    notice, this list of conditions and the following disclaimer in the\n"
+            "    documentation and/or other materials provided with the distribution.\n"
+            "\n"
+            "  * Neither the name of \"Ralph Juhnke\" nor the names of its\n"
+            "    contributors may be used to endorse or promote products derived from\n"
+            "    this software without specific prior written permission.\n"
+            "\n"
+            "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
+            "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n"
+            "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
+            "PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR\n"
+            "CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n"
+            "EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n"
+            "PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;\n"
+            "OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,\n"
+            "WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR\n"
+            "OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF\n"
+            "ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
+
+    dlg.set_authors(authors);
+    dlg.set_transient_for(*this);
+    dlg.run();
 }

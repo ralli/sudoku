@@ -30,49 +30,79 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAINWINDOW_HPP
-#define MAINWINDOW_HPP
+#ifndef COMMANDS_HPP
+#define COMMANDS_HPP
 
-#include "gtkmm.h"
-#include "sudokuview.hpp"
+#include "../sudoku/grid.hpp"
 
-class SudokuModel;
-
-class MainWindow : public Gtk::Window {
-private:
+class Command {
 public:
-    MainWindow(const Glib::RefPtr<SudokuModel> &model);
-    void on_file_new();
-    void on_file_open();
-    void on_file_exit();
-    void on_edit_undo();
-    void on_edit_redo();
-    void on_model_changed();
-    void on_edit_copy();
-    void on_edit_paste();
-    void on_file_check();
-    void on_highlight_nothing();
-    void on_highlight_one();
-    void on_highlight_two();
-    void on_highlight_three();
-    void on_highlight_four();
-    void on_highlight_five();
-    void on_highlight_six();
-    void on_highlight_seven();
-    void on_highlight_eight();
-    void on_highlight_nine();
-    void on_help_about();
+    Command();
+    virtual ~Command();
+    virtual void undo() = 0;
+    virtual void redo() = 0;
 private:
-    void on_clipboard_text_received(const Glib::ustring& text);
-private:
-     Gtk::VBox                      m_box;
-     Glib::RefPtr<Gtk::UIManager>   m_refUIManager;
-     Glib::RefPtr<Gtk::ActionGroup> m_refActionGroup;
-     Glib::RefPtr<Gtk::Action>       m_actionUndo;
-     Glib::RefPtr<Gtk::Action>       m_actionRedo;
-     Gtk::Statusbar                 m_statusbar;
-     Glib::RefPtr<SudokuModel>      model;
-     SudokuView                     sudokuView;
+    Command(const Command &command) {}
+    Command &operator = (const Command &command) { return *this; }
 };
 
+class SetValueCommand: public Command {
+    Grid &grid;
+    Grid  backup;
+    int   value;
+    int   idx;
+public:
+    SetValueCommand(Grid &grid, int value, int idx);
+    void undo();
+    void redo();
+};
+
+class ClearValueCommand: public Command {
+    Grid &grid;
+    Grid  backup;
+    int value;
+    int idx;
+public:
+    ClearValueCommand(Grid &grid, int value, int idx);
+    void undo();
+    void redo();
+};
+
+class RemoveChoiceCommand: public Command {
+    Grid &grid;
+    int value;
+    int idx;
+public:
+    RemoveChoiceCommand(Grid &grid, int value, int idx);
+    void undo();
+    void redo();
+};
+
+class AddChoiceCommand: public Command {
+    Grid &grid;
+    int value;
+    int idx;
+public:
+    AddChoiceCommand(Grid &grid, int value, int idx);
+    void undo();
+    void redo();
+};
+
+class UndoManager {
+    std::vector<Command *> undo_commands;
+    std::vector<Command *> redo_commands;
+public:
+    UndoManager();
+    virtual ~UndoManager();
+    void clear();
+    void undo();
+    void redo();
+    bool can_undo() const;
+    bool can_redo() const;
+    void add_undo_command(Command *command);
+private:
+    UndoManager(const UndoManager &other) {}
+    UndoManager &operator = (const UndoManager &other) { return *this;}
+};
 #endif
+
