@@ -54,6 +54,7 @@ private:
     type_signal_changed m_signal_changed;
     Grid grid;
     UndoManager undo_manager;
+    DifficultyLevel difficulty_level;
 public:
     SudokuModel();
 
@@ -77,6 +78,9 @@ public:
 
     int get_highlighted_choice() const;
     void set_highlighted_choice(int highlighted_choice);
+
+    DifficultyLevel get_difficulty_level() const;
+    void set_difficulty_level(DifficultyLevel difficulty_level);
 
     void move_selection_up();
     void move_selection_down();

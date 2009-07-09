@@ -72,6 +72,14 @@ void SudokuModel::clear() {
 
 void SudokuModel::generate() {
     SudokuGenerator generator;
+    SudokuGenerator::Difficulty d;
+    if (difficulty_level == EASY)
+        d = SudokuGenerator::EASY;
+    else if(difficulty_level == MEDIUM)
+        d = SudokuGenerator::MEDIUM;
+    else if(difficulty_level == HARD)
+        d = SudokuGenerator::HARD;
+    generator.set_difficulty(d);
     generator.generate(grid);
     undo_manager.clear();
     m_signal_changed.emit();
@@ -93,14 +101,15 @@ void SudokuModel::undo() {
 }
 
 void SudokuModel::redo() {
-    if(!can_redo())
+    if (!can_redo())
         return;
     undo_manager.redo();
     m_signal_changed.emit();
 }
 
 SudokuModel::SudokuModel() :
-    selected_cell(0), highlighted_choice(0) {
+    selected_cell(0), highlighted_choice(0),
+            difficulty_level(SudokuModel::EASY) {
 }
 
 int SudokuModel::get_selected_cell() const {
@@ -119,6 +128,14 @@ int SudokuModel::get_highlighted_choice() const {
 void SudokuModel::set_highlighted_choice(int highlighted_choice) {
     this->highlighted_choice = highlighted_choice;
     m_signal_changed.emit();
+}
+
+SudokuModel::DifficultyLevel SudokuModel::get_difficulty_level() const {
+    return difficulty_level;
+}
+
+void SudokuModel::set_difficulty_level(DifficultyLevel difficulty_level) {
+    this->difficulty_level = difficulty_level;
 }
 
 void SudokuModel::set_current_cell_value(int value) {

@@ -50,6 +50,9 @@ public:
     void on_model_changed();
     void on_edit_copy();
     void on_edit_paste();
+    void on_edit_difficulty_easy();
+    void on_edit_difficulty_medium();
+    void on_edit_difficulty_hard();
     void on_file_check();
     void on_highlight_nothing();
     void on_highlight_one();
@@ -70,6 +73,9 @@ private:
      Glib::RefPtr<Gtk::ActionGroup> m_refActionGroup;
      Glib::RefPtr<Gtk::Action>       m_actionUndo;
      Glib::RefPtr<Gtk::Action>       m_actionRedo;
+     Glib::RefPtr<Gtk::RadioAction>  m_difficultyEasy;
+     Glib::RefPtr<Gtk::RadioAction>  m_difficultyMedium;
+     Glib::RefPtr<Gtk::RadioAction>  m_difficultyHard;
      Gtk::Statusbar                 m_statusbar;
      Glib::RefPtr<SudokuModel>      model;
      SudokuView                     sudokuView;

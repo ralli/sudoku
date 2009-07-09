@@ -44,6 +44,10 @@
 #include "hiddendouble.hpp"
 #include "claiming.hpp"
 #include "pointing.hpp"
+#include "hiddentriple.hpp"
+#include "xwing.hpp"
+#include "xywing.hpp"
+#include "swordfish.hpp"
 #include "range.hpp"
 #include "gridchecker.hpp"
 
@@ -73,6 +77,10 @@ SudokuGenerator::SudokuGenerator() :
     hint_producers.push_back(new HiddenDoubleHintProducer());
     hint_producers.push_back(new PointingHintProducer());
     hint_producers.push_back(new ClaimingHintProducer());
+    hint_producers.push_back(new HiddenTripleHintProducer());
+    hint_producers.push_back(new XWingHintProducer());
+    hint_producers.push_back(new SwordfishHintProducer());
+    hint_producers.push_back(new XYWingHintProducer());
 }
 
 SudokuGenerator::~SudokuGenerator() {
@@ -89,9 +97,12 @@ void SudokuGenerator::set_difficulty(SudokuGenerator::Difficulty difficulty) {
     if (difficulty == EASY) {
         min_idx = 0;
         max_idx = 1;
-    } else {
+    } else if (difficulty == MEDIUM) {
         min_idx = 2;
         max_idx = 5;
+    } else if (difficulty == HARD) {
+        min_idx = 6;
+        max_idx = 10;
     }
 }
 
@@ -117,7 +128,7 @@ bool SudokuGenerator::check_difficulty(const Grid &testgrid) {
                 break;
             }
             ++found_idx;
-            if(found_idx > max_idx)
+            if (found_idx > max_idx)
                 break;
         }
         if (!success)

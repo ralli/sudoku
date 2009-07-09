@@ -28,3 +28,5 @@ pseudo.txt
 *.gmo
 po/POTFILES
 po/remove-potcdate.sed
+docs
+

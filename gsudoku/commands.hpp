@@ -35,74 +35,165 @@
 
 #include "../sudoku/grid.hpp"
 
+/*!
+ * \brief a command providing undo and redo operations.
+ */
 class Command {
 public:
     Command();
     virtual ~Command();
+    /*!
+     * \brief undoes (reverts) the previous command
+     */
     virtual void undo() = 0;
+    /*!
+     * \brief re-executes the previous undone command
+     */
     virtual void redo() = 0;
 private:
-    Command(const Command &command) {}
-    Command &operator = (const Command &command) { return *this; }
+    Command(const Command &command) {
+    }
+    Command &operator =(const Command &command) {
+        return *this;
+    }
 };
 
+/*!
+ * \brief a command undoing the setting of a value
+ * in a given cell
+ */
 class SetValueCommand: public Command {
     Grid &grid;
-    Grid  backup;
-    int   value;
-    int   idx;
+    Grid backup;
+    int value;
+    int idx;
 public:
+    /*!
+     * \brief constructor
+     * \param grid the grid containing the cell
+     * \param value the value, which has been set in the cell
+     * \param idx the index (0..80) of the cell within the grid
+     */
     SetValueCommand(Grid &grid, int value, int idx);
     void undo();
     void redo();
 };
 
+/*!
+ * \brief a command undoing the clearing of a value
+ * in a given cell
+ */
 class ClearValueCommand: public Command {
     Grid &grid;
-    Grid  backup;
+    Grid backup;
     int value;
     int idx;
 public:
+    /*!
+     * \brief constructor
+     * \param grid the grid containing the cell
+     * \param value the value, which has been removed from the cell
+     * \param idx the index (0..80) of the cell within the grid
+     */
     ClearValueCommand(Grid &grid, int value, int idx);
     void undo();
     void redo();
 };
 
+/*!
+ * \brief a command undoing the removal of a choice
+ * from a given cell
+ */
 class RemoveChoiceCommand: public Command {
     Grid &grid;
     int value;
     int idx;
 public:
+    /*!
+     * \brief constructor
+     * \param grid the grid containing the cell
+     * \param value the choice, which has been removed from the cell
+     * \param idx the index (0..80) of the cell within the grid
+     */
     RemoveChoiceCommand(Grid &grid, int value, int idx);
     void undo();
     void redo();
 };
 
+/*!
+ * \brief a command undoing the addition of a choice to
+ * a given cell.
+ */
 class AddChoiceCommand: public Command {
     Grid &grid;
     int value;
     int idx;
 public:
+    /*!
+     * \brief constructor
+     * \param grid the grid containing the cell
+     * \param value the choice, which has been removed from the cell
+     * \param idx the index (0..80) of the cell within the grid
+     */
     AddChoiceCommand(Grid &grid, int value, int idx);
     void undo();
     void redo();
 };
 
+/*!
+ * \brief maintains a history of all undoable and redoable commands
+ */
 class UndoManager {
     std::vector<Command *> undo_commands;
     std::vector<Command *> redo_commands;
 public:
+    /*!
+     * \brief constructor
+     */
     UndoManager();
+
+    /*!
+     * \brief destructor
+     */
     virtual ~UndoManager();
+
+    /*!
+     * \brief clears the command history
+     */
     void clear();
+
+    /*!
+     * undoes the previous undoable command
+     */
     void undo();
+
+    /*!
+     * \brief re- executes the previous undone command
+     */
     void redo();
+
+    /*!
+     * \brief returns true, if there are any commands to be undone
+     */
     bool can_undo() const;
+    /*!
+     * \brief returns true, if there are any commands to be re-executed
+     */
     bool can_redo() const;
+
+    /*!
+     * \brief adds a new command to the history of undoable commands
+     *
+     * as a side effect, the list of re-executable commands will be cleared.
+     */
+
     void add_undo_command(Command *command);
 private:
-    UndoManager(const UndoManager &other) {}
-    UndoManager &operator = (const UndoManager &other) { return *this;}
+    UndoManager(const UndoManager &other) {
+    }
+    UndoManager &operator =(const UndoManager &other) {
+        return *this;
+    }
 };
 #endif
 

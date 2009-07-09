@@ -46,13 +46,16 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     set_default_size(800, 600);
     add(m_box);
 
-    model->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_model_changed));
+    model->signal_changed().connect(sigc::mem_fun(*this,
+            &MainWindow::on_model_changed));
     m_refActionGroup = Gtk::ActionGroup::create();
 
     m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
     m_refActionGroup->add(Gtk::Action::create("EditMenu", _("_Edit")));
     m_refActionGroup->add(Gtk::Action::create("ViewMenu", _("_View")));
     m_refActionGroup->add(Gtk::Action::create("HelpMenu", _("_Help")));
+    m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
+            _("_Difficulty")));
 
     m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
             _("_New"), _("Clears the board")), sigc::mem_fun(*this,
@@ -73,15 +76,14 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_actionUndo = Gtk::Action::create("EditUndo", Gtk::Stock::UNDO,
             _("_Undo"), _("Undoes the last command"));
     m_actionUndo->set_sensitive(false);
-    m_refActionGroup->add(m_actionUndo,  Gtk::AccelKey("<control>Z"), sigc::mem_fun(*this,
-            &MainWindow::on_edit_undo));
-
+    m_refActionGroup->add(m_actionUndo, Gtk::AccelKey("<control>Z"),
+            sigc::mem_fun(*this, &MainWindow::on_edit_undo));
 
     m_actionRedo = Gtk::Action::create("EditRedo", Gtk::Stock::REDO,
             _("_Redo"), _("Re executes the last undone command"));
     m_actionRedo->set_sensitive(false);
-    m_refActionGroup->add(m_actionRedo,  Gtk::AccelKey("<control><shift>Z"), sigc::mem_fun(*this,
-            &MainWindow::on_edit_redo));
+    m_refActionGroup->add(m_actionRedo, Gtk::AccelKey("<control><shift>Z"),
+            sigc::mem_fun(*this, &MainWindow::on_edit_redo));
 
     m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY,
             _("_Copy"), _("Copies the grid to the clipboard")),
@@ -90,6 +92,28 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
             _("_Paste"), _("Pastes a grid from the clipboard")),
             sigc::mem_fun(*this, &MainWindow::on_edit_paste));
+
+    Gtk::RadioAction::Group difficulty_group;
+
+    m_difficultyEasy = Gtk::RadioAction::create(difficulty_group,
+            "EditDifficultyEasy", _("_Easy"), _("Easy")), Gtk::AccelKey(
+            "<control><alt>E");
+    m_refActionGroup->add(m_difficultyEasy, sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_easy));
+    m_difficultyEasy->set_active();
+
+    m_difficultyMedium = Gtk::RadioAction::create(difficulty_group,
+                "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
+                "<control><alt>M"), sigc::mem_fun(*this,
+                &MainWindow::on_edit_difficulty_medium);
+    m_refActionGroup->add(m_difficultyMedium, sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_medium));
+
+    m_difficultyHard = Gtk::RadioAction::create(difficulty_group,
+            "EditDifficultyHard", _("_Hard"), _("Hard")), Gtk::AccelKey(
+            "<control><alt>H");
+    m_refActionGroup->add(m_difficultyHard, sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_hard));
 
     Gtk::RadioAction::Group view_choices_group;
 
@@ -145,8 +169,8 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
                     &MainWindow::on_highlight_nine));
 
     m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT,
-                _("_About"), _("Shows information about gsudoku")),
-                sigc::mem_fun(*this, &MainWindow::on_help_about));
+            _("_About"), _("Shows information about gsudoku")),
+            sigc::mem_fun(*this, &MainWindow::on_help_about));
 
     m_refUIManager = Gtk::UIManager::create();
     m_refUIManager->insert_action_group(m_refActionGroup);
@@ -169,6 +193,11 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "      <menuitem action='EditRedo' />"
             "      <menuitem action='EditCopy' />"
             "      <menuitem action='EditPaste' />"
+            "      <menu action='EditDifficulty'>"
+            "         <menuitem action='EditDifficultyEasy' />"
+            "         <menuitem action='EditDifficultyMedium' />"
+            "         <menuitem action='EditDifficultyHard' />"
+            "      </menu>"
             "    </menu>"
             "    <menu action='ViewMenu'>"
             "      <menuitem action='ViewNone' />"
@@ -306,6 +335,18 @@ void MainWindow::on_edit_paste() {
             &MainWindow::on_clipboard_text_received));
 }
 
+void MainWindow::on_edit_difficulty_easy() {
+    model->set_difficulty_level(SudokuModel::EASY);
+}
+
+void MainWindow::on_edit_difficulty_medium() {
+    model->set_difficulty_level(SudokuModel::MEDIUM);
+}
+
+void MainWindow::on_edit_difficulty_hard() {
+    model->set_difficulty_level(SudokuModel::HARD);
+}
+
 void MainWindow::on_clipboard_text_received(const Glib::ustring& text) {
     try {
         model->load_from_string(text.c_str());
@@ -380,34 +421,35 @@ void MainWindow::on_help_about() {
     dlg.set_name(PACKAGE);
     dlg.set_version(VERSION);
     dlg.set_copyright("Ralph Juhnke");
-    dlg.set_license("Copyright (c) 2009, Ralph Juhnke\n"
-            "All rights reserved.\n"
-            "\n"
-            "Redistribution and use in source and binary forms, with or\n"
-            "without modification, are permitted provided that the following conditions\n"
-            "are met:\n\n"
-            "  * Redistributions of source code must retain the above copyright notice,\n"
-            "    this list of conditions and the following disclaimer.\n"
-            "\n"
-            "  * Redistributions in binary form must reproduce the above copyright\n"
-            "    notice, this list of conditions and the following disclaimer in the\n"
-            "    documentation and/or other materials provided with the distribution.\n"
-            "\n"
-            "  * Neither the name of \"Ralph Juhnke\" nor the names of its\n"
-            "    contributors may be used to endorse or promote products derived from\n"
-            "    this software without specific prior written permission.\n"
-            "\n"
-            "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
-            "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n"
-            "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
-            "PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR\n"
-            "CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n"
-            "EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n"
-            "PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;\n"
-            "OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,\n"
-            "WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR\n"
-            "OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF\n"
-            "ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
+    dlg.set_license(
+            "Copyright (c) 2009, Ralph Juhnke\n"
+                "All rights reserved.\n"
+                "\n"
+                "Redistribution and use in source and binary forms, with or\n"
+                "without modification, are permitted provided that the following conditions\n"
+                "are met:\n\n"
+                "  * Redistributions of source code must retain the above copyright notice,\n"
+                "    this list of conditions and the following disclaimer.\n"
+                "\n"
+                "  * Redistributions in binary form must reproduce the above copyright\n"
+                "    notice, this list of conditions and the following disclaimer in the\n"
+                "    documentation and/or other materials provided with the distribution.\n"
+                "\n"
+                "  * Neither the name of \"Ralph Juhnke\" nor the names of its\n"
+                "    contributors may be used to endorse or promote products derived from\n"
+                "    this software without specific prior written permission.\n"
+                "\n"
+                "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
+                "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,\n"
+                "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
+                "PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR\n"
+                "CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n"
+                "EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n"
+                "PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;\n"
+                "OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,\n"
+                "WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR\n"
+                "OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF\n"
+                "ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
 
     dlg.set_authors(authors);
     dlg.set_transient_for(*this);

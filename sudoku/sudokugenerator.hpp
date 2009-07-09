@@ -41,7 +41,7 @@ class HintProducer;
 
 class SudokuGenerator {
 public:
-    typedef enum {EASY, MEDIUM} Difficulty;
+    typedef enum {EASY, MEDIUM, HARD} Difficulty;
 private:
     char field[81];
     std::vector<HintProducer *> hint_producers;

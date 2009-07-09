@@ -39,23 +39,34 @@ class HintConsumer;
 class Grid;
 
 /*!
- * a hint is a single step (move or whatever)
- * to the solution of a sudoku.
+ * \brief a hint is a single step to the solution of a sudoku.
  */
 
 class Hint {
 public:
+    /*!
+     * \brief constructor
+     */
     Hint() {
     }
 
+    /*!
+     * \brief destructor
+     */
     virtual ~Hint() {
     }
 
+    /*!
+     * \brief applies the hint to the sudoku
+     */
     virtual void apply() = 0;
 
+    /*!
+     * \brief prints a description of the hint wich can be interpreted by a human user.
+     * \param out the stream to print oon
+     */
     virtual void print_description(std::ostream &out) const = 0;
 private:
-
     Hint(const Hint &other) {
     }
 
@@ -64,14 +75,37 @@ private:
     }
 };
 
+/*!
+ * \brief one of the various strategies to create hints.
+ */
 class HintProducer {
 public:
+    /*!
+     * \brief searches the grid for hints and feeds them into the hintconsumer.
+     * \param grid the grid to be searched for hints
+     * \param consumer the hint consumer to feed the found hints into
+     */
     virtual void find_hints(Grid &grid, HintConsumer &consumer) = 0;
 };
 
+/*!
+ * \brief one of the various strategies to process the
+ * hints found during the solution of a sudoku.
+ */
 class HintConsumer {
 public:
+    /*!
+     * \brief consumes a hint.
+     * \param hint the hint to be consumed.
+     *             it is the responsibility of the consume_hint method to delete (free)
+     *             the hint when it is not neede anymore.
+     * \returns true, if if the hintproducer should continue searching for hints.
+     */
     virtual bool consume_hint(Hint *hint) = 0;
+    /*!
+     * \brief returns true, if the hintproducer should continue searching for hints.
+     * \return true, if the hintproducer should continue searching for hints.
+     */
     virtual bool wants_more_hints() const = 0;
 };
 
