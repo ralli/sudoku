@@ -30,7 +30,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
+//#include "config.h"
 #include <iostream>
 #include "mainwindow.hpp"
 #include "sudokumodel.hpp"

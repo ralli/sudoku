@@ -34,6 +34,8 @@
 #include "sudokumodel.hpp"
 #include <sstream>
 #include <gdk/gdkkeysyms.h>
+#include <cmath>
+
 SudokuView::SudokuView(const Glib::RefPtr<SudokuModel> &model) :
     model(model) {
     model->signal_changed().connect(sigc::mem_fun(*this,
@@ -153,6 +155,10 @@ void SudokuView::draw_normal_grid(Cairo::RefPtr<Cairo::Context> &cr) const {
     cr->restore();
 }
 
+inline double round(double x) {
+    return floor(x+0.5);
+}
+
 void SudokuView::draw_line(Cairo::RefPtr<Cairo::Context> &cr, double x1,
         double y1, double x2, double y2) const {
     cr->user_to_device(x1, y1);
@@ -242,8 +248,8 @@ bool SudokuView::on_button_release_event(GdkEventButton* event) {
     gdouble x = event->x;
     gdouble y = event->y;
     cr->device_to_user(x, y);
-    int row = 9 * y;
-    int col = 9 * x;
+    int row = static_cast<int>(9 * y);
+    int col = static_cast<int>(9 * x);
     //    int subrow = static_cast<int> (3 * 9 * y) % 3;
     //    int subcol = static_cast<int> (3 * 9 * x) % 3;
     //    int value = (subrow * 3 + subcol) + 1;
@@ -266,7 +272,7 @@ void SudokuView::init_matrix(Cairo::Matrix &m, int width, int height) const {
 }
 
 bool SudokuView::on_key_release_event(GdkEventKey* event) {
-    if (event->type == static_cast<uint> (Gdk::KEY_RELEASE))
+    if (event->type == static_cast<guint> (Gdk::KEY_RELEASE))
         return false;
     bool handled = true;
     switch (event->keyval) {

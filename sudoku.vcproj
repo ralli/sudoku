@@ -180,71 +180,95 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\boxlinereduction.cpp"
+				RelativePath=".\sudoku\boxlinereduction.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\claiming.cpp"
+				RelativePath=".\sudoku\claiming.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\forcingchain.cpp"
+				RelativePath=".\sudoku\dancinglinks.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\grid.cpp"
+				RelativePath=".\sudoku\dlxsolver.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hiddendouble.cpp"
+				RelativePath=".\sudoku\forcingchain.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hiddentriple.cpp"
+				RelativePath=".\sudoku\grid.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hintconsumer.cpp"
+				RelativePath=".\sudoku\gridchecker.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\indirecthint.cpp"
+				RelativePath=".\sudoku\hiddendouble.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\nakeddouble.cpp"
+				RelativePath=".\sudoku\hiddentriple.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\pointing.cpp"
+				RelativePath=".\sudoku\hint.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\range.cpp"
+				RelativePath=".\sudoku\hintconsumer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\simpleforcing.cpp"
+				RelativePath=".\sudoku\indirecthint.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\singlehint.cpp"
+				RelativePath=".\sudoku\nakeddouble.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\sudoku.cpp"
+				RelativePath=".\sudoku\nakedsingle.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\swordfish.cpp"
+				RelativePath=".\sudoku\pointing.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\xwing.cpp"
+				RelativePath=".\sudoku\range.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\xywing.cpp"
+				RelativePath=".\sudoku\simpleforcing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\singlehint.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\sudoku.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\sudokugenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\swordfish.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\xwing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\xywing.cpp"
 				>
 			</File>
 		</Filter>
@@ -254,79 +278,95 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\boxlinereduction.hpp"
+				RelativePath=".\sudoku\boxlinereduction.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\claiming.hpp"
+				RelativePath=".\sudoku\claiming.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\forcingchain.hpp"
+				RelativePath=".\sudoku\dancinglinks.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\grid.hpp"
+				RelativePath=".\sudoku\dlxsolver.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hiddendouble.hpp"
+				RelativePath=".\sudoku\forcingchain.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hiddentriple.hpp"
+				RelativePath=".\sudoku\grid.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hint.hpp"
+				RelativePath=".\sudoku\gridchecker.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\hintconsumer.hpp"
+				RelativePath=".\sudoku\hiddendouble.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\indirecthint.hpp"
+				RelativePath=".\sudoku\hiddentriple.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\nakeddouble.hpp"
+				RelativePath=".\sudoku\hint.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\pointing.hpp"
+				RelativePath=".\sudoku\hintconsumer.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\range.hpp"
+				RelativePath=".\sudoku\indirecthint.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\simpleforcing.hpp"
+				RelativePath=".\sudoku\nakeddouble.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\singlehint.hpp"
+				RelativePath=".\sudoku\nakedsingle.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\swordfish.hpp"
+				RelativePath=".\sudoku\pointing.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\targetver.h"
+				RelativePath=".\sudoku\range.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\util.hpp"
+				RelativePath=".\sudoku\simpleforcing.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\xwing.hpp"
+				RelativePath=".\sudoku\singlehint.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\xywing.hpp"
+				RelativePath=".\sudoku\sudokugenerator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\swordfish.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\util.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\xwing.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sudoku\xywing.hpp"
 				>
 			</File>
 		</Filter>

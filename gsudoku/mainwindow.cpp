@@ -30,9 +30,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
+//#include "config.h"
 #include "mainwindow.hpp"
-#include "gettext.h"
+#include "../include/gettext.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -292,7 +292,7 @@ void MainWindow::on_file_open() {
         std::string filename = dialog.get_filename();
         try {
             model->load(filename);
-        } catch (std::exception &ex) {
+        } catch (std::exception & /*ex*/) {
             // Gtk::Window& parent, const Glib::ustring& message, bool use_markup = false, MessageType type = MESSAGE_INFO, ButtonsType buttons = BUTTONS_OK, bool modal = false
             Gtk::MessageDialog dialog(*this, _("Error opening file"), false,
                     Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
@@ -350,7 +350,7 @@ void MainWindow::on_edit_difficulty_hard() {
 void MainWindow::on_clipboard_text_received(const Glib::ustring& text) {
     try {
         model->load_from_string(text.c_str());
-    } catch (std::exception &ex) {
+    } catch (std::exception & /*ex*/) {
         Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false,
                 Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
         dialog.set_secondary_text(
@@ -418,8 +418,8 @@ void MainWindow::on_help_about() {
     std::vector<Glib::ustring> a;
     a.push_back("Ralph Juhnke");
     Glib::StringArrayHandle authors(a);
-    dlg.set_name(PACKAGE);
-    dlg.set_version(VERSION);
+    dlg.set_name("gsudoku");
+    dlg.set_version("0.1");
     dlg.set_copyright("Ralph Juhnke");
     dlg.set_license(
             "Copyright (c) 2009, Ralph Juhnke\n"
