@@ -61,7 +61,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             _("_New"), _("Clears the board")), sigc::mem_fun(*this,
             &MainWindow::on_file_new));
 
-    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::YES,
+    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::APPLY,
             _("_Check"), _("Checks the sudoku")), sigc::mem_fun(*this,
             &MainWindow::on_file_check));
 
