@@ -35,6 +35,8 @@
 
 #include <vector>
 
+#pragma warning(disable:4355)
+
 class NodeFactory;
 class Column;
 class Node {
