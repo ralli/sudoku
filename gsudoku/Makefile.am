@@ -4,6 +4,8 @@ mainwindow.cpp \
 mainwindow.hpp \
 sudokuview.cpp \
 sudokuview.hpp \
+statusview.hpp \
+statusview.cpp \
 sudokumodel.cpp \
 sudokumodel.hpp \
 commands.hpp \

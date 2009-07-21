@@ -30,57 +30,21 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAINWINDOW_HPP
-#define MAINWINDOW_HPP
+#ifndef STATUSVIEW_HPP
+#define STATUSVIEW_HPP
 
-#include "gtkmm.h"
-#include "sudokuview.hpp"
-#include "statusview.hpp"
+#include <gtkmm.h>
 #include "sudokumodel.hpp"
 
-class MainWindow: public Gtk::Window {
+class StatusView : public Gtk::VBox {
 private:
-public:
-    MainWindow(const Glib::RefPtr<SudokuModel> &model);
-    void on_file_new();
-    void on_file_open();
-    void on_file_exit();
-    void on_edit_undo();
-    void on_edit_redo();
-    void on_model_changed();
-    void on_edit_copy();
-    void on_edit_paste();
-    void on_edit_difficulty_easy();
-    void on_edit_difficulty_medium();
-    void on_edit_difficulty_hard();
-    void on_file_check();
-    void on_highlight_nothing();
-    void on_highlight_one();
-    void on_highlight_two();
-    void on_highlight_three();
-    void on_highlight_four();
-    void on_highlight_five();
-    void on_highlight_six();
-    void on_highlight_seven();
-    void on_highlight_eight();
-    void on_highlight_nine();
-    void on_help_about();
-private:
-    void on_clipboard_text_received(const Glib::ustring& text);
-private:
-    Gtk::VBox m_box;
-    Gtk::HBox m_hbox;
-    Glib::RefPtr<Gtk::UIManager> m_refUIManager;
-    Glib::RefPtr<Gtk::ActionGroup> m_refActionGroup;
-    Glib::RefPtr<Gtk::Action> m_actionUndo;
-    Glib::RefPtr<Gtk::Action> m_actionRedo;
-    Glib::RefPtr<Gtk::RadioAction> m_difficultyEasy;
-    Glib::RefPtr<Gtk::RadioAction> m_difficultyMedium;
-    Glib::RefPtr<Gtk::RadioAction> m_difficultyHard;
-    Gtk::Statusbar m_statusbar;
     Glib::RefPtr<SudokuModel> model;
-    SudokuView sudokuView;
-    StatusView statusView;
+    Gtk::Label m_todo_label;
+    Gtk::Label m_done_label;
+    Gtk::Label m_choices_label;
+public:
+    StatusView(const Glib::RefPtr<SudokuModel> &model);
+    void on_model_changed_event();
 };
 
 #endif

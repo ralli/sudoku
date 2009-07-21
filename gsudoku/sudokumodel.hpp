@@ -79,6 +79,9 @@ public:
     int get_highlighted_choice() const;
     void set_highlighted_choice(int highlighted_choice);
 
+    int get_todo() const;
+    int get_num_choices() const;
+
     DifficultyLevel get_difficulty_level() const;
     void set_difficulty_level(DifficultyLevel difficulty_level);
 

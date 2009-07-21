@@ -41,7 +41,7 @@
 #define _(X) gettext(X)
 
 MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
-    model(model), sudokuView(model) {
+    model(model), sudokuView(model), statusView(model) {
     set_title(_("Sudoku"));
     set_default_size(800, 600);
     add(m_box);
@@ -241,7 +241,10 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     if (pToolbar)
         m_box.pack_start(*pToolbar, Gtk::PACK_SHRINK);
 
-    m_box.pack_start(sudokuView, Gtk::PACK_EXPAND_WIDGET);
+    m_box.pack_start(m_hbox, Gtk::PACK_EXPAND_WIDGET);
+
+    m_hbox.pack_start(sudokuView, Gtk::PACK_EXPAND_WIDGET);
+    m_hbox.pack_start(statusView, Gtk::PACK_SHRINK);
     m_box.pack_end(m_statusbar, Gtk::PACK_SHRINK);
 
     show_all_children();

@@ -72,12 +72,13 @@ void SudokuModel::clear() {
 
 void SudokuModel::generate() {
     SudokuGenerator generator;
-    SudokuGenerator::Difficulty d;
+    SudokuGenerator::Difficulty d = SudokuGenerator::EASY;
+
     if (difficulty_level == EASY)
         d = SudokuGenerator::EASY;
-    else if(difficulty_level == MEDIUM)
+    else if (difficulty_level == MEDIUM)
         d = SudokuGenerator::MEDIUM;
-    else if(difficulty_level == HARD)
+    else if (difficulty_level == HARD)
         d = SudokuGenerator::HARD;
     generator.set_difficulty(d);
     generator.generate(grid);
@@ -227,6 +228,14 @@ bool SudokuModel::has_value(int idx) const {
 
 int SudokuModel::get_value(int idx) const {
     return grid[idx].get_value();
+}
+
+int SudokuModel::get_todo() const {
+    return grid.get_to_do();
+}
+
+int SudokuModel::get_num_choices() const {
+    return grid.get_num_choices();
 }
 
 bool SudokuModel::has_choice(int idx, int value) const {
