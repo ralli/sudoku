@@ -110,7 +110,7 @@ void SudokuModel::redo() {
 
 SudokuModel::SudokuModel() :
     selected_cell(0), highlighted_choice(0),
-            difficulty_level(SudokuModel::EASY) {
+            difficulty_level(SudokuModel::EASY), show_choices(true) {
 }
 
 int SudokuModel::get_selected_cell() const {
@@ -137,6 +137,14 @@ SudokuModel::DifficultyLevel SudokuModel::get_difficulty_level() const {
 
 void SudokuModel::set_difficulty_level(DifficultyLevel difficulty_level) {
     this->difficulty_level = difficulty_level;
+}
+
+bool SudokuModel::get_show_choices() const {
+    return show_choices;
+}
+void SudokuModel::set_show_choices(bool show_choices) {
+    this->show_choices = show_choices;
+    m_signal_changed.emit();
 }
 
 void SudokuModel::set_current_cell_value(int value) {

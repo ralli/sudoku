@@ -95,11 +95,13 @@ bool SudokuView::on_expose_event(GdkEventExpose *event) {
     draw_normal_grid(cr);
     draw_field_texts(cr);
 
-    cr->save();
-    cr->set_source_rgb(0.5, 0.5, 0.5);
-    cr->set_font_size(1.0 / 9.0 * 0.8 * 0.3);
-    draw_field_choices(cr);
-    cr->restore();
+    if (model->get_show_choices()) {
+        cr->save();
+        cr->set_source_rgb(0.5, 0.5, 0.5);
+        cr->set_font_size(1.0 / 9.0 * 0.8 * 0.3);
+        draw_field_choices(cr);
+        cr->restore();
+    }
 
     return true;
 }
@@ -156,7 +158,7 @@ void SudokuView::draw_normal_grid(Cairo::RefPtr<Cairo::Context> &cr) const {
 }
 
 inline double round(double x) {
-    return floor(x+0.5);
+    return floor(x + 0.5);
 }
 
 void SudokuView::draw_line(Cairo::RefPtr<Cairo::Context> &cr, double x1,
@@ -248,8 +250,8 @@ bool SudokuView::on_button_release_event(GdkEventButton* event) {
     gdouble x = event->x;
     gdouble y = event->y;
     cr->device_to_user(x, y);
-    int row = static_cast<int>(9 * y);
-    int col = static_cast<int>(9 * x);
+    int row = static_cast<int> (9 * y);
+    int col = static_cast<int> (9 * x);
     //    int subrow = static_cast<int> (3 * 9 * y) % 3;
     //    int subcol = static_cast<int> (3 * 9 * x) % 3;
     //    int value = (subrow * 3 + subcol) + 1;
@@ -333,17 +335,18 @@ void SudokuView::draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const {
 }
 
 void SudokuView::draw_highlighted_cells(Cairo::RefPtr<Cairo::Context> &cr) const {
-    if(model->get_highlighted_choice() == 0)
+    if (model->get_highlighted_choice() == 0)
         return;
 
-    for(int i = 0; i < 81; ++i) {
-        if(!model->has_choice(i, model->get_highlighted_choice())) {
+    for (int i = 0; i < 81; ++i) {
+        if (!model->has_choice(i, model->get_highlighted_choice())) {
             draw_highlighted_cell(cr, i);
         }
     }
 }
 
-void SudokuView::draw_highlighted_cell(Cairo::RefPtr<Cairo::Context> &cr, int idx) const {
+void SudokuView::draw_highlighted_cell(Cairo::RefPtr<Cairo::Context> &cr,
+        int idx) const {
     int selected_cell = idx;
     int row = selected_cell / 9;
     int col = selected_cell % 9;

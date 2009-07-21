@@ -50,11 +50,11 @@ public:
 private:
     int selected_cell;
     int highlighted_choice;
-
     type_signal_changed m_signal_changed;
     Grid grid;
     UndoManager undo_manager;
     DifficultyLevel difficulty_level;
+    bool show_choices;
 public:
     SudokuModel();
 
@@ -84,6 +84,9 @@ public:
 
     DifficultyLevel get_difficulty_level() const;
     void set_difficulty_level(DifficultyLevel difficulty_level);
+
+    bool    get_show_choices() const;
+    void    set_show_choices(bool show_choices);
 
     void move_selection_up();
     void move_selection_down();

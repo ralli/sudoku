@@ -56,6 +56,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_refActionGroup->add(Gtk::Action::create("HelpMenu", _("_Help")));
     m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
             _("_Difficulty")));
+    m_refActionGroup->add(Gtk::Action::create("ViewHighlight", _("_Highlight")));
 
     m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
             _("_New"), _("Clears the board")), sigc::mem_fun(*this,
@@ -103,9 +104,9 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_difficultyEasy->set_active();
 
     m_difficultyMedium = Gtk::RadioAction::create(difficulty_group,
-                "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
-                "<control><alt>M"), sigc::mem_fun(*this,
-                &MainWindow::on_edit_difficulty_medium);
+            "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
+            "<control><alt>M"), sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_medium);
     m_refActionGroup->add(m_difficultyMedium, sigc::mem_fun(*this,
             &MainWindow::on_edit_difficulty_medium));
 
@@ -118,7 +119,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     Gtk::RadioAction::Group view_choices_group;
 
     m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewNone", _("Dont show cells"),
+            "ViewNone", _("Highlight _nothing"),
             _("Removes all cell highlightings")), Gtk::AccelKey(
             "<control><alt>0"), sigc::mem_fun(*this,
             &MainWindow::on_highlight_nothing));
@@ -172,6 +173,18 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             _("_About"), _("Shows information about gsudoku")),
             sigc::mem_fun(*this, &MainWindow::on_help_about));
 
+    Glib::RefPtr<Gtk::ToggleAction> toggle_choices = Gtk::ToggleAction::create(
+            "ViewChoices", _("_Choices"), _("Shows the choices"), true);
+
+    m_refActionGroup->add(toggle_choices, sigc::mem_fun(*this,
+            &MainWindow::on_view_choices));
+
+    Glib::RefPtr<Gtk::ToggleAction> toggle_sidebar = Gtk::ToggleAction::create(
+            "ViewSidebar", _("_Sidebar"), _("Shows the sidebar"), true);
+
+    m_refActionGroup->add(toggle_sidebar, sigc::mem_fun(*this,
+            &MainWindow::on_view_sidebar));
+
     m_refUIManager = Gtk::UIManager::create();
     m_refUIManager->insert_action_group(m_refActionGroup);
 
@@ -200,16 +213,20 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "      </menu>"
             "    </menu>"
             "    <menu action='ViewMenu'>"
-            "      <menuitem action='ViewNone' />"
-            "      <menuitem action='ViewOne' />"
-            "      <menuitem action='ViewTwo' />"
-            "      <menuitem action='ViewThree' />"
-            "      <menuitem action='ViewFour' />"
-            "      <menuitem action='ViewFive' />"
-            "      <menuitem action='ViewSix' />"
-            "      <menuitem action='ViewSeven' />"
-            "      <menuitem action='ViewEight' />"
-            "      <menuitem action='ViewNine' />"
+            "      <menuitem action='ViewChoices' />"
+            "      <menuitem action='ViewSidebar' />"
+            "      <menu action='ViewHighlight'>"
+            "        <menuitem action='ViewNone' />"
+            "        <menuitem action='ViewOne' />"
+            "        <menuitem action='ViewTwo' />"
+            "        <menuitem action='ViewThree' />"
+            "        <menuitem action='ViewFour' />"
+            "        <menuitem action='ViewFive' />"
+            "        <menuitem action='ViewSix' />"
+            "        <menuitem action='ViewSeven' />"
+            "        <menuitem action='ViewEight' />"
+            "        <menuitem action='ViewNine' />"
+            "      </menu>"
             "    </menu>"
             "    <menu action='HelpMenu'>"
             "      <menuitem action='HelpAbout' />"
@@ -373,6 +390,18 @@ void MainWindow::on_file_check() {
                 Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
         dialog.set_secondary_text(_("This sudoku is not valid"));
         dialog.run();
+    }
+}
+
+void MainWindow::on_view_choices() {
+    model->set_show_choices(!model->get_show_choices());
+}
+
+void MainWindow::on_view_sidebar() {
+    if (statusView.is_visible()) {
+        statusView.hide();
+    } else {
+        statusView.show();
     }
 }
 

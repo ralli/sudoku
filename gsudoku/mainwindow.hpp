@@ -65,6 +65,8 @@ public:
     void on_highlight_eight();
     void on_highlight_nine();
     void on_help_about();
+    void on_view_choices();
+    void on_view_sidebar();
 private:
     void on_clipboard_text_received(const Glib::ustring& text);
 private:
