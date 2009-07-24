@@ -91,9 +91,10 @@ WeakLink *LinkFactory::create_weak_link(Link *parent, int cell_idx, int value) {
  * \param link the link, wich marks the end of the forcing chain
  * \param chain the vector to be filled
  */
-inline void fill_chain(Link *link, std::vector<Link *> &chain) {
+
+inline void fill_chain(Link *link, std::vector<LinkEntry> &chain) {
     while (link) {
-        chain.push_back(link);
+        chain.push_back(LinkEntry(link->is_strong_link(), link->get_cell_idx(), link->get_value()));
         link = link->get_parent();
     }
 
@@ -103,42 +104,43 @@ inline void fill_chain(Link *link, std::vector<Link *> &chain) {
 /*!
  * \brief prints the contents of a given link
  */
-struct print_link {
-    const Link *link;
+struct print_link_entry {
+    const LinkEntry &link_entry;
 
-    print_link(const Link *link) :
-        link(link) {
+    print_link_entry(const LinkEntry &link_entry) :
+        link_entry(link_entry) {
     }
 
     void print(std::ostream &out) const {
-        out << print_row_col(link->get_cell_idx());
-        if (link->is_strong_link())
+        out << print_row_col(link_entry.get_cell_idx());
+        if (link_entry.is_strong())
             out << "=";
         else
             out << "<>";
-        out << link->get_value();
+        out << link_entry.get_value();
     }
 };
 
-std::ostream &operator <<(std::ostream &out, const print_link &pl) {
+std::ostream &operator <<(std::ostream &out, const print_link_entry &pl) {
     pl.print(out);
     return out;
 }
 
+
 /*!
  * \brief prints a given forcing chain
  */
-struct print_chain {
-    const std::vector<Link *> &links;
+struct print_entry_chain {
+    const std::vector<LinkEntry> &links;
 
-    print_chain(const std::vector<Link *> &links) :
+    print_entry_chain(const std::vector<LinkEntry> &links) :
         links(links) {
     }
 
     void print(std::ostream &out) const {
-        for (std::vector<Link *>::const_iterator i = links.begin(); i
+        for (std::vector<LinkEntry>::const_iterator i = links.begin(); i
                 != links.end(); ++i) {
-            out << print_link(*i);
+            out << print_link_entry(*i);
             if (i + 1 != links.end()) {
                 out << " => ";
             }
@@ -146,16 +148,17 @@ struct print_chain {
     }
 };
 
-std::ostream &operator <<(std::ostream &out, const print_chain &chain) {
+std::ostream &operator <<(std::ostream &out, const print_entry_chain &chain) {
     chain.print(out);
     return out;
 }
+
 
 /*!
  * \brief constructor
  */
 ForcingChainHint::ForcingChainHint(Grid &grid, const std::vector<Link *> &links) :
-    grid(grid), links(links), chains(links.size()) {
+    grid(grid), chains(links.size()) {
     for (size_t i = 0; i < links.size(); ++i) {
         fill_chain(links[i], chains[i]);
     }
@@ -168,64 +171,60 @@ ForcingChainHint::~ForcingChainHint() {
 
 }
 
-/*!
- *
- */
 void ForcingChainHint::apply() {
-    Link *link = links.front();
-    Cell &cell = grid[link->get_cell_idx()];
+    LinkEntry &link_entry = chains.front().back();
+    Cell &cell = grid[link_entry.get_cell_idx()];
 
-    if (link->is_strong_link()) {
-        cell.set_value(link->get_value());
+    if (link_entry.is_strong()) {
+        cell.set_value(link_entry.get_value());
         grid.cleanup_choice(cell);
     } else {
-        cell.remove_choice(link->get_value());
+        cell.remove_choice(link_entry.get_value());
     }
 }
 
 void ForcingChainHint::print_description(std::ostream &out) const {
-    out << "forcing chain: conclusion: " << print_link(links.front());
+    out << "forcing chain: conclusion: " << print_link_entry(chains.front().back());
     out << " start cell: " << print_row_col(
-            chains.front().front()->get_cell_idx());
+            chains.front().front().get_cell_idx());
     for (size_t i = 0; i < chains.size(); ++i) {
-        out << std::endl << "chain " << i + 1 << ": " << print_chain(chains[i]);
+        out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(chains[i]);
     }
 }
 
 ForcingChainRangeHint::ForcingChainRangeHint(Grid &grid, const Range &range,
         std::vector<Link *> &conclusions) :
-    grid(grid), range(range), conclusions(conclusions), chains(
-            conclusions.size()) {
+    grid(grid), range(range), chains(conclusions.size()) {
     for (size_t i = 0; i < conclusions.size(); ++i) {
         fill_chain(conclusions[i], chains[i]);
     }
 }
 
 void ForcingChainRangeHint::apply() {
-    Link *link = conclusions.front();
-    Cell &cell = grid[link->get_cell_idx()];
+    LinkEntry &link = chains.front().back();
+    Cell &cell = grid[link.get_cell_idx()];
 
-    if (link->is_strong_link()) {
-        cell.set_value(link->get_value());
+    if (link.is_strong()) {
+        cell.set_value(link.get_value());
         grid.cleanup_choice(cell);
     } else {
-        cell.remove_choice(link->get_value());
+        cell.remove_choice(link.get_value());
     }
 }
 
 void ForcingChainRangeHint::print_description(std::ostream &out) const {
     out << "range forcing chain: range: " << range.get_name()
-            << " conclusion: " << print_link(conclusions.front());
+            << " conclusion: " << print_link_entry(chains.front().back());
     out << " start cell: " << print_row_col(
-            chains.front().front()->get_cell_idx());
+            chains.front().front().get_cell_idx());
     for (size_t i = 0; i < chains.size(); ++i) {
-        out << std::endl << "chain " << i + 1 << ": " << print_chain(chains[i]);
+        out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(chains[i]);
     }
 }
 
 ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid,
         Link *first_link, Link *second_link) :
-    grid(grid), first_link(first_link), second_link(second_link) {
+    grid(grid) {
     fill_chain(first_link, first_chain);
     fill_chain(second_link, second_chain);
 }
@@ -234,22 +233,27 @@ ForcingChainContradictionHint::~ForcingChainContradictionHint() {
 }
 
 void ForcingChainContradictionHint::apply() {
-    Link *link = first_chain.front();
-    Cell &cell = grid[link->get_cell_idx()];
-    if (link->is_strong_link()) {
-        cell.remove_choice(link->get_value());
+    LinkEntry &link = first_chain.front();
+    Cell &cell = grid[link.get_cell_idx()];
+    if (link.is_strong()) {
+        cell.remove_choice(link.get_value());
     } else {
-        cell.set_value(link->get_value());
+        cell.set_value(link.get_value());
         grid.cleanup_choice(cell);
     }
 }
 
 void ForcingChainContradictionHint::print_description(std::ostream &out) const {
-    Link *link = first_chain.front();
-    out << "contradiction: cell: " << print_row_col(link->get_cell_idx())
-            << " cannot have value " << link->get_value() << std::endl;
-    out << "first chain: " << print_chain(first_chain) << std::endl;
-    out << "second chain: " << print_chain(second_chain);
+    const LinkEntry &link = first_chain.front();
+    if (link.is_strong()) {
+        out << "contradiction: cell: " << print_row_col(link.get_cell_idx())
+                << " cannot have value " << link.get_value() << std::endl;
+    } else {
+        out << "contradiction: cell: " << print_row_col(link.get_cell_idx())
+                << " must have value " << link.get_value() << std::endl;
+    }
+    out << "first chain: " << print_entry_chain(first_chain) << std::endl;
+    out << "second chain: " << print_entry_chain(second_chain);
 }
 
 Link::Link(Link *parent, int cell_idx, int value) :
@@ -497,31 +501,6 @@ void LinkMap::insert_unique_children(Link *link) {
         }
     }
 }
-
-/*!
- * these strategies are a bit silly.
- * i just need a stack and a queue with compatible interfaces
- * (std::queue uses "front" and std::stack uses "top").
- * the stack interface is used to implement a depth first search and
- * the queue interface is used to implement a breadth first search.
- */
-struct StackStrategy {
-    std::stack<Link *> stack;
-
-    void push(Link *link) {
-        stack.push(link);
-    }
-
-    Link *pop() {
-        Link *link = stack.top();
-        stack.pop();
-        return link;
-    }
-
-    bool empty() const {
-        return stack.empty();
-    }
-};
 
 struct QueueStrategy {
     std::queue<Link *> queue;

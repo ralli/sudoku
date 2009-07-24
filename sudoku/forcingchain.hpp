@@ -40,6 +40,19 @@ class Range;
 class Link;
 class LinkFactory;
 
+class LinkEntry {
+    bool strong;
+    char cell_idx;
+    char value;
+public:
+    LinkEntry(bool strong, char cell_idx, char value);
+    LinkEntry(const LinkEntry &other);
+    LinkEntry &operator = (const LinkEntry &other);
+    bool is_strong() const;
+    int get_cell_idx() const;
+    int get_value() const;
+};
+
 /*!
  * \brief a forcing chain hint: for a given cell all choices come to the same
  * conclusion.
@@ -50,10 +63,8 @@ class LinkFactory;
 class ForcingChainHint: public Hint {
     /*! \brief the grid the hint will be applied to */
     Grid &grid;
-    /*! \brief the ends of the conclusion chains */
-    std::vector<Link *> links;
     /*! \brief the forcing chains (which all end in the same links) */
-    std::vector<std::vector<Link *> > chains;
+    std::vector<std::vector<LinkEntry> > chains;
 public:
     /*!
      * \brief constructor
@@ -72,8 +83,7 @@ public:
 class ForcingChainRangeHint: public Hint {
     Grid &grid;
     const Range &range;
-    std::vector<Link *> &conclusions;
-    std::vector<std::vector<Link *> > chains;
+    std::vector<std::vector<LinkEntry> > chains;
 public:
     ForcingChainRangeHint(Grid &grid, const Range &range,
             std::vector<Link *> &conclusions);
@@ -89,10 +99,8 @@ public:
  */
 class ForcingChainContradictionHint: public Hint {
     Grid &grid;
-    Link *first_link;
-    Link *second_link;
-    std::vector<Link *> first_chain;
-    std::vector<Link *> second_chain;
+    std::vector<LinkEntry> first_chain;
+    std::vector<LinkEntry> second_chain;
 public:
     /*!
      * \brief constructor
@@ -416,5 +424,34 @@ private:
             LinkMap &weak_link_map, LinkMap &strong_link_map, Grid &grid,
             HintConsumer &consumer) const;
 };
+
+inline LinkEntry::LinkEntry(bool strong, char cell_idx, char value) :
+    strong(strong), cell_idx(cell_idx), value(value)
+{
+}
+
+inline LinkEntry::LinkEntry(const LinkEntry &other) :
+    strong(other.strong), cell_idx(other.cell_idx), value(other.value)
+{
+}
+
+inline LinkEntry &LinkEntry::operator = (const LinkEntry &other) {
+    strong = other.strong;
+    cell_idx = other.cell_idx;
+    value = other.value;
+    return *this;
+}
+
+inline bool LinkEntry::is_strong() const {
+    return strong;
+}
+
+inline int LinkEntry::get_cell_idx() const {
+    return cell_idx;
+}
+
+inline int LinkEntry::get_value() const {
+    return value;
+}
 
 #endif
