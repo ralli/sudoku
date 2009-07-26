@@ -41,7 +41,7 @@
 #define _(X) gettext(X)
 
 MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
-    model(model), sudokuView(model), statusView(model) {
+    model(model), sudokuView(model), statusView(model), hintView(model) {
     set_title(_("Sudoku"));
     set_default_size(800, 600);
     add(m_box);
@@ -126,11 +126,14 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     m_hbox.pack_start(sudokuView, Gtk::PACK_EXPAND_WIDGET);
     m_hbox.pack_start(statusView, Gtk::PACK_SHRINK);
 
+    m_box.pack_start(hintView, Gtk::PACK_SHRINK);
     m_box.pack_end(m_statusbar, Gtk::PACK_SHRINK);
 
     show_all_children();
     statusView.hide();
+    hintView.hide();
     context_id_status = m_statusbar.get_context_id("status");
+    update_statusbar();
 }
 
 void MainWindow::init_actions() {
@@ -153,8 +156,8 @@ void MainWindow::init_file_actions() {
             &MainWindow::on_file_new));
 
     m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::APPLY,
-            _("_Check"), _("Checks the sudoku")), sigc::mem_fun(*this,
-            &MainWindow::on_file_check));
+            _("_Check"), _("Checks the sudoku")), Gtk::AccelKey(
+            "<control>T"), sigc::mem_fun(*this, &MainWindow::on_file_check));
 
     m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN,
             _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(*this,
@@ -187,7 +190,6 @@ void MainWindow::init_edit_actions() {
     m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
             _("_Paste"), _("Pastes a grid from the clipboard")),
             sigc::mem_fun(*this, &MainWindow::on_edit_paste));
-
 
     m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
             _("_Difficulty")));
@@ -286,10 +288,9 @@ void MainWindow::init_view_highlight_actions() {
 
 void MainWindow::init_help_actions() {
     m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT,
-               _("_About"), _("Shows information about gsudoku")),
-               sigc::mem_fun(*this, &MainWindow::on_help_about));
+            _("_About"), _("Shows information about gsudoku")),
+            sigc::mem_fun(*this, &MainWindow::on_help_about));
 }
-
 
 void MainWindow::on_file_new() {
     model->generate();
@@ -435,8 +436,10 @@ void MainWindow::on_view_choices() {
 void MainWindow::on_view_sidebar() {
     if (statusView.is_visible()) {
         statusView.hide();
+        hintView.hide();
     } else {
         statusView.show();
+        hintView.show();
     }
 }
 

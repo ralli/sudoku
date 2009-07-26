@@ -201,13 +201,13 @@ public:
 
     /*!
      * \brief returns an iterator to the first child of this link
-     * \ŗeturn iterator to the first child of this link
+     * \return iterator to the first child of this link
      */
     const_iterator begin() const;
 
     /*!
      * \brief returns an iterator past the last child of this link
-     * \ŗeturn iterator past the last child of this link
+     * \return iterator past the last child of this link
      */
     const_iterator end() const;
 

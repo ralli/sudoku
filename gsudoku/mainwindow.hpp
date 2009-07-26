@@ -36,6 +36,7 @@
 #include "gtkmm.h"
 #include "sudokuview.hpp"
 #include "statusview.hpp"
+#include "hintview.hpp"
 #include "sudokumodel.hpp"
 
 class MainWindow: public Gtk::Window {
@@ -90,6 +91,7 @@ private:
     Glib::RefPtr<SudokuModel> model;
     SudokuView sudokuView;
     StatusView statusView;
+    HintView hintView;
     guint context_id_status;
 };
 

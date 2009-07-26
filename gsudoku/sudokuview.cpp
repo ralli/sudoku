@@ -258,6 +258,7 @@ bool SudokuView::on_button_release_event(GdkEventButton* event) {
     int idx = row * 9 + col;
     if (idx >= 0 && idx < 81)
         model->set_selected_cell(idx);
+    grab_focus();
     return true;
 }
 

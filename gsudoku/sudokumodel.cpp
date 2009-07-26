@@ -37,6 +37,8 @@
 #include "sudokumodel.hpp"
 #include "../sudoku/gridchecker.hpp"
 #include "../sudoku/sudokugenerator.hpp"
+#include "../sudoku/hint.hpp"
+#include "../sudoku/sudokusolver.hpp"
 
 void SudokuModel::load(std::string &filename) {
     std::ifstream in(filename.c_str());
@@ -158,6 +160,7 @@ void SudokuModel::set_current_cell_value(int value) {
     cell.set_value(value);
     grid.cleanup_choice(cell);
     m_signal_changed.emit();
+    m_signal_changed.emit();
 }
 
 void SudokuModel::toggle_current_cell_choice(int value) {
@@ -175,6 +178,7 @@ void SudokuModel::toggle_current_cell_choice(int value) {
         undo_manager.add_undo_command(command);
         cell.add_choice(value);
     }
+    clear_current_hint();
     m_signal_changed.emit();
 }
 
@@ -186,6 +190,7 @@ void SudokuModel::clear_current_cell_value() {
             selected_cell);
     undo_manager.add_undo_command(command);
     grid.clear_cell_value(grid[selected_cell]);
+    clear_current_hint();
     m_signal_changed.emit();
 }
 
@@ -257,4 +262,28 @@ void SudokuModel::print(std::ostream &out) const {
 bool SudokuModel::check() const {
     GridChecker checker;
     return checker.check(grid);
+}
+
+const Hint *SudokuModel::get_current_hint() const {
+    return current_hint;
+}
+
+void SudokuModel::find_next_hint() {
+    SudokuSolver solver;
+    delete current_hint;
+    current_hint = solver.find_next_hint(grid);
+    m_signal_changed.emit();
+}
+
+void SudokuModel::apply_current_hint() {
+    if (!current_hint)
+        return;
+    current_hint->apply();
+    clear_current_hint();
+    m_signal_changed.emit();
+}
+
+void SudokuModel::clear_current_hint() {
+    delete current_hint;
+    current_hint = 0;
 }

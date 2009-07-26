@@ -6,12 +6,16 @@ sudokuview.cpp \
 sudokuview.hpp \
 statusview.hpp \
 statusview.cpp \
+hintview.hpp \
+hintview.cpp \
 sudokumodel.cpp \
 sudokumodel.hpp \
 commands.hpp \
 commands.cpp \
 ../sudoku/sudokugenerator.hpp \
 ../sudoku/sudokugenerator.cpp \
+../sudoku/sudokusolver.hpp \
+../sudoku/sudokusolver.cpp \
 ../sudoku/gridchecker.hpp \
 ../sudoku/gridchecker.cpp \
 ../sudoku/dlxsolver.hpp \
