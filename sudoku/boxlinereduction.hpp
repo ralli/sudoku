@@ -60,6 +60,7 @@ public:
             const Range &range2, const Range &range3);
     void apply();
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class BoxLineReductionHintProducer: public HintProducer {

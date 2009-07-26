@@ -76,6 +76,7 @@ public:
     virtual ~SimpleForcingChainContradictionHint();
     void apply();
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class SimpleForcingChainHint: public Hint {
@@ -91,6 +92,7 @@ public:
                     SimpleConclusion *> &second_chain);
     void apply();
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class SimpleForcingChainHintProducer: public HintProducer {

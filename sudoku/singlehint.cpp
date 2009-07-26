@@ -54,6 +54,10 @@ void SingleHint::print_description(std::ostream &out) const {
       << " range: " << range.get_name();
 }
 
+const char *SingleHint::get_name() const {
+    return "Hidden single";
+}
+
 void SingleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) {
 
     for (RangeList::const_iterator irange = RANGES.begin(); irange

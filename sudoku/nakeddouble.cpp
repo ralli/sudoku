@@ -52,6 +52,10 @@ void NakedDoubleHint::print_description(std::ostream &out) const {
             get_choices_to_remove());
 }
 
+const char *NakedDoubleHint::get_name() const {
+    return "Naked double";
+}
+
 void fill_bitset(Cell &cell, std::bitset<10> &bits) {
     for (int value = 1; value < 10; ++value) {
         bits[value] = cell.has_choice(value);

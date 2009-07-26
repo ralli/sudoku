@@ -57,6 +57,10 @@ void HiddenTripleHint::print_description(std::ostream &out) const {
     out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
+const char *HiddenTripleHint::get_name() const {
+    return "Hidden triple";
+}
+
 void HiddenTripleHintProducer::fill_potential_values(const Range &range,
         Grid &grid, std::vector<int> &potentialvalues) const {
     std::set<int> v;

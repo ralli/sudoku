@@ -118,6 +118,10 @@ void SimpleForcingChainContradictionHint::print_description(std::ostream &out) c
             second_chain);
 }
 
+const char *SimpleForcingChainContradictionHint::get_name() const {
+    return "simple contradiction";
+}
+
 SimpleForcingChainHint::SimpleForcingChainHint(Grid &grid, int start_cell_idx,
         int cell_idx, int value, const std::vector<SimpleConclusion *> &first_chain,
         const std::vector<SimpleConclusion *> &second_chain) :
@@ -138,6 +142,10 @@ void SimpleForcingChainHint::print_description(std::ostream &out) const {
         << " cell: " << print_row_col(cell_idx) << " value: " << value << std::endl 
         << "first chain: " << print_forcing_chain(first_chain) << std::endl 
         << "second chain: " << print_forcing_chain(second_chain);
+}
+
+const char *SimpleForcingChainHint::get_name() const {
+    return "simple forcing chain";
 }
 
 void SimpleForcingChainHintProducer::find_next_cells(Grid &grid, int cell_idx,

@@ -44,6 +44,7 @@ public:
     NakedSingleHint(Grid &grid, Cell &cell);
     void apply();
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class NakedSingleHintProducer: public HintProducer {

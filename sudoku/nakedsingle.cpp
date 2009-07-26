@@ -50,13 +50,17 @@ void NakedSingleHint::print_description(std::ostream &out) const {
             << cell.first_choice();
 }
 
+const char *NakedSingleHint::get_name() const {
+    return "Naked single";
+}
+
 void NakedSingleHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     Grid::iterator begin = grid.begin();
     Grid::iterator end = grid.end();
     for (Grid::iterator i = begin; i != end; ++i) {
         Cell &cell = *i;
         if (cell.get_num_choices() == 1) {
-            if(!consumer.consume_hint(new NakedSingleHint(grid, cell)))
+            if (!consumer.consume_hint(new NakedSingleHint(grid, cell)))
                 return;
         }
     }

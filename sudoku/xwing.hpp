@@ -48,6 +48,7 @@ class XWingRowHint: public IndirectHint {
 public:
     XWingRowHint(Grid &grid, int row1, int row2, int col1, int col2, int value);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class XWingColumnHint: public IndirectHint {
@@ -61,6 +62,7 @@ public:
     XWingColumnHint(Grid &grid, int row1, int row2, int col1, int col2,
             int value);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class XWingHintProducer: public HintProducer {

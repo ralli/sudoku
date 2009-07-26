@@ -47,6 +47,7 @@ class ClaimingRowHint : public IndirectHint {
 public:
     ClaimingRowHint(std::vector<Cell *> &cells,int row, int block_idx, int value, Grid &grid);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class ClaimingColumnHint : public IndirectHint {
@@ -58,6 +59,7 @@ class ClaimingColumnHint : public IndirectHint {
 public:
     ClaimingColumnHint(std::vector<Cell *> &cells,int row, int block_idx, int value, Grid &grid);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class ClaimingHintProducer : public HintProducer {

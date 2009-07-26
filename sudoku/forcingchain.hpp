@@ -78,6 +78,7 @@ public:
     virtual ~ForcingChainHint();
     void apply();
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class ForcingChainRangeHint: public Hint {
@@ -89,6 +90,7 @@ public:
             std::vector<Link *> &conclusions);
     void apply();
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 /*!
@@ -116,6 +118,7 @@ public:
     virtual ~ForcingChainContradictionHint();
     void apply();
     void print_description(std::ostream &out) const;
+    virtual const char *get_name() const;
 };
 
 /*!

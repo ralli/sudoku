@@ -192,6 +192,10 @@ void ForcingChainHint::print_description(std::ostream &out) const {
     }
 }
 
+const char *ForcingChainHint::get_name() const {
+    return "Forcing chain";
+}
+
 ForcingChainRangeHint::ForcingChainRangeHint(Grid &grid, const Range &range,
         std::vector<Link *> &conclusions) :
     grid(grid), range(range), chains(conclusions.size()) {
@@ -220,6 +224,10 @@ void ForcingChainRangeHint::print_description(std::ostream &out) const {
     for (size_t i = 0; i < chains.size(); ++i) {
         out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(chains[i]);
     }
+}
+
+const char *ForcingChainRangeHint::get_name() const {
+    return "Range forcing chain";
 }
 
 ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid,
@@ -254,6 +262,10 @@ void ForcingChainContradictionHint::print_description(std::ostream &out) const {
     }
     out << "first chain: " << print_entry_chain(first_chain) << std::endl;
     out << "second chain: " << print_entry_chain(second_chain);
+}
+
+const char *ForcingChainContradictionHint::get_name() const {
+    return "Forcing chain contradiction";
 }
 
 Link::Link(Link *parent, int cell_idx, int value) :

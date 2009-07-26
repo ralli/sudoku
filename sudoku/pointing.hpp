@@ -48,6 +48,7 @@ public:
     void print_description(std::ostream &out) const;
     bool is_row_hint() const;
     bool is_col_hint() const;
+    const char *get_name() const;
 };
 
 class PointingHintProducer: public HintProducer {

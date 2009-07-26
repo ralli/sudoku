@@ -51,6 +51,7 @@ public:
     HiddenTripleHint(const std::vector<Cell *> &cells, int value1, int value2,
             int value3, const Range &range);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class HiddenTripleHintProducer: public HintProducer {

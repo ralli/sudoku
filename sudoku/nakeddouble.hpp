@@ -46,6 +46,7 @@ class NakedDoubleHint : public IndirectHint {
 public:
     NakedDoubleHint(int first_cell_idx, int second_cell_idx, int value1, int value2, const Range &range);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class NakedDoubleHintProducer : public HintProducer {

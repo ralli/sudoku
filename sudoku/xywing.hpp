@@ -51,6 +51,7 @@ public:
     XYWingHint(const Cell &xy, const Cell &yz, const Cell &xz, int x, int y,
             int z);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class XYWingHintProducer: public HintProducer {

@@ -49,6 +49,7 @@ public:
             const std::vector<const Range *> &row_ranges,
             const std::vector<const Range *> &col_ranges);
     void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class SwordfishHintProducer: public HintProducer {

@@ -56,6 +56,10 @@ void HiddenDoubleHint::print_description(std::ostream &out) const {
     out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
+const char *HiddenDoubleHint::get_name() const {
+    return "Hidden double";
+}
+
 void HiddenDoubleHintProducer::build_frequencies(Grid &grid,
         const Range &range, std::vector<std::vector<Cell *> > &frequencies) {
     for (Range::const_iterator i = range.begin(); i != range.end(); ++i) {

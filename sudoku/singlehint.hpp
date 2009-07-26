@@ -49,6 +49,7 @@ public:
 
     virtual void apply();
     virtual void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class SingleHintProducer: public HintProducer {

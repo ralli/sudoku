@@ -66,6 +66,8 @@ public:
      * \param out the stream to print oon
      */
     virtual void print_description(std::ostream &out) const = 0;
+
+    virtual const char *get_name() const = 0;
 private:
     Hint(const Hint &other) {
     }

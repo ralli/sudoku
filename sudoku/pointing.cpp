@@ -57,6 +57,10 @@ void PointingHint::print_description(std::ostream &out) const {
     out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
+const char *PointingHint::get_name() const {
+    return "Pointing";
+}
+
 bool PointingHint::is_row_hint() const {
     return row != -1;
 }

@@ -59,6 +59,10 @@ void SwordfishHint::print_description(std::ostream &out) const {
     out << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
+const char *SwordfishHint::get_name() const {
+    return "Swordfish";
+}
+
 void SwordfishHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (int value = 1; value < 10; ++value) {
         find_swordfishes(value, grid, RANGES.get_rows(), RANGES.get_columns(),

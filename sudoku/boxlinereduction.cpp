@@ -69,6 +69,10 @@ void BoxLineReductionHint::print_description(std::ostream &out) const {
     }
 }
 
+const char *BoxLineReductionHint::get_name() const {
+    return "box line reduction";
+}
+
 void BoxLineReductionHintProducer::find_hints(Grid &grid,
         HintConsumer &consumer) {
     for (int value = 1; value < 10; ++value) {

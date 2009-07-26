@@ -53,6 +53,10 @@ void XYWingHint::print_description(std::ostream &out) const {
             get_choices_to_remove());
 }
 
+const char *XYWingHint::get_name() const {
+    return "XY-wing";
+}
+
 void XYWingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (Grid::iterator i = grid.begin(); i != grid.end(); ++i) {
         find_xy_wing(*i, grid, consumer);

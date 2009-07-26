@@ -51,6 +51,7 @@ public:
     HiddenDoubleHint(std::vector<Cell *> cells, std::pair<int, int> pair,
             const Range &range);
     virtual void print_description(std::ostream &out) const;
+    const char *get_name() const;
 };
 
 class HiddenDoubleHintProducer: public HintProducer {

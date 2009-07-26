@@ -48,6 +48,10 @@ void XWingRowHint::print_description(std::ostream &out) const {
             << " value: " << value << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
+const char *XWingRowHint::get_name() const {
+    return "X-wing";
+}
+
 XWingColumnHint::XWingColumnHint(Grid &grid, int row1, int row2, int col1,
         int col2, int value) :
     grid(grid), row1(row1), row2(row2), col1(col1), col2(col2), value(value) {
@@ -58,6 +62,10 @@ void XWingColumnHint::print_description(std::ostream &out) const {
     out << "x-wing (column): row1: " << row1 + 1 << " row2: " << row2 + 1
             << " column1: " << col1 + 1 << " column2: " << col2 + 1
             << " value: " << value << " removing: " << print_choices_to_remove(get_choices_to_remove());
+}
+
+const char *XWingColumnHint::get_name() const {
+    return "X-wing";
 }
 
 void XWingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {

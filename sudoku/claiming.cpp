@@ -48,6 +48,10 @@ void ClaimingRowHint::print_description(std::ostream &out) const {
             << " value: " << value << " removing: " << print_choices_to_remove(get_choices_to_remove());
 }
 
+const char *ClaimingRowHint::get_name() const {
+    return "Claiming";
+}
+
 void ClaimingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (int row = 0; row < 9; ++row) {
         find_row_hint(row, grid, consumer);
@@ -71,6 +75,10 @@ void ClaimingColumnHint::print_description(std::ostream &out) const {
     const Range &block = RANGES.get_block(block_idx);
     out << "claiming(col): col: " << col + 1 << " block: " << block.get_name()
             << " value: " << value << " removing: " << print_choices_to_remove(get_choices_to_remove());
+}
+
+const char *ClaimingColumnHint::get_name() const {
+    return "Claiming";
 }
 
 int ClaimingHintProducer::find_block_by(int start_row, int start_col) const {
