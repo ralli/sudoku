@@ -68,7 +68,14 @@ public:
     void on_view_choices();
     void on_view_sidebar();
 private:
+    void init_actions();
+    void init_file_actions();
+    void init_edit_actions();
+    void init_view_actions();
+    void init_view_highlight_actions();
+    void init_help_actions();
     void on_clipboard_text_received(const Glib::ustring& text);
+    void update_statusbar();
 private:
     Gtk::VBox m_box;
     Gtk::HBox m_hbox;
@@ -83,6 +90,7 @@ private:
     Glib::RefPtr<SudokuModel> model;
     SudokuView sudokuView;
     StatusView statusView;
+    guint context_id_status;
 };
 
 #endif

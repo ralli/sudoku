@@ -48,142 +48,8 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
 
     model->signal_changed().connect(sigc::mem_fun(*this,
             &MainWindow::on_model_changed));
-    m_refActionGroup = Gtk::ActionGroup::create();
 
-    m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
-    m_refActionGroup->add(Gtk::Action::create("EditMenu", _("_Edit")));
-    m_refActionGroup->add(Gtk::Action::create("ViewMenu", _("_View")));
-    m_refActionGroup->add(Gtk::Action::create("HelpMenu", _("_Help")));
-    m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
-            _("_Difficulty")));
-    m_refActionGroup->add(Gtk::Action::create("ViewHighlight", _("_Highlight")));
-
-    m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
-            _("_New"), _("Clears the board")), sigc::mem_fun(*this,
-            &MainWindow::on_file_new));
-
-    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::APPLY,
-            _("_Check"), _("Checks the sudoku")), sigc::mem_fun(*this,
-            &MainWindow::on_file_check));
-
-    m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN,
-            _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(*this,
-            &MainWindow::on_file_open));
-
-    m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT,
-            _("E_xit"), _("Exits the application")), sigc::mem_fun(*this,
-            &MainWindow::on_file_exit));
-
-    m_actionUndo = Gtk::Action::create("EditUndo", Gtk::Stock::UNDO,
-            _("_Undo"), _("Undoes the last command"));
-    m_actionUndo->set_sensitive(false);
-    m_refActionGroup->add(m_actionUndo, Gtk::AccelKey("<control>Z"),
-            sigc::mem_fun(*this, &MainWindow::on_edit_undo));
-
-    m_actionRedo = Gtk::Action::create("EditRedo", Gtk::Stock::REDO,
-            _("_Redo"), _("Re executes the last undone command"));
-    m_actionRedo->set_sensitive(false);
-    m_refActionGroup->add(m_actionRedo, Gtk::AccelKey("<control><shift>Z"),
-            sigc::mem_fun(*this, &MainWindow::on_edit_redo));
-
-    m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY,
-            _("_Copy"), _("Copies the grid to the clipboard")),
-            sigc::mem_fun(*this, &MainWindow::on_edit_copy));
-
-    m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
-            _("_Paste"), _("Pastes a grid from the clipboard")),
-            sigc::mem_fun(*this, &MainWindow::on_edit_paste));
-
-    Gtk::RadioAction::Group difficulty_group;
-
-    m_difficultyEasy = Gtk::RadioAction::create(difficulty_group,
-            "EditDifficultyEasy", _("_Easy"), _("Easy")), Gtk::AccelKey(
-            "<control><alt>E");
-    m_refActionGroup->add(m_difficultyEasy, sigc::mem_fun(*this,
-            &MainWindow::on_edit_difficulty_easy));
-    m_difficultyEasy->set_active();
-
-    m_difficultyMedium = Gtk::RadioAction::create(difficulty_group,
-            "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
-            "<control><alt>M"), sigc::mem_fun(*this,
-            &MainWindow::on_edit_difficulty_medium);
-    m_refActionGroup->add(m_difficultyMedium, sigc::mem_fun(*this,
-            &MainWindow::on_edit_difficulty_medium));
-
-    m_difficultyHard = Gtk::RadioAction::create(difficulty_group,
-            "EditDifficultyHard", _("_Hard"), _("Hard")), Gtk::AccelKey(
-            "<control><alt>H");
-    m_refActionGroup->add(m_difficultyHard, sigc::mem_fun(*this,
-            &MainWindow::on_edit_difficulty_hard));
-
-    Gtk::RadioAction::Group view_choices_group;
-
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewNone", _("Highlight _nothing"),
-            _("Removes all cell highlightings")), Gtk::AccelKey(
-            "<control><alt>0"), sigc::mem_fun(*this,
-            &MainWindow::on_highlight_nothing));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewOne", _("Highlight _1"),
-            _("Shows all cells having a one as candidate")),
-            Gtk::AccelKey("<control><alt>1"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_one));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewTwo", _("Highlight _2"),
-            _("Shows all cells having a two as candidate")),
-            Gtk::AccelKey("<control><alt>2"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_two));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewThree", _("Highlight _3"),
-            _("Shows all cells having a three as candidate")),
-            Gtk::AccelKey("<control><alt>3"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_three));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewFour", _("Highlight _4"),
-            _("Shows all cells having a four as candidate")),
-            Gtk::AccelKey("<control><alt>4"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_four));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewFive", _("Highlight _5"),
-            _("Shows all cells having a five as candidate")),
-            Gtk::AccelKey("<control><alt>5"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_five));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewSix", _("Highlight _6"),
-            _("Shows all cells having a six as candidate")),
-            Gtk::AccelKey("<control><alt>6"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_six));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewSeven", _("Highlight _7"),
-            _("Shows all cells having a seven as candidate")),
-            Gtk::AccelKey("<control><alt>7"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_seven));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewEight", _("Highlight _8"),
-            _("Shows all cells having a eight as candidate")),
-            Gtk::AccelKey("<control><alt>8"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_eight));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-            "ViewNine", _("Highlight _9"),
-            _("Shows all cells having a nine as candidate")),
-            Gtk::AccelKey("<control><alt>9"), sigc::mem_fun(*this,
-                    &MainWindow::on_highlight_nine));
-
-    m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT,
-            _("_About"), _("Shows information about gsudoku")),
-            sigc::mem_fun(*this, &MainWindow::on_help_about));
-
-    Glib::RefPtr<Gtk::ToggleAction> toggle_choices = Gtk::ToggleAction::create(
-            "ViewChoices", _("_Choices"), _("Shows the choices"), true);
-
-    m_refActionGroup->add(toggle_choices, sigc::mem_fun(*this,
-            &MainWindow::on_view_choices));
-
-    Glib::RefPtr<Gtk::ToggleAction> toggle_sidebar = Gtk::ToggleAction::create(
-            "ViewSidebar", _("_Sidebar"), _("Shows the sidebar"), true);
-
-    m_refActionGroup->add(toggle_sidebar, sigc::mem_fun(*this,
-            &MainWindow::on_view_sidebar));
+    init_actions();
 
     m_refUIManager = Gtk::UIManager::create();
     m_refUIManager->insert_action_group(m_refActionGroup);
@@ -251,21 +117,179 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
     }
 
     Gtk::Widget* pMenubar = m_refUIManager->get_widget("/MenuBar");
-    if (pMenubar)
-        m_box.pack_start(*pMenubar, Gtk::PACK_SHRINK);
+    m_box.pack_start(*pMenubar, Gtk::PACK_SHRINK);
 
     Gtk::Widget* pToolbar = m_refUIManager->get_widget("/ToolBar");
-    if (pToolbar)
-        m_box.pack_start(*pToolbar, Gtk::PACK_SHRINK);
+    m_box.pack_start(*pToolbar, Gtk::PACK_SHRINK);
 
     m_box.pack_start(m_hbox, Gtk::PACK_EXPAND_WIDGET);
-
     m_hbox.pack_start(sudokuView, Gtk::PACK_EXPAND_WIDGET);
     m_hbox.pack_start(statusView, Gtk::PACK_SHRINK);
+
     m_box.pack_end(m_statusbar, Gtk::PACK_SHRINK);
 
     show_all_children();
+    statusView.hide();
+    context_id_status = m_statusbar.get_context_id("status");
 }
+
+void MainWindow::init_actions() {
+    m_refActionGroup = Gtk::ActionGroup::create();
+
+    m_refActionGroup->add(Gtk::Action::create("FileMenu", _("_File")));
+    m_refActionGroup->add(Gtk::Action::create("EditMenu", _("_Edit")));
+    m_refActionGroup->add(Gtk::Action::create("ViewMenu", _("_View")));
+    m_refActionGroup->add(Gtk::Action::create("HelpMenu", _("_Help")));
+
+    init_file_actions();
+    init_edit_actions();
+    init_view_actions();
+    init_help_actions();
+}
+
+void MainWindow::init_file_actions() {
+    m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
+            _("_New"), _("Clears the board")), sigc::mem_fun(*this,
+            &MainWindow::on_file_new));
+
+    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::APPLY,
+            _("_Check"), _("Checks the sudoku")), sigc::mem_fun(*this,
+            &MainWindow::on_file_check));
+
+    m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN,
+            _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(*this,
+            &MainWindow::on_file_open));
+
+    m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT,
+            _("E_xit"), _("Exits the application")), sigc::mem_fun(*this,
+            &MainWindow::on_file_exit));
+}
+
+void MainWindow::init_edit_actions() {
+    Gtk::RadioAction::Group difficulty_group;
+
+    m_actionUndo = Gtk::Action::create("EditUndo", Gtk::Stock::UNDO,
+            _("_Undo"), _("Undoes the last command"));
+    m_actionUndo->set_sensitive(false);
+    m_refActionGroup->add(m_actionUndo, Gtk::AccelKey("<control>Z"),
+            sigc::mem_fun(*this, &MainWindow::on_edit_undo));
+
+    m_actionRedo = Gtk::Action::create("EditRedo", Gtk::Stock::REDO,
+            _("_Redo"), _("Re executes the last undone command"));
+    m_actionRedo->set_sensitive(false);
+    m_refActionGroup->add(m_actionRedo, Gtk::AccelKey("<control><shift>Z"),
+            sigc::mem_fun(*this, &MainWindow::on_edit_redo));
+
+    m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY,
+            _("_Copy"), _("Copies the grid to the clipboard")),
+            sigc::mem_fun(*this, &MainWindow::on_edit_copy));
+
+    m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
+            _("_Paste"), _("Pastes a grid from the clipboard")),
+            sigc::mem_fun(*this, &MainWindow::on_edit_paste));
+
+
+    m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
+            _("_Difficulty")));
+
+    m_difficultyEasy = Gtk::RadioAction::create(difficulty_group,
+            "EditDifficultyEasy", _("_Easy"), _("Easy")), Gtk::AccelKey(
+            "<control><alt>E");
+    m_refActionGroup->add(m_difficultyEasy, sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_easy));
+    m_difficultyEasy->set_active();
+
+    m_difficultyMedium = Gtk::RadioAction::create(difficulty_group,
+            "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
+            "<control><alt>M"), sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_medium);
+    m_refActionGroup->add(m_difficultyMedium, sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_medium));
+
+    m_difficultyHard = Gtk::RadioAction::create(difficulty_group,
+            "EditDifficultyHard", _("_Hard"), _("Hard")), Gtk::AccelKey(
+            "<control><alt>H");
+    m_refActionGroup->add(m_difficultyHard, sigc::mem_fun(*this,
+            &MainWindow::on_edit_difficulty_hard));
+}
+
+void MainWindow::init_view_actions() {
+    Glib::RefPtr<Gtk::ToggleAction> toggle_choices = Gtk::ToggleAction::create(
+            "ViewChoices", _("_Choices"), _("Shows the choices"), true);
+
+    m_refActionGroup->add(toggle_choices, sigc::mem_fun(*this,
+            &MainWindow::on_view_choices));
+
+    Glib::RefPtr<Gtk::ToggleAction> toggle_sidebar = Gtk::ToggleAction::create(
+            "ViewSidebar", _("_Sidebar"), _("Shows the sidebar"), false);
+
+    m_refActionGroup->add(toggle_sidebar, sigc::mem_fun(*this,
+            &MainWindow::on_view_sidebar));
+
+    init_view_highlight_actions();
+}
+
+void MainWindow::init_view_highlight_actions() {
+    m_refActionGroup->add(Gtk::Action::create("ViewHighlight", _("_Highlight")));
+    Gtk::RadioAction::Group view_choices_group;
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewNone", _("Highlight _nothing"),
+            _("Removes all cell highlightings")), Gtk::AccelKey(
+            "<control><alt>0"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_nothing));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewOne", _("Highlight _1"),
+            _("Shows all cells having a one as candidate")),
+            Gtk::AccelKey("<control><alt>1"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_one));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewTwo", _("Highlight _2"),
+            _("Shows all cells having a two as candidate")),
+            Gtk::AccelKey("<control><alt>2"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_two));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewThree", _("Highlight _3"),
+            _("Shows all cells having a three as candidate")),
+            Gtk::AccelKey("<control><alt>3"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_three));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewFour", _("Highlight _4"),
+            _("Shows all cells having a four as candidate")),
+            Gtk::AccelKey("<control><alt>4"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_four));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewFive", _("Highlight _5"),
+            _("Shows all cells having a five as candidate")),
+            Gtk::AccelKey("<control><alt>5"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_five));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewSix", _("Highlight _6"),
+            _("Shows all cells having a six as candidate")),
+            Gtk::AccelKey("<control><alt>6"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_six));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewSeven", _("Highlight _7"),
+            _("Shows all cells having a seven as candidate")),
+            Gtk::AccelKey("<control><alt>7"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_seven));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewEight", _("Highlight _8"),
+            _("Shows all cells having a eight as candidate")),
+            Gtk::AccelKey("<control><alt>8"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_eight));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
+            "ViewNine", _("Highlight _9"),
+            _("Shows all cells having a nine as candidate")),
+            Gtk::AccelKey("<control><alt>9"), sigc::mem_fun(*this,
+                    &MainWindow::on_highlight_nine));
+}
+
+void MainWindow::init_help_actions() {
+    m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT,
+               _("_About"), _("Shows information about gsudoku")),
+               sigc::mem_fun(*this, &MainWindow::on_help_about));
+}
+
 
 void MainWindow::on_file_new() {
     model->generate();
@@ -337,9 +361,20 @@ void MainWindow::on_edit_redo() {
     model->redo();
 }
 
+void MainWindow::update_statusbar() {
+    m_statusbar.pop(context_id_status);
+    int todo = model->get_todo();
+    std::ostringstream os;
+    os << "Todo: " << todo << " Done: " << 81 - todo << " Choices: "
+            << model->get_num_choices();
+    m_statusbar.pop(context_id_status);
+    m_statusbar.push(os.str(), context_id_status);
+}
+
 void MainWindow::on_model_changed() {
     m_actionUndo->set_sensitive(model->can_undo());
     m_actionRedo->set_sensitive(model->can_redo());
+    update_statusbar();
 }
 
 void MainWindow::on_edit_copy() {
