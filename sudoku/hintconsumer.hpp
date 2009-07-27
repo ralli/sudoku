@@ -41,13 +41,14 @@
 class SingleHintConsumer: public HintConsumer {
 private:
     bool success;
+    Grid &grid;
 public:
-    SingleHintConsumer();
+    SingleHintConsumer(Grid &grid);
     bool consume_hint(Hint *hint);
     bool has_hints() const;
     bool wants_more_hints() const;
 private:
-    SingleHintConsumer(const SingleHintConsumer &other) {
+    SingleHintConsumer(const SingleHintConsumer &other) : grid(other.grid) {
     }
 
     SingleHintConsumer &operator =(const SingleHintConsumer &other) {

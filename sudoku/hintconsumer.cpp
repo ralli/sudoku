@@ -39,14 +39,14 @@
 #include "hint.hpp"
 
 
-SingleHintConsumer::SingleHintConsumer() :
-    success(false) {
+SingleHintConsumer::SingleHintConsumer(Grid &grid) :
+    success(false), grid(grid) {
 }
 
 bool SingleHintConsumer::consume_hint(Hint *hint) {
     hint->print_description(std::cout);
     std::cout << std::endl;
-    hint->apply();
+    hint->apply(grid);
     delete hint;
     success = true;
     return false;

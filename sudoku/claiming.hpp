@@ -39,25 +39,21 @@
 
 class Cell;
 class ClaimingRowHint : public IndirectHint {
-    std::vector<Cell *> cells;
     int                 row;
     int                 block_idx;
     int                 value;
-    Grid                &grid;
 public:
-    ClaimingRowHint(std::vector<Cell *> &cells,int row, int block_idx, int value, Grid &grid);
+    ClaimingRowHint(int row, int block_idx, int value);
     void print_description(std::ostream &out) const;
     const char *get_name() const;
 };
 
 class ClaimingColumnHint : public IndirectHint {
-    std::vector<Cell *> cells;
     int                 col;
     int                 block_idx;
     int                 value;
-    Grid                &grid;
 public:
-    ClaimingColumnHint(std::vector<Cell *> &cells,int row, int block_idx, int value, Grid &grid);
+    ClaimingColumnHint(int row, int block_idx, int value);
     void print_description(std::ostream &out) const;
     const char *get_name() const;
 };

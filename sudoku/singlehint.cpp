@@ -38,20 +38,19 @@
 
 #include <iostream>
 
-SingleHint::SingleHint(Grid &grid, Cell &cell, int value, const Range &range) :
-    grid(grid), cell(cell), value(value), range(range) {
+SingleHint::SingleHint(int cell_idx, int value, const Range &range) :
+    cell_idx(cell_idx), value(value), range(range) {
 }
 
-void SingleHint::apply() {
+void SingleHint::apply(Grid &grid) {
+    Cell &cell = grid[cell_idx];
     cell.set_value(value);
     grid.cleanup_choice(cell);
 }
 
 void SingleHint::print_description(std::ostream &out) const {
-  out << "single: cell: " 
-      << print_row_col(cell.get_idx()) 
-      << " value: " << value 
-      << " range: " << range.get_name();
+    out << "single: cell: " << print_row_col(cell_idx) << " value: " << value
+            << " range: " << range.get_name();
 }
 
 const char *SingleHint::get_name() const {
@@ -76,8 +75,8 @@ void SingleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) {
 
         for (int value = 1; value < 10; ++value) {
             if (frequencies[value].size() == 1) {
-                if (!consumer.consume_hint(new SingleHint(grid,
-                        *frequencies[value][0], value, *irange))) {
+                if (!consumer.consume_hint(new SingleHint(
+                        frequencies[value][0]->get_idx(), value, *irange))) {
                     return;
                 }
             }

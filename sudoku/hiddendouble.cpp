@@ -38,17 +38,19 @@
 #include "hintconsumer.hpp"
 #include "util.hpp"
 
-HiddenDoubleHint::HiddenDoubleHint(std::vector<Cell *> cells, std::pair<int,
-        int> pair, const Range &range) :
-    cells(cells), pair(pair), range(range) {
+HiddenDoubleHint::HiddenDoubleHint(const std::vector<Cell *> &xcells,
+        std::pair<int, int> pair, const Range &range) :
+    pair(pair), range(range) {
+    for (std::vector<Cell *>::const_iterator i = xcells.begin(); i
+            != xcells.end(); ++i)
+        cells.push_back((*i)->get_idx());
 
 }
 
 void HiddenDoubleHint::print_description(std::ostream &out) const {
     out << "hidden double: cells: ";
-    for (std::vector<Cell *>::const_iterator i = cells.begin(); i
-            != cells.end(); ++i) {
-        out << print_row_col((*i)->get_idx()) << ' ';
+    for (std::vector<int>::const_iterator i = cells.begin(); i != cells.end(); ++i) {
+        out << print_row_col((*i)) << ' ';
     }
     out << "pair: (" << pair.first << "," << pair.second << ") range: "
             << range.get_name();
@@ -100,10 +102,10 @@ void HiddenDoubleHintProducer::build_pair_map(Grid &grid, const Range &range,
 void HiddenDoubleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) {
     for (RangeList::const_iterator irange = RANGES.begin(); irange
             != RANGES.end(); ++irange) {
-        std::map<std::pair<int, int>, std::vector<Cell *> > pairs;
+        pair_map pairs;
         build_pair_map(grid, *irange, pairs);
         for (pair_map::iterator ipair = pairs.begin(); ipair != pairs.end(); ++ipair) {
-            std::vector<Cell *> cells = ipair->second;
+            std::vector<Cell *> &cells = ipair->second;
             if (cells.size() == 2) {
                 for (std::vector<Cell *>::iterator i = cells.begin(); i
                         != cells.end(); ++i) {
@@ -120,8 +122,8 @@ void HiddenDoubleHintProducer::find_hints(Grid & grid, HintConsumer & consumer) 
     }
 }
 
-HiddenDoubleHint *HiddenDoubleHintProducer::create_hint(const std::vector<Cell *> &cells,
-        const std::pair<int, int> &values, const Range &range) const {
+HiddenDoubleHint *HiddenDoubleHintProducer::create_hint(const std::vector<
+        Cell *> &cells, const std::pair<int, int> &values, const Range &range) const {
     HiddenDoubleHint *hint = new HiddenDoubleHint(cells, values, range);
     for (std::vector<Cell *>::const_iterator i = cells.begin(); i
             != cells.end(); ++i) {

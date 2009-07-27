@@ -59,7 +59,7 @@ public:
     /*!
      * \brief applies the hint to the sudoku
      */
-    virtual void apply() = 0;
+    virtual void apply(Grid &grid) = 0;
 
     /*!
      * \brief prints a description of the hint wich can be interpreted by a human user.

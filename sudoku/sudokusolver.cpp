@@ -40,7 +40,6 @@
 #include "hintconsumer.hpp"
 #include "singlehint.hpp"
 #include "hiddendouble.hpp"
-#include "simpleforcing.hpp"
 #include "pointing.hpp"
 #include "boxlinereduction.hpp"
 #include "xwing.hpp"

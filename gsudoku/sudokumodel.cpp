@@ -278,7 +278,7 @@ void SudokuModel::find_next_hint() {
 void SudokuModel::apply_current_hint() {
     if (!current_hint)
         return;
-    current_hint->apply();
+    current_hint->apply(grid);
     clear_current_hint();
     m_signal_changed.emit();
 }

@@ -2,8 +2,6 @@ bin_PROGRAMS=sudoku dancinglinks
 
 sudoku_SOURCES= boxlinereduction.cpp \
 boxlinereduction.hpp \
-simpleforcing.hpp \
-simpleforcing.cpp \
 forcingchain.cpp \
 forcingchain.hpp \
 grid.cpp \

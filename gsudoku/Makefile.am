@@ -36,7 +36,6 @@ commands.cpp \
 ../sudoku/nakedsingle.cpp \
 ../sudoku/pointing.cpp \
 ../sudoku/range.cpp \
-../sudoku/simpleforcing.cpp \
 ../sudoku/singlehint.cpp \
 ../sudoku/swordfish.cpp \
 ../sudoku/xwing.cpp \
@@ -54,7 +53,6 @@ commands.cpp \
 ../sudoku/nakeddouble.hpp \
 ../sudoku/pointing.hpp \
 ../sudoku/range.hpp \
-../sudoku/simpleforcing.hpp \
 ../sudoku/singlehint.hpp \
 ../sudoku/swordfish.hpp \
 ../sudoku/util.hpp \

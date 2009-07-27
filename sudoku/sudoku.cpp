@@ -44,7 +44,6 @@
 #include "hintconsumer.hpp"
 #include "singlehint.hpp"
 #include "hiddendouble.hpp"
-#include "simpleforcing.hpp"
 #include "pointing.hpp"
 #include "boxlinereduction.hpp"
 #include "xwing.hpp"
@@ -85,7 +84,7 @@ bool solve(const std::string &s) {
     while (true) {
         ++iteration;
         std::cout << "iteration: " << iteration << std::endl;
-        SingleHintConsumer consumer;
+        SingleHintConsumer consumer(grid);
         for (std::vector<HintProducer *>::const_iterator i =
                 hintproducers.begin(); i != hintproducers.end(); ++i) {
             (*i)->find_hints(grid, consumer);

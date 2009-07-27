@@ -53,13 +53,14 @@
 
 class MyHintConsumer: public HintConsumer {
     bool success;
+    Grid &grid;
 public:
-    MyHintConsumer() :
-        success(false) {
+    MyHintConsumer(Grid &grid) :
+        success(false), grid(grid) {
     }
 
     bool consume_hint(Hint *hint) {
-        hint->apply();
+        hint->apply(grid);
         delete hint;
         success = true;
         return false;
@@ -121,7 +122,7 @@ bool SudokuGenerator::check_difficulty(const Grid &testgrid) {
         int found_idx = 0;
         for (std::vector<HintProducer *>::iterator i = hint_producers.begin(); i
                 != hint_producers.end(); ++i) {
-            MyHintConsumer consumer;
+            MyHintConsumer consumer(grid);
             (*i)->find_hints(grid, consumer);
             if (!consumer.wants_more_hints()) {
                 success = true;

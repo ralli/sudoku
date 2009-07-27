@@ -38,11 +38,11 @@
 class Cell;
 
 class NakedSingleHint: public Hint {
-    Grid &grid;
-    Cell &cell;
+    int cell_idx;
+    int value;
 public:
-    NakedSingleHint(Grid &grid, Cell &cell);
-    void apply();
+    NakedSingleHint(int cell_idx, int value);
+    void apply(Grid &grid);
     void print_description(std::ostream &out) const;
     const char *get_name() const;
 };

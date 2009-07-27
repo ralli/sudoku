@@ -44,11 +44,11 @@ class Grid;
 class HintConsumer;
 
 class HiddenDoubleHint: public IndirectHint {
-    std::vector<Cell *> cells;
+    std::vector<int> cells;
     std::pair<int, int> pair;
     const Range &range;
 public:
-    HiddenDoubleHint(std::vector<Cell *> cells, std::pair<int, int> pair,
+    HiddenDoubleHint(const std::vector<Cell *> &cells, std::pair<int, int> pair,
             const Range &range);
     virtual void print_description(std::ostream &out) const;
     const char *get_name() const;

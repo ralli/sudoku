@@ -37,17 +37,17 @@
 #include "hintconsumer.hpp"
 #include "util.hpp"
 
-BoxLineReductionHint::BoxLineReductionHint(Grid &grid, int value,
+BoxLineReductionHint::BoxLineReductionHint(int value,
         const std::vector<int> &cells_to_clear, const Range &block1,
         const Range &block2, const Range &block3, const Range &range1,
         const Range &range2, const Range &range3) :
-    grid(grid), value(value), cells_to_clear(cells_to_clear), block1(block1),
+    value(value), cells_to_clear(cells_to_clear), block1(block1),
             block2(block2), block3(block3), range1(range1), range2(range2),
             range3(range3) {
 
 }
 
-void BoxLineReductionHint::apply() {
+void BoxLineReductionHint::apply(Grid &grid) {
     for (std::vector<int>::const_iterator i = cells_to_clear.begin(); i
             != cells_to_clear.end(); ++i) {
         Cell &cell = grid[*i];
@@ -222,6 +222,6 @@ Hint *BoxLineReductionHintProducer::create_hint(Grid &grid, const std::vector<
     if (cells_to_clear.empty())
         return 0;
 
-    return new BoxLineReductionHint(grid, value, cells_to_clear, block1,
-            block2, block3, range1, range2, range3);
+    return new BoxLineReductionHint(value, cells_to_clear, block1, block2,
+            block3, range1, range2, range3);
 }

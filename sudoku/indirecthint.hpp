@@ -40,26 +40,23 @@
 class Cell;
 
 class IndirectHint: public Hint {
-    std::vector<std::pair<Cell *, int> > choices_to_remove;
+    std::vector<std::pair<int, int> > choices_to_remove;
 public:
     void add_choice_to_remove(Cell *cell, int value);
-    const std::vector<std::pair<Cell *, int> > &get_choices_to_remove() const;
-    void apply();
+    const std::vector<std::pair<int, int> > &get_choices_to_remove() const;
+    void apply(Grid &grid);
 };
 
-inline void IndirectHint::add_choice_to_remove(Cell *cell, int value) {
-    choices_to_remove.push_back(std::pair<Cell*, int>(cell, value));
-}
 
-inline const std::vector<std::pair<Cell *, int> > &IndirectHint::get_choices_to_remove() const {
+inline const std::vector<std::pair<int, int> > &IndirectHint::get_choices_to_remove() const {
     return choices_to_remove;
 }
 
 struct print_choices_to_remove {
-    const std::vector<std::pair<Cell *, int> > &choices_to_remove;
+    const std::vector<std::pair<int, int> > &choices_to_remove;
 
     print_choices_to_remove(
-            const std::vector<std::pair<Cell *, int> > &choices_to_remove) :
+            const std::vector<std::pair<int, int> > &choices_to_remove) :
         choices_to_remove(choices_to_remove) {
 
     }

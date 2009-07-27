@@ -94,7 +94,8 @@ WeakLink *LinkFactory::create_weak_link(Link *parent, int cell_idx, int value) {
 
 inline void fill_chain(Link *link, std::vector<LinkEntry> &chain) {
     while (link) {
-        chain.push_back(LinkEntry(link->is_strong_link(), link->get_cell_idx(), link->get_value()));
+        chain.push_back(LinkEntry(link->is_strong_link(), link->get_cell_idx(),
+                link->get_value()));
         link = link->get_parent();
     }
 
@@ -126,7 +127,6 @@ std::ostream &operator <<(std::ostream &out, const print_link_entry &pl) {
     return out;
 }
 
-
 /*!
  * \brief prints a given forcing chain
  */
@@ -153,12 +153,11 @@ std::ostream &operator <<(std::ostream &out, const print_entry_chain &chain) {
     return out;
 }
 
-
 /*!
  * \brief constructor
  */
-ForcingChainHint::ForcingChainHint(Grid &grid, const std::vector<Link *> &links) :
-    grid(grid), chains(links.size()) {
+ForcingChainHint::ForcingChainHint(const std::vector<Link *> &links) :
+    chains(links.size()) {
     for (size_t i = 0; i < links.size(); ++i) {
         fill_chain(links[i], chains[i]);
     }
@@ -171,7 +170,7 @@ ForcingChainHint::~ForcingChainHint() {
 
 }
 
-void ForcingChainHint::apply() {
+void ForcingChainHint::apply(Grid &grid) {
     LinkEntry &link_entry = chains.front().back();
     Cell &cell = grid[link_entry.get_cell_idx()];
 
@@ -184,11 +183,13 @@ void ForcingChainHint::apply() {
 }
 
 void ForcingChainHint::print_description(std::ostream &out) const {
-    out << "forcing chain: conclusion: " << print_link_entry(chains.front().back());
+    out << "forcing chain: conclusion: " << print_link_entry(
+            chains.front().back());
     out << " start cell: " << print_row_col(
             chains.front().front().get_cell_idx());
     for (size_t i = 0; i < chains.size(); ++i) {
-        out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(chains[i]);
+        out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(
+                chains[i]);
     }
 }
 
@@ -196,15 +197,15 @@ const char *ForcingChainHint::get_name() const {
     return "Forcing chain";
 }
 
-ForcingChainRangeHint::ForcingChainRangeHint(Grid &grid, const Range &range,
-        std::vector<Link *> &conclusions) :
-    grid(grid), range(range), chains(conclusions.size()) {
+ForcingChainRangeHint::ForcingChainRangeHint(const Range &range, std::vector<
+        Link *> &conclusions) :
+    range(range), chains(conclusions.size()) {
     for (size_t i = 0; i < conclusions.size(); ++i) {
         fill_chain(conclusions[i], chains[i]);
     }
 }
 
-void ForcingChainRangeHint::apply() {
+void ForcingChainRangeHint::apply(Grid &grid) {
     LinkEntry &link = chains.front().back();
     Cell &cell = grid[link.get_cell_idx()];
 
@@ -222,7 +223,8 @@ void ForcingChainRangeHint::print_description(std::ostream &out) const {
     out << " start cell: " << print_row_col(
             chains.front().front().get_cell_idx());
     for (size_t i = 0; i < chains.size(); ++i) {
-        out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(chains[i]);
+        out << std::endl << "chain " << i + 1 << ": " << print_entry_chain(
+                chains[i]);
     }
 }
 
@@ -230,9 +232,8 @@ const char *ForcingChainRangeHint::get_name() const {
     return "Range forcing chain";
 }
 
-ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid,
-        Link *first_link, Link *second_link) :
-    grid(grid) {
+ForcingChainContradictionHint::ForcingChainContradictionHint(Link *first_link,
+        Link *second_link) {
     fill_chain(first_link, first_chain);
     fill_chain(second_link, second_chain);
 }
@@ -240,7 +241,7 @@ ForcingChainContradictionHint::ForcingChainContradictionHint(Grid &grid,
 ForcingChainContradictionHint::~ForcingChainContradictionHint() {
 }
 
-void ForcingChainContradictionHint::apply() {
+void ForcingChainContradictionHint::apply(Grid &grid) {
     LinkEntry &link = first_chain.front();
     Cell &cell = grid[link.get_cell_idx()];
     if (link.is_strong()) {
@@ -627,8 +628,8 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
             std::cout << ' ' << print_link(*i);
             std::cout << std::endl;
 #endif
-            ForcingChainRangeHint *hint = new ForcingChainRangeHint(grid,
-                    range, conclusions);
+            ForcingChainRangeHint *hint = new ForcingChainRangeHint(range,
+                    conclusions);
             if (!consumer.consume_hint(hint))
                 return;
         }
@@ -696,7 +697,7 @@ bool ForcingChainHintProducer::find_conclusion(Link *weak_link,
     std::vector<Link *> links;
     if (!weak_link_map.find_conclusion(strong_link_map, links))
         return false;
-    ForcingChainHint *hint = new ForcingChainHint(grid, links);
+    ForcingChainHint *hint = new ForcingChainHint(links);
     consumer.consume_hint(hint);
     return true;
 }
@@ -730,8 +731,8 @@ bool ForcingChainHintProducer::find_contradiction(Link *start,
         Link *contradiction = linkMap.find_contradiction(link);
 
         if (contradiction) {
-            consumer.consume_hint(new ForcingChainContradictionHint(original,
-                    link, contradiction));
+            consumer.consume_hint(new ForcingChainContradictionHint(link,
+                    contradiction));
             return true;
         }
 
@@ -784,7 +785,7 @@ bool ForcingChainHintProducer::find_common_conclusion(LinkMap &allLinks,
         return false;
     std::vector<Link *> conclusions;
     if (allLinks.find_common_conclusion(nconclusions, conclusions)) {
-        consumer.consume_hint(new ForcingChainHint(grid, conclusions));
+        consumer.consume_hint(new ForcingChainHint(conclusions));
         return true;
     }
     return false;
@@ -891,15 +892,15 @@ public:
 
     bool consume_hint(Hint *hint) {
         IndirectHint *h = dynamic_cast<IndirectHint *> (hint);
-        std::vector<std::pair<Cell *, int> >::const_iterator begin =
+        std::vector<std::pair<int, int> >::const_iterator begin =
                 h->get_choices_to_remove().begin();
-        std::vector<std::pair<Cell *, int> >::const_iterator end =
+        std::vector<std::pair<int, int> >::const_iterator end =
                 h->get_choices_to_remove().end();
 
-        for (std::vector<std::pair<Cell *, int> >::const_iterator i = begin; i
+        for (std::vector<std::pair<int, int> >::const_iterator i = begin; i
                 != end; ++i) {
             links.push_back(factory.create_weak_link(parent,
-                    i->first->get_idx(), i->second));
+                    i->first, i->second));
         }
 
         delete hint;

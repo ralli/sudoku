@@ -37,15 +37,15 @@
 #include "range.hpp"
 #include "grid.hpp"
 
-ClaimingRowHint::ClaimingRowHint(std::vector<Cell *> &cells, int row,
-        int block_idx, int value, Grid &grid) :
-    cells(cells), row(row), block_idx(block_idx), value(value), grid(grid) {
+ClaimingRowHint::ClaimingRowHint(int row, int block_idx, int value) :
+    row(row), block_idx(block_idx), value(value) {
 }
 
 void ClaimingRowHint::print_description(std::ostream &out) const {
     const Range &block = RANGES.get_block(block_idx);
     out << "claiming(row): row: " << row + 1 << " block: " << block.get_name()
-            << " value: " << value << " removing: " << print_choices_to_remove(get_choices_to_remove());
+            << " value: " << value << " removing: " << print_choices_to_remove(
+            get_choices_to_remove());
 }
 
 const char *ClaimingRowHint::get_name() const {
@@ -66,15 +66,15 @@ void ClaimingHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     }
 }
 
-ClaimingColumnHint::ClaimingColumnHint(std::vector<Cell *> &cells, int col,
-        int block_idx, int value, Grid &grid) :
-    cells(cells), col(col), block_idx(block_idx), value(value), grid(grid) {
+ClaimingColumnHint::ClaimingColumnHint(int col, int block_idx, int value) :
+    col(col), block_idx(block_idx), value(value) {
 }
 
 void ClaimingColumnHint::print_description(std::ostream &out) const {
     const Range &block = RANGES.get_block(block_idx);
     out << "claiming(col): col: " << col + 1 << " block: " << block.get_name()
-            << " value: " << value << " removing: " << print_choices_to_remove(get_choices_to_remove());
+            << " value: " << value << " removing: " << print_choices_to_remove(
+            get_choices_to_remove());
 }
 
 const char *ClaimingColumnHint::get_name() const {
@@ -177,8 +177,7 @@ void ClaimingHintProducer::find_col_hint(int col, Grid &grid,
 ClaimingRowHint *ClaimingHintProducer::create_row_hint(
         std::vector<Cell *> &cells, int row, int block_idx, int value,
         Grid &grid) const {
-    ClaimingRowHint *hint = new ClaimingRowHint(cells, row, block_idx, value,
-            grid);
+    ClaimingRowHint *hint = new ClaimingRowHint(row, block_idx, value);
 
     std::vector<bool> cell_flags(81);
     for (std::vector<Cell *>::const_iterator i = cells.begin(); i
@@ -199,9 +198,8 @@ ClaimingRowHint *ClaimingHintProducer::create_row_hint(
 ClaimingColumnHint *ClaimingHintProducer::create_column_hint(
         std::vector<Cell *> &cells, int row, int block_idx, int value,
         Grid &grid) const {
-    ClaimingColumnHint *hint = new ClaimingColumnHint(cells, row, block_idx,
-            value, grid);
-
+    ClaimingColumnHint *hint = new ClaimingColumnHint(row, block_idx,
+            value);
 
     std::vector<bool> cell_flags(81);
     for (std::vector<Cell *>::const_iterator i = cells.begin(); i

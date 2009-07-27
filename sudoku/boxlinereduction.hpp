@@ -43,7 +43,6 @@ class Cell;
 class Grid;
 
 class BoxLineReductionHint: public Hint {
-    Grid &grid;
     int value;
     std::vector<int> cells_to_clear;
     const Range &block1;
@@ -54,11 +53,11 @@ class BoxLineReductionHint: public Hint {
     const Range &range3;
 
 public:
-    BoxLineReductionHint(Grid &grid, int value,
+    BoxLineReductionHint(int value,
             const std::vector<int> &cells_to_clear, const Range &block1,
             const Range &block2, const Range &block3, const Range &range1,
             const Range &range2, const Range &range3);
-    void apply();
+    void apply(Grid &grid);
     void print_description(std::ostream &out) const;
     const char *get_name() const;
 };

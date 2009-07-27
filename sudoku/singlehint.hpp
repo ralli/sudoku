@@ -40,14 +40,13 @@ class Cell;
 class Range;
 
 class SingleHint: public Hint {
-    Grid &grid;
-    Cell &cell;
+    int cell_idx;
     int value;
     const Range &range;
 public:
-    SingleHint(Grid &grid, Cell &cell, int value, const Range &range);
+    SingleHint(int cell_idx, int value, const Range &range);
 
-    virtual void apply();
+    virtual void apply(Grid &grid);
     virtual void print_description(std::ostream &out) const;
     const char *get_name() const;
 };

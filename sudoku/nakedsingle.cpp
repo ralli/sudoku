@@ -36,18 +36,19 @@
 #include "hintconsumer.hpp"
 #include "util.hpp"
 
-NakedSingleHint::NakedSingleHint(Grid &grid, Cell &cell) :
-    grid(grid), cell(cell) {
+NakedSingleHint::NakedSingleHint(int cell_idx, int value) :
+    cell_idx(cell_idx), value(value) {
 }
 
-void NakedSingleHint::apply() {
-    cell.set_value(cell.first_choice());
+void NakedSingleHint::apply(Grid &grid) {
+    Cell &cell = grid[cell_idx];
+    cell.set_value(value);
     grid.cleanup_choice(cell);
 }
 
 void NakedSingleHint::print_description(std::ostream &out) const {
-    out << "naked single: " << print_row_col(cell.get_idx()) << "="
-            << cell.first_choice();
+    out << "naked single: " << print_row_col(cell_idx) << "="
+            << value;
 }
 
 const char *NakedSingleHint::get_name() const {
@@ -60,7 +61,7 @@ void NakedSingleHintProducer::find_hints(Grid &grid, HintConsumer &consumer) {
     for (Grid::iterator i = begin; i != end; ++i) {
         Cell &cell = *i;
         if (cell.get_num_choices() == 1) {
-            if (!consumer.consume_hint(new NakedSingleHint(grid, cell)))
+            if (!consumer.consume_hint(new NakedSingleHint(cell.get_idx(), cell.first_choice())))
                 return;
         }
     }

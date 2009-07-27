@@ -61,8 +61,6 @@ public:
  */
 
 class ForcingChainHint: public Hint {
-    /*! \brief the grid the hint will be applied to */
-    Grid &grid;
     /*! \brief the forcing chains (which all end in the same links) */
     std::vector<std::vector<LinkEntry> > chains;
 public:
@@ -71,24 +69,23 @@ public:
      * \param grid the Grid, this hint will be applied to
      * \param links the list of the ends of the forcing chains.
      */
-    ForcingChainHint(Grid &grid, const std::vector<Link *> &links);
+    ForcingChainHint(const std::vector<Link *> &links);
     /*!
      * \brief destructor
      */
     virtual ~ForcingChainHint();
-    void apply();
+    void apply(Grid &grid);
     void print_description(std::ostream &out) const;
     const char *get_name() const;
 };
 
 class ForcingChainRangeHint: public Hint {
-    Grid &grid;
     const Range &range;
     std::vector<std::vector<LinkEntry> > chains;
 public:
-    ForcingChainRangeHint(Grid &grid, const Range &range,
+    ForcingChainRangeHint(const Range &range,
             std::vector<Link *> &conclusions);
-    void apply();
+    void apply(Grid &grid);
     void print_description(std::ostream &out) const;
     const char *get_name() const;
 };
@@ -100,7 +97,6 @@ public:
  * This means, the start of the forcing chain may be eliminated.
  */
 class ForcingChainContradictionHint: public Hint {
-    Grid &grid;
     std::vector<LinkEntry> first_chain;
     std::vector<LinkEntry> second_chain;
 public:
@@ -110,13 +106,13 @@ public:
      * \param first_link the end of the first branch of the forcing chain
      * \param second_link the end of the second branch of the forcing chain
      */
-    ForcingChainContradictionHint(Grid &grid, Link *first_link,
+    ForcingChainContradictionHint(Link *first_link,
             Link *second_link);
     /*!
      * \brief destructor
      */
     virtual ~ForcingChainContradictionHint();
-    void apply();
+    void apply(Grid &grid);
     void print_description(std::ostream &out) const;
     virtual const char *get_name() const;
 };
