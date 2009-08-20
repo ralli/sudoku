@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sudoku 0.1\n"
 "Report-Msgid-Bugs-To: r_juhnke@gmx.de\n"
-"POT-Creation-Date: 2009-08-21 00:00+0200\n"
+"POT-Creation-Date: 2009-08-21 00:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -256,6 +256,18 @@ msgstr ""
 msgid "Cannot open file: "
 msgstr ""
 
+#: gsudoku/mainwindow.cpp:369
+msgid "Todo: "
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:369
+msgid " Done: "
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:369
+msgid " Choices: "
+msgstr ""
+
 #: gsudoku/mainwindow.cpp:410 gsudoku/mainwindow.cpp:425
 msgid "Invalid Sudoku"
 msgstr ""
@@ -292,22 +304,22 @@ msgstr ""
 msgid "Choices:"
 msgstr ""
 
-#: gsudoku/hintview.cpp:44
+#: gsudoku/hintview.cpp:46
 msgid "Hint"
 msgstr ""
 
-#: gsudoku/hintview.cpp:52
+#: gsudoku/hintview.cpp:54
 msgid "_Find Hint"
 msgstr ""
 
-#: gsudoku/hintview.cpp:54
+#: gsudoku/hintview.cpp:56
 msgid "_Apply Hint"
 msgstr ""
 
-#: gsudoku/hintview.cpp:71
+#: gsudoku/hintview.cpp:73
 msgid "N/A"
 msgstr ""
 
-#: gsudoku/hintview.cpp:77
+#: gsudoku/hintview.cpp:79
 msgid "Invalid"
 msgstr ""

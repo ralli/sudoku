@@ -366,7 +366,7 @@ void MainWindow::update_statusbar() {
     m_statusbar.pop(context_id_status);
     int todo = model->get_todo();
     std::ostringstream os;
-    os << "Todo: " << todo << " Done: " << 81 - todo << " Choices: "
+    os << _("Todo: ") << todo << _(" Done: ") << 81 - todo << _(" Choices: ")
             << model->get_num_choices();
     m_statusbar.pop(context_id_status);
     m_statusbar.push(os.str(), context_id_status);
