@@ -30,8 +30,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "hintview.hpp"
+#include "config.h"
 #include "gettext.h"
+
+#include "hintview.hpp"
 #include "../sudoku/hint.hpp"
 #include <sstream>
 

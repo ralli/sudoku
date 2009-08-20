@@ -30,10 +30,11 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "../include/config.h"
+#include "../include/gettext.h"
 #include <gtkmm.h>
 #include <sstream>
 #include "statusview.hpp"
-#include "../include/gettext.h"
 
 #define _(X) gettext(X)
 

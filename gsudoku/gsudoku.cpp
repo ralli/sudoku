@@ -38,7 +38,6 @@
 #include "gettext.h"
 
 int main(int argc, char *argv[]) {
-    std::cout << "PACKAGE: " << PACKAGE << " LOCALEDIR: " << LOCALEDIR << std::endl;
     setlocale(LC_ALL, "");
     textdomain(PACKAGE);
     bindtextdomain(PACKAGE, LOCALEDIR);

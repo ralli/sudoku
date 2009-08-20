@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sudoku 0.1\n"
 "Report-Msgid-Bugs-To: r_juhnke@gmx.de\n"
-"POT-Creation-Date: 2009-08-20 22:39+0200\n"
-"PO-Revision-Date: 2009-08-20 22:54+0200\n"
+"POT-Creation-Date: 2009-08-21 00:00+0200\n"
+"PO-Revision-Date: 2009-08-21 00:02+0200\n"
 "Last-Translator: Ralph Juhnke <r_juhnke@gmx.de>\n"
 "Language-Team: German <>\n"
 "MIME-Version: 1.0\n"
@@ -276,3 +276,39 @@ msgstr "Dieses Sudoku ist korrekt und hat genau eine Lösung"
 #: gsudoku/mainwindow.cpp:427
 msgid "This sudoku is not valid"
 msgstr "Dieses Sudoku ist nicht korrekt"
+
+#: gsudoku/statusview.cpp:45
+msgid "Status"
+msgstr "Status"
+
+#: gsudoku/statusview.cpp:48
+msgid "To-Do:"
+msgstr "Noch offen:"
+
+#: gsudoku/statusview.cpp:55
+msgid "Done:"
+msgstr "Gelöst:"
+
+#: gsudoku/statusview.cpp:62
+msgid "Choices:"
+msgstr "Möglichkeiten"
+
+#: gsudoku/hintview.cpp:44
+msgid "Hint"
+msgstr "Hinweis"
+
+#: gsudoku/hintview.cpp:52
+msgid "_Find Hint"
+msgstr "_Hinweis anzeigen"
+
+#: gsudoku/hintview.cpp:54
+msgid "_Apply Hint"
+msgstr "Hinweis _anwenden"
+
+#: gsudoku/hintview.cpp:71
+msgid "N/A"
+msgstr "N/A"
+
+#: gsudoku/hintview.cpp:77
+msgid "Invalid"
+msgstr "Falsch"
