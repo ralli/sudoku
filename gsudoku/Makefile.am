@@ -61,4 +61,7 @@ commands.cpp \
 
 AM_CXXFLAGS=-Wall @GTKMM_CFLAGS@
 gsudoku_LDADD=@LIBS@ @GTKMM_LIBS@
+datadir = @datadir@
+localedir = $(datadir)/locale
+DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 

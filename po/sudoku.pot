@@ -1,0 +1,277 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Ralph Juhnke
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: sudoku 0.1\n"
+"Report-Msgid-Bugs-To: r_juhnke@gmx.de\n"
+"POT-Creation-Date: 2009-08-20 22:39+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gsudoku/mainwindow.cpp:45
+msgid "Sudoku"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:142
+msgid "_File"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:143
+msgid "_Edit"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:144
+msgid "_View"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:145
+msgid "_Help"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:155
+msgid "_New"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:155
+msgid "Clears the board"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:159
+msgid "_Check"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:159
+msgid "Checks the sudoku"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:163
+msgid "_Open"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:163
+msgid "Opens a sudoku file"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:167
+msgid "E_xit"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:167
+msgid "Exits the application"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:175
+msgid "_Undo"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:175
+msgid "Undoes the last command"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:181
+msgid "_Redo"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:181
+msgid "Re executes the last undone command"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:187
+msgid "_Copy"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:187
+msgid "Copies the grid to the clipboard"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:191
+msgid "_Paste"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:191
+msgid "Pastes a grid from the clipboard"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:195
+msgid "_Difficulty"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:198
+msgid "_Easy"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:198
+msgid "Easy"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:205
+msgid "_Medium"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:205
+msgid "Medium"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:212
+msgid "_Hard"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:212
+msgid "Hard"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:220
+msgid "_Choices"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:220
+msgid "Shows the choices"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:226
+msgid "_Sidebar"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:226
+msgid "Shows the sidebar"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:235
+msgid "_Highlight"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:238
+msgid "Highlight _nothing"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:239
+msgid "Removes all cell highlightings"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:243
+msgid "Highlight _1"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:244
+msgid "Shows all cells having a one as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:248
+msgid "Highlight _2"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:249
+msgid "Shows all cells having a two as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:253
+msgid "Highlight _3"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:254
+msgid "Shows all cells having a three as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:258
+msgid "Highlight _4"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:259
+msgid "Shows all cells having a four as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:263
+msgid "Highlight _5"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:264
+msgid "Shows all cells having a five as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:268
+msgid "Highlight _6"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:269
+msgid "Shows all cells having a six as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:273
+msgid "Highlight _7"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:274
+msgid "Shows all cells having a seven as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:278
+msgid "Highlight _8"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:279
+msgid "Shows all cells having a eight as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:283
+msgid "Highlight _9"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:284
+msgid "Shows all cells having a nine as candidate"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:291
+msgid "_About"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:291
+msgid "Shows information about gsudoku"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:315
+msgid "Text files"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:320
+msgid "C/C++ files"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:327
+msgid "Any files"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:342
+msgid "Error opening file"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:344
+msgid "Cannot open file: "
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:410 gsudoku/mainwindow.cpp:425
+msgid "Invalid Sudoku"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:413
+msgid "The clipboad data does not contain a valid sudoku"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:420
+msgid "Sudoku valid"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:422
+msgid "This Sudoku is valid and has one single solution"
+msgstr ""
+
+#: gsudoku/mainwindow.cpp:427
+msgid "This sudoku is not valid"
+msgstr ""

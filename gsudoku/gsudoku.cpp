@@ -30,15 +30,23 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-//#include "config.h"
 #include <iostream>
 #include "mainwindow.hpp"
 #include "sudokumodel.hpp"
 
+#include "config.h"
+#include "gettext.h"
+
 int main(int argc, char *argv[]) {
+    std::cout << "PACKAGE: " << PACKAGE << " LOCALEDIR: " << LOCALEDIR << std::endl;
+    setlocale(LC_ALL, "");
+    textdomain(PACKAGE);
+    bindtextdomain(PACKAGE, LOCALEDIR);
+
     Gtk::Main m(argc, argv);
     Glib::RefPtr<SudokuModel> model(new SudokuModel());
     MainWindow window(model);
     Gtk::Main::run(window);
+
     return 0;
 }

@@ -29,4 +29,5 @@ pseudo.txt
 po/POTFILES
 po/remove-potcdate.sed
 docs
+stamp-po
 

@@ -30,9 +30,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-//#include "config.h"
+#include "config.h"
+#include "gettext.h"
 #include "mainwindow.hpp"
-#include "../include/gettext.h"
 #include <iostream>
 #include <string>
 #include <sstream>

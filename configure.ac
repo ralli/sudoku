@@ -8,6 +8,9 @@ AC_CONFIG_HEADERS([include/config.h])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([foreign])
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14.1)
+
 # Checks for programs.
 AC_PROG_CXX
 
@@ -29,5 +32,5 @@ AC_C_INLINE
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile sudoku/Makefile gsudoku/Makefile include/Makefile])
+AC_CONFIG_FILES([Makefile sudoku/Makefile gsudoku/Makefile include/Makefile po/Makefile.in])
 AC_OUTPUT
