@@ -72,6 +72,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "      <menuitem action='EditRedo' />"
             "      <menuitem action='EditCopy' />"
             "      <menuitem action='EditPaste' />"
+            "      <menuitem action='EditSolveSingles' />"
             "      <menu action='EditDifficulty'>"
             "         <menuitem action='EditDifficultyEasy' />"
             "         <menuitem action='EditDifficultyMedium' />"
@@ -190,6 +191,11 @@ void MainWindow::init_edit_actions() {
     m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
             _("_Paste"), _("Pastes a grid from the clipboard")),
             sigc::mem_fun(*this, &MainWindow::on_edit_paste));
+
+    m_refActionGroup->add(Gtk::Action::create("EditSolveSingles",
+              _("_Solve Singles"), _("Solves all naked and hidden singles")),
+              Gtk::AccelKey("<control><shift>S"),
+              sigc::mem_fun(*this, &MainWindow::on_solve_singles));
 
     m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
             _("_Difficulty")));
@@ -360,6 +366,10 @@ void MainWindow::on_edit_undo() {
 
 void MainWindow::on_edit_redo() {
     model->redo();
+}
+
+void MainWindow::on_solve_singles() {
+    model->solve_singles();
 }
 
 void MainWindow::update_statusbar() {

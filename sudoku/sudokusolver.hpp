@@ -46,6 +46,7 @@ private:
     std::vector<HintProducer *> hintproducers;
 public:
     SudokuSolver();
+    SudokuSolver(std::vector<HintProducer *> hintproducers);
     virtual ~SudokuSolver();
     void solve(Grid &grid, HintConsumer &consumer);
     Hint *find_next_hint(Grid &grid);

@@ -39,6 +39,8 @@
 #include "../sudoku/sudokugenerator.hpp"
 #include "../sudoku/hint.hpp"
 #include "../sudoku/sudokusolver.hpp"
+#include "../sudoku/nakedsingle.hpp"
+#include "../sudoku/singlehint.hpp"
 
 void SudokuModel::load(std::string &filename) {
     std::ifstream in(filename.c_str());
@@ -85,6 +87,23 @@ void SudokuModel::generate() {
     generator.set_difficulty(d);
     generator.generate(grid);
     undo_manager.clear();
+    m_signal_changed.emit();
+}
+
+void SudokuModel::solve_singles() {
+    SolveSinglesCommand *command = new SolveSinglesCommand(grid);
+    undo_manager.add_undo_command(command);
+
+    std::vector<HintProducer *> hintproducers;
+    hintproducers.push_back(new NakedSingleHintProducer());
+    hintproducers.push_back(new SingleHintProducer());
+    SudokuSolver solver(hintproducers);
+    Hint *hint;
+    while ((hint = solver.find_next_hint(grid)) != 0) {
+        hint->apply(grid);
+        delete hint;
+    }
+    clear_current_hint();
     m_signal_changed.emit();
 }
 

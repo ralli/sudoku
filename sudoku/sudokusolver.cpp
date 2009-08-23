@@ -66,6 +66,11 @@ SudokuSolver::SudokuSolver() {
     hintproducers.push_back(new ForcingChainHintProducer());
 }
 
+SudokuSolver::SudokuSolver(std::vector<HintProducer *> hintproducers)
+   : hintproducers(hintproducers) {
+
+}
+
 SudokuSolver::~SudokuSolver() {
     std::for_each(hintproducers.begin(), hintproducers.end(), destroy<
             HintProducer *> ());

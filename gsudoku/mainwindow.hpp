@@ -68,6 +68,7 @@ public:
     void on_help_about();
     void on_view_choices();
     void on_view_sidebar();
+    void on_solve_singles();
 private:
     void init_actions();
     void init_file_actions();

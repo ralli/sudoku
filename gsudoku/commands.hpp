@@ -140,6 +140,19 @@ public:
     void redo();
 };
 
+class SolveSinglesCommand : public Command {
+    Grid &grid;
+    Grid backup;
+public:
+    /*!
+     * \brief constructor
+     * \param grid the grid
+     */
+    SolveSinglesCommand(Grid &grid);
+    void undo();
+    void redo();
+};
+
 /*!
  * \brief maintains a history of all undoable and redoable commands
  */

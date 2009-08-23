@@ -108,6 +108,12 @@ public:
     void set_difficulty_level(DifficultyLevel difficulty_level);
 
     /**
+     * solves all fields which are either naked singles or
+     * hidden singles.
+     */
+    void solve_singles();
+
+    /**
      * returns true, if there is a command to be undone
      */
     bool can_undo() const;

@@ -34,6 +34,9 @@
 #include "commands.hpp"
 #include "../sudoku/grid.hpp"
 #include "../sudoku/util.hpp"
+#include "../sudoku/sudokusolver.hpp"
+#include "../sudoku/nakedsingle.hpp"
+#include "../sudoku/singlehint.hpp"
 
 Command::Command() {
 }
@@ -94,6 +97,27 @@ void AddChoiceCommand::undo() {
 
 void AddChoiceCommand::redo() {
     grid[idx].add_choice(value);
+}
+
+SolveSinglesCommand::SolveSinglesCommand(Grid &grid) :
+    grid(grid), backup(grid) {
+
+}
+
+void SolveSinglesCommand::undo() {
+    grid = backup;
+}
+
+void SolveSinglesCommand::redo() {
+    std::vector<HintProducer *> hintproducers;
+    hintproducers.push_back(new NakedSingleHintProducer());
+    hintproducers.push_back(new SingleHintProducer());
+    SudokuSolver solver(hintproducers);
+    Hint *hint;
+    while ((hint = solver.find_next_hint(grid)) != 0) {
+        hint->apply(grid);
+        delete hint;
+    }
 }
 
 UndoManager::UndoManager() {
