@@ -1,4 +1,4 @@
-SUBDIRS= po include sudoku gsudoku
+SUBDIRS= po include src
 EXTRA_DIST= m4/ChangeLog  data/eastermonster.txt\
 data/top1465.txt\
 data/top95.txt\
