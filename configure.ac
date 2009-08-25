@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.63])
 AC_INIT(sudoku, 0.1, [r_juhnke@gmx.de])
-AC_CONFIG_SRCDIR([sudoku/sudoku.cpp])
+AC_CONFIG_SRCDIR([src/sudoku.cpp])
 AC_CONFIG_HEADERS([include/config.h])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([foreign])
@@ -32,5 +32,6 @@ AC_C_INLINE
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile sudoku/Makefile gsudoku/Makefile include/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile po/Makefile.in])
 AC_OUTPUT
+

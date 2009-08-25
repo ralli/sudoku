@@ -600,7 +600,7 @@ PACKAGE_VERSION='0.1'
 PACKAGE_STRING='sudoku 0.1'
 PACKAGE_BUGREPORT='r_juhnke@gmx.de'
 
-ac_unique_file="sudoku/sudoku.cpp"
+ac_unique_file="src/sudoku.cpp"
 gt_needs=
 # Factoring default headers for most tests.
 ac_includes_default="\
@@ -7620,7 +7620,7 @@ esac
 
 # Checks for library functions.
 
-ac_config_files="$ac_config_files Makefile sudoku/Makefile gsudoku/Makefile include/Makefile po/Makefile.in"
+ac_config_files="$ac_config_files Makefile src/Makefile include/Makefile po/Makefile.in"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -8266,8 +8266,7 @@ do
     "po-directories") CONFIG_COMMANDS="$CONFIG_COMMANDS po-directories" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "sudoku/Makefile") CONFIG_FILES="$CONFIG_FILES sudoku/Makefile" ;;
-    "gsudoku/Makefile") CONFIG_FILES="$CONFIG_FILES gsudoku/Makefile" ;;
+    "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "include/Makefile") CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
 
@@ -9212,4 +9211,5 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:$LINENO: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
+
 
