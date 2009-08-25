@@ -46,6 +46,7 @@ public:
     void on_file_new();
     void on_file_open();
     void on_file_exit();
+    void on_file_clear();
     void on_edit_undo();
     void on_edit_redo();
     void on_model_changed();
