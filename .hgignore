@@ -30,4 +30,7 @@ po/POTFILES
 po/remove-potcdate.sed
 docs
 stamp-po
+*.orig
+*.tmp
+
 
