@@ -30,8 +30,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "gettext.h"
+#if !_MSC_VER
+#include "../include/config.h"
+#endif
+#include "../include/gettext.h"
 #include "mainwindow.hpp"
 #include <iostream>
 #include <string>

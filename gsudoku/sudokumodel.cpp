@@ -130,8 +130,11 @@ void SudokuModel::redo() {
 }
 
 SudokuModel::SudokuModel() :
-    selected_cell(0), highlighted_choice(0),
-            difficulty_level(SudokuModel::EASY), show_choices(true) {
+    selected_cell(0), 
+        highlighted_choice(0),
+        difficulty_level(SudokuModel::EASY), 
+        show_choices(true), 
+        current_hint(0) {
 }
 
 int SudokuModel::get_selected_cell() const {

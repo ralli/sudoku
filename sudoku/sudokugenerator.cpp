@@ -108,7 +108,7 @@ void SudokuGenerator::set_difficulty(SudokuGenerator::Difficulty difficulty) {
 }
 
 void SudokuGenerator::generate(Grid &grid) {
-    std::srand(std::time(0));
+    std::srand(static_cast<unsigned int>(std::time(0)));
     do {
         do_generate(grid);
     } while (!check_difficulty(grid));

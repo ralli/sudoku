@@ -34,14 +34,17 @@
 #include "mainwindow.hpp"
 #include "sudokumodel.hpp"
 
-#include "config.h"
-#include "gettext.h"
+#if !_MSC_VER
+#include "../include/config.h"
+#endif
+#include "../include/gettext.h"
 
 int main(int argc, char *argv[]) {
+#if ENABLE_NLS
     setlocale(LC_ALL, "");
     textdomain(PACKAGE);
     bindtextdomain(PACKAGE, LOCALEDIR);
-
+#endif
     Gtk::Main m(argc, argv);
     Glib::RefPtr<SudokuModel> model(new SudokuModel());
     MainWindow window(model);

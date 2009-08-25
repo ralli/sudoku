@@ -136,9 +136,10 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -225,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hintview.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\sudoku\indirecthint.cpp"
 				>
 			</File>
@@ -249,11 +254,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sudoku\simpleforcing.cpp"
+				RelativePath="..\sudoku\singlehint.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\sudoku\singlehint.cpp"
+				RelativePath=".\statusview.cpp"
 				>
 			</File>
 			<File
@@ -262,6 +267,10 @@
 			</File>
 			<File
 				RelativePath=".\sudokumodel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\sudoku\sudokusolver.cpp"
 				>
 			</File>
 			<File
@@ -339,6 +348,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hintview.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\sudoku\indirecthint.hpp"
 				>
 			</File>
@@ -363,11 +376,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sudoku\simpleforcing.hpp"
+				RelativePath="..\sudoku\singlehint.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\sudoku\singlehint.hpp"
+				RelativePath=".\statusview.hpp"
 				>
 			</File>
 			<File
@@ -376,6 +389,10 @@
 			</File>
 			<File
 				RelativePath=".\sudokumodel.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\sudoku\sudokusolver.hpp"
 				>
 			</File>
 			<File

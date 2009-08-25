@@ -30,7 +30,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !_MSC_VER
 #include "../include/config.h"
+#endif
 #include "../include/gettext.h"
 #include <gtkmm.h>
 #include <sstream>
@@ -43,23 +45,23 @@ StatusView::StatusView(const Glib::RefPtr<SudokuModel> &model) :
     Gtk::Frame *frame = manage(new Gtk::Frame());
     pack_end(*frame, true, true, 5);
     frame->set_label(_("Status"));
-    Gtk::Table *table = manage(new Gtk::Table(3, 2, true));
+    Gtk::Table *table = Gtk::manage(new Gtk::Table(3, 2, true));
     frame->add(*table);
-    Gtk::Label *label = manage(new Gtk::Label(_("To-Do:")));
+    Gtk::Label *label = Gtk::manage(new Gtk::Label(_("To-Do:")));
     label->set_alignment(Gtk::ALIGN_LEFT);
     table->attach(*label, 0, 1, 0, 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK, 5,
             5);
     table->attach(m_todo_label, 1, 2, 0, 1, Gtk::FILL | Gtk::EXPAND,
             Gtk::SHRINK, 5, 5);
 
-    label = manage(new Gtk::Label(_("Done:")));
+    label = Gtk::manage(new Gtk::Label(_("Done:")));
     label->set_alignment(Gtk::ALIGN_LEFT);
     table->attach(*label, 0, 1, 1, 2, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK, 5,
             5);
     table->attach(m_done_label, 1, 2, 1, 2, Gtk::FILL | Gtk::EXPAND,
             Gtk::SHRINK, 5, 5);
 
-    label = manage(new Gtk::Label(_("Choices:")));
+    label = Gtk::manage(new Gtk::Label(_("Choices:")));
     label->set_alignment(Gtk::ALIGN_LEFT);
     table->attach(*label, 0, 1, 2, 3, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK, 5, 5);
     table->attach(m_choices_label, 1, 2, 2, 3, Gtk::FILL | Gtk::EXPAND,

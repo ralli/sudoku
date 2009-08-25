@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gsudoku", "gsudoku.vcproj", "{90A017CC-3C5E-40DF-9127-530C6EFBB39F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gsudoku", "gsudoku.vcproj", "{257526FB-F594-4E3D-87F1-DC28B41F839D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{90A017CC-3C5E-40DF-9127-530C6EFBB39F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{90A017CC-3C5E-40DF-9127-530C6EFBB39F}.Debug|Win32.Build.0 = Debug|Win32
-		{90A017CC-3C5E-40DF-9127-530C6EFBB39F}.Release|Win32.ActiveCfg = Release|Win32
-		{90A017CC-3C5E-40DF-9127-530C6EFBB39F}.Release|Win32.Build.0 = Release|Win32
+		{257526FB-F594-4E3D-87F1-DC28B41F839D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{257526FB-F594-4E3D-87F1-DC28B41F839D}.Debug|Win32.Build.0 = Debug|Win32
+		{257526FB-F594-4E3D-87F1-DC28B41F839D}.Release|Win32.ActiveCfg = Release|Win32
+		{257526FB-F594-4E3D-87F1-DC28B41F839D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
