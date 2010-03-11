@@ -1,9 +1,16 @@
 project (sudoku CXX)
 cmake_minimum_required(VERSION 2.6)
 
+if(MSVC)
+include(FindGTK2)
+find_package(GTK2 COMPONENTS gtk gtkmm)
+set(GTKMM_FOUND ${GTK2_FOUND})
+set(GTKMM_INCLUDE_DIRS ${GTK2_INCLUDE_DIRS})
+set(GTKMM_LIBRARIES ${GTK2_LIBRARIES})
+else(MSVC)
 include(FindPkgConfig)
 pkg_check_modules(GTKMM gtkmm-2.4)
-
+endif(MSVC)
 
 set(COMMON_SOURCES
 boxlinereduction.cpp 
@@ -53,4 +60,9 @@ IF (GTKMM_FOUND)
   include_directories(${GTKMM_INCLUDE_DIRS})
   add_executable(gsudoku ${GSUDOKU_SOURCES})
   target_link_libraries(gsudoku ${GTKMM_LIBRARIES})
+IF (MSVC)
+   set_target_properties(gsudoku PROPERTIES 
+   LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:\"mainCRTStartup\""
+   COMPILE_FLAGS "/wd4250")
+ENDIF(MSVC)
 ENDIF(GTKMM_FOUND)

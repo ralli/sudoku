@@ -38,3 +38,14 @@ CMakeCache.txt
 src/sudoku
 src/dancinglinks
 src/gsudoku
+*.vcproj*
+ZERO_CHECK.dir/
+po/translations.dir/
+src/dancinglinks.dir/
+src/sudoku.dir/
+src/gsudoku.dir/
+src/Debug
+src/Release
+*.ncb
+*.sln
+*.suo
