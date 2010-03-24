@@ -38,40 +38,66 @@
 class HintConsumer;
 class Grid;
 
-/*!
- * \brief a hint is a single step to the solution of a sudoku.
+/**
+ * A hint is a single step to the solution of a sudoku.
+ *
+ * Hints are typically created by a Hint producer. A hint producer is
+ * a strategy to find a hint. One example of such a strategy is the
+ * naked single strategy which tries to find cells with only one single
+ * choice left.
+ *
+ * Hints are normally processed by a hint consumer which is responsible
+ * to apply the hint to the sudoku grid. Applying means, that the new
+ * field values are set and all impossible remaining choices are removed.
  */
 
 class Hint {
 public:
-    /*!
-     * \brief constructor
+    /**
+     * Constructor
      */
     Hint() {
     }
 
-    /*!
-     * \brief destructor
+    /**
+     * Destructor
      */
     virtual ~Hint() {
     }
 
-    /*!
-     * \brief applies the hint to the sudoku
+    /**
+     * Applies the hint to the sudoku.
      */
     virtual void apply(Grid &grid) = 0;
 
-    /*!
-     * \brief prints a description of the hint wich can be interpreted by a human user.
-     * \param out the stream to print oon
+    /**
+     * Prints a description of the hint wich can be interpreted by a human user.
+     *
+     * @param out the stream to print oon
      */
     virtual void print_description(std::ostream &out) const = 0;
 
+    /**
+     * Gets the hints name.
+     *
+     * The hints name is the name of the strategy used to find the hint
+     * (ex. Naked Single)
+     */
     virtual const char *get_name() const = 0;
 private:
+    /**
+     * Private copy constructor.
+     *
+     * @param other the hint to be prevented from being copied
+     */
     Hint(const Hint &other) {
     }
 
+    /**
+     * Private assignment operator.
+     *
+     * @param other the hint to be prevented from being copied
+     */
     Hint & operator =(const Hint &other) {
         return *this;
     }

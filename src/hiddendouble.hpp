@@ -43,17 +43,35 @@ class Range;
 class Grid;
 class HintConsumer;
 
+/**
+ * This is a hint found by the Hiddendouble-Strategy.
+ *
+ * @see HiddenDoubleHintProducer for details
+ */
 class HiddenDoubleHint: public IndirectHint {
     std::vector<int> cells;
     std::pair<int, int> pair;
     const Range &range;
 public:
+    /**
+     * Constructor
+     *
+     * @param cells The two cells containing the unique pair of choices.
+     * @param pair the unique pair of choices forming the hidden double.
+     * @param range the range, where the hint was found in.
+     */
     HiddenDoubleHint(const std::vector<Cell *> &cells, std::pair<int, int> pair,
             const Range &range);
+
     virtual void print_description(std::ostream &out) const;
     const char *get_name() const;
 };
 
+/**
+ * The hidden double strategy means. If there are two cells in a range left,
+ * which are the only ones which have two specific choices, then all other
+ * choices of these two cells may be eliminated.
+ */
 class HiddenDoubleHintProducer: public HintProducer {
     typedef std::map<std::pair<int, int>, std::vector<Cell *> > pair_map;
 public:
