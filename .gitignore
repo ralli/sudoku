@@ -49,3 +49,6 @@ src/Release
 *.ncb
 *.sln
 *.suo
+bin/
+build/
+
