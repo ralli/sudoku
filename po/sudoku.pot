@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Ralph Juhnke
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sudoku 0.1\n"
-"Report-Msgid-Bugs-To: r_juhnke@gmx.de\n"
-"POT-Creation-Date: 2009-08-25 23:12+0200\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-02 01:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,326 +16,326 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gsudoku/mainwindow.cpp:47
+#: ../src/mainwindow.cpp:47
 msgid "Sudoku"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:146
+#: ../src/mainwindow.cpp:146
 msgid "_File"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:147
+#: ../src/mainwindow.cpp:147
 msgid "_Edit"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:148
+#: ../src/mainwindow.cpp:148
 msgid "_View"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:149
+#: ../src/mainwindow.cpp:149
 msgid "_Help"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:159
+#: ../src/mainwindow.cpp:159
 msgid "_New"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:159
+#: ../src/mainwindow.cpp:159
 msgid "Generates a new sudoku"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:163
+#: ../src/mainwindow.cpp:163
 msgid "_Clear"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:163
+#: ../src/mainwindow.cpp:163
 msgid "Clears the board"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:168
+#: ../src/mainwindow.cpp:168
 msgid "_Check"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:168
+#: ../src/mainwindow.cpp:168
 msgid "Checks the sudoku"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:172
+#: ../src/mainwindow.cpp:172
 msgid "_Open"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:172
+#: ../src/mainwindow.cpp:172
 msgid "Opens a sudoku file"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:176
+#: ../src/mainwindow.cpp:176
 msgid "E_xit"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:176
+#: ../src/mainwindow.cpp:176
 msgid "Exits the application"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:184
+#: ../src/mainwindow.cpp:184
 msgid "_Undo"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:184
+#: ../src/mainwindow.cpp:184
 msgid "Undoes the last command"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:190
+#: ../src/mainwindow.cpp:190
 msgid "_Redo"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:190
+#: ../src/mainwindow.cpp:190
 msgid "Re executes the last undone command"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:196
+#: ../src/mainwindow.cpp:196
 msgid "_Copy"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:196
+#: ../src/mainwindow.cpp:196
 msgid "Copies the grid to the clipboard"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:200
+#: ../src/mainwindow.cpp:200
 msgid "_Paste"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:200
+#: ../src/mainwindow.cpp:200
 msgid "Pastes a grid from the clipboard"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:204
+#: ../src/mainwindow.cpp:204
 msgid "_Solve Singles"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:204
+#: ../src/mainwindow.cpp:204
 msgid "Solves all naked and hidden singles"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:209
+#: ../src/mainwindow.cpp:209
 msgid "_Difficulty"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:212
+#: ../src/mainwindow.cpp:212
 msgid "_Easy"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:212
+#: ../src/mainwindow.cpp:212
 msgid "Easy"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:219
+#: ../src/mainwindow.cpp:219
 msgid "_Medium"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:219
+#: ../src/mainwindow.cpp:219
 msgid "Medium"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:226
+#: ../src/mainwindow.cpp:226
 msgid "_Hard"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:226
+#: ../src/mainwindow.cpp:226
 msgid "Hard"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:234
+#: ../src/mainwindow.cpp:234
 msgid "_Choices"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:234
+#: ../src/mainwindow.cpp:234
 msgid "Shows the choices"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:240
+#: ../src/mainwindow.cpp:240
 msgid "_Sidebar"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:240
+#: ../src/mainwindow.cpp:240
 msgid "Shows the sidebar"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:249
+#: ../src/mainwindow.cpp:249
 msgid "_Highlight"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:252
+#: ../src/mainwindow.cpp:252
 msgid "Highlight _nothing"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:253
+#: ../src/mainwindow.cpp:253
 msgid "Removes all cell highlightings"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:257
+#: ../src/mainwindow.cpp:257
 msgid "Highlight _1"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:258
+#: ../src/mainwindow.cpp:258
 msgid "Shows all cells having a one as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:262
+#: ../src/mainwindow.cpp:262
 msgid "Highlight _2"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:263
+#: ../src/mainwindow.cpp:263
 msgid "Shows all cells having a two as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:267
+#: ../src/mainwindow.cpp:267
 msgid "Highlight _3"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:268
+#: ../src/mainwindow.cpp:268
 msgid "Shows all cells having a three as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:272
+#: ../src/mainwindow.cpp:272
 msgid "Highlight _4"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:273
+#: ../src/mainwindow.cpp:273
 msgid "Shows all cells having a four as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:277
+#: ../src/mainwindow.cpp:277
 msgid "Highlight _5"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:278
+#: ../src/mainwindow.cpp:278
 msgid "Shows all cells having a five as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:282
+#: ../src/mainwindow.cpp:282
 msgid "Highlight _6"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:283
+#: ../src/mainwindow.cpp:283
 msgid "Shows all cells having a six as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:287
+#: ../src/mainwindow.cpp:287
 msgid "Highlight _7"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:288
+#: ../src/mainwindow.cpp:288
 msgid "Shows all cells having a seven as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:292
+#: ../src/mainwindow.cpp:292
 msgid "Highlight _8"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:293
+#: ../src/mainwindow.cpp:293
 msgid "Shows all cells having a eight as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:297
+#: ../src/mainwindow.cpp:297
 msgid "Highlight _9"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:298
+#: ../src/mainwindow.cpp:298
 msgid "Shows all cells having a nine as candidate"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:305
+#: ../src/mainwindow.cpp:305
 msgid "_About"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:305
+#: ../src/mainwindow.cpp:305
 msgid "Shows information about gsudoku"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:333
+#: ../src/mainwindow.cpp:333
 msgid "Text files"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:338
+#: ../src/mainwindow.cpp:338
 msgid "C/C++ files"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:345
+#: ../src/mainwindow.cpp:345
 msgid "Any files"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:360
+#: ../src/mainwindow.cpp:360
 msgid "Error opening file"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:362
+#: ../src/mainwindow.cpp:362
 msgid "Cannot open file: "
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:391
+#: ../src/mainwindow.cpp:391
 msgid "Todo: "
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:391
+#: ../src/mainwindow.cpp:391
 msgid " Done: "
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:391
+#: ../src/mainwindow.cpp:391
 msgid " Choices: "
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:432 gsudoku/mainwindow.cpp:447
+#: ../src/mainwindow.cpp:432 ../src/mainwindow.cpp:447
 msgid "Invalid Sudoku"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:435
+#: ../src/mainwindow.cpp:435
 msgid "The clipboad data does not contain a valid sudoku"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:442
+#: ../src/mainwindow.cpp:442
 msgid "Sudoku valid"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:444
+#: ../src/mainwindow.cpp:444
 msgid "This Sudoku is valid and has one single solution"
 msgstr ""
 
-#: gsudoku/mainwindow.cpp:449
+#: ../src/mainwindow.cpp:449
 msgid "This sudoku is not valid"
 msgstr ""
 
-#: gsudoku/statusview.cpp:47
+#: ../src/statusview.cpp:47
 msgid "Status"
 msgstr ""
 
-#: gsudoku/statusview.cpp:50
+#: ../src/statusview.cpp:50
 msgid "To-Do:"
 msgstr ""
 
-#: gsudoku/statusview.cpp:57
+#: ../src/statusview.cpp:57
 msgid "Done:"
 msgstr ""
 
-#: gsudoku/statusview.cpp:64
+#: ../src/statusview.cpp:64
 msgid "Choices:"
 msgstr ""
 
-#: gsudoku/hintview.cpp:51
+#: ../src/hintview.cpp:51
 msgid "Hint"
 msgstr ""
 
-#: gsudoku/hintview.cpp:59
+#: ../src/hintview.cpp:59
 msgid "_Find Hint"
 msgstr ""
 
-#: gsudoku/hintview.cpp:61
+#: ../src/hintview.cpp:61
 msgid "_Apply Hint"
 msgstr ""
 
-#: gsudoku/hintview.cpp:78
+#: ../src/hintview.cpp:78
 msgid "N/A"
 msgstr ""
 
-#: gsudoku/hintview.cpp:84
+#: ../src/hintview.cpp:84
 msgid "Invalid"
 msgstr ""

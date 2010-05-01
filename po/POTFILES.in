@@ -1,5 +1,5 @@
 # List of source files which contain translatable strings.
-gsudoku/mainwindow.cpp
-gsudoku/statusview.cpp
-gsudoku/hintview.cpp
+../src/mainwindow.cpp
+../src/statusview.cpp
+../src/hintview.cpp
 

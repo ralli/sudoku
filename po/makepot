@@ -1,0 +1,6 @@
+#!/bin/sh
+# generates the sudoku.pot file by scanning the sources
+# using xgettext
+
+xgettext -f POTFILES.in -k_ -o sudoku.pot
+
