@@ -1,0 +1,22 @@
+This is a sudoku solver and generator with a user interface 
+written using the gtkmm-library.
+
+The software runs under Linux (i just tried Ubuntu) and Windows using
+the MSVC-compiler.
+
+Building:
+
+Linux-Systems 
+
+- the cmake build system is required
+- the gtkmm development packages are required
+- pkgconfig is required
+ 
+Windows Systems
+
+You can build the sudoku programs using the Visual Studio 2005 and 2008.
+
+- Download and install gtkmm at http://live.gnome.org/gtkmm/MSWindows
+- Build the application using the following the guidelines at
+http://live.gnome.org/gtkmm/MSWindows#gtkmm_on_Microsoft_Windows 
+
