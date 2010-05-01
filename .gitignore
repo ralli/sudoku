@@ -1,5 +1,13 @@
 *~
 *.o
+*.bak
+.cproject
+.project
+.dep.inc
+Makefile-sudoku.mk
+nbproject/
+.metadata/
+doc/
 sudoku/sudoku
 gsudoku/gsudoku
 dancinglinks
