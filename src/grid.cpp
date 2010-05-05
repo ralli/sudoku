@@ -95,9 +95,9 @@ void Grid::print(std::ostream &out) const {
 }
 
 void Grid::println(std::ostream &out) const {
-    for(int i = 0; i < 81; ++i) {
+    for (int i = 0; i < 81; ++i) {
         const Cell &cell = cells[i];
-        if(cell.has_value())
+        if (cell.has_value())
             out << cell.get_value();
         else
             out << '.';
@@ -165,6 +165,7 @@ void Grid::clear_cell_value(Cell &cell) {
 
     RangeList::const_index_iterator begin = RANGES.field_begin(cell.get_idx());
     RangeList::const_index_iterator end = RANGES.field_end(cell.get_idx());
+    
     for (RangeList::const_index_iterator j = begin; j != end; ++j) {
         Cell &c = cells[*j];
         if (!c.has_value()) {

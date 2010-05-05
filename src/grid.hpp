@@ -37,56 +37,73 @@
 #include <iosfwd>
 
 /*!
-* \brief
-* maintains a list of choices (possible values) for a given cell.
-*/
+ * \brief
+ * maintains a list of choices (possible values) for a given cell.
+ */
 class Choices {
     bool choices[10];
     int num_choices;
 public:
     /*!
-    * \brief
-    * constructor
-    */
+     * \brief
+     * constructor
+     */
     Choices();
 
     /*!
-    * \brief
-    * copy constructor
-    */
+     * \brief
+     * copy constructor
+     */
     Choices(const Choices &others);
 
     /*!
-    * \brief
-    * assignment operator
-    * \return this
-    */
+     * \brief
+     * assignment operator
+     * \return this
+     */
     Choices & operator =(const Choices &others);
 
     /*!
-    * \brief returns the number of choices left
-    * returns the number of choices left
-    */
+     * \brief returns the number of choices left
+     * returns the number of choices left
+     */
     int get_num_choices() const;
 
     /*!
-    * \brief
-    * returns true, if the value given is a valid choice
-    * \param value the value to be tested
-    * \return true, if the value given is a valid choice
-    */
+     * \brief
+     * returns true, if the value given is a valid choice
+     * \param value the value to be tested
+     * \return true, if the value given is a valid choice
+     */
     bool has_choice(int value) const;
 
     /*!
-    * \brief adds a choice to the list of valid choices
-    * \param value the value to be added
-    */
+     * \brief adds a choice to the list of valid choices
+     * \param value the value to be added
+     */
     void add_choice(int value);
 
 
+    /**
+     * removes a choice to the list of valid choices.
+     *
+     * @param value the value to be added
+     */
     void remove_choice(int value);
+
+    /**
+     * removes all choices from the list of choices.
+     */
     void clear();
+
+    /**
+     * adds all choices from the list of choices.
+     */
     void set_all();
+
+    /**
+     * returns the first valid choice or '0' if there is no choice left.
+     */
     int first_choice() const;
 };
 
@@ -128,26 +145,175 @@ public:
 private:
     std::vector<Cell> cells;
 public:
+    /**
+     * Constructor
+     */
     Grid();
+
+    /**
+     * copy constructor
+     *
+     * @param other the grid to be copied
+     */
     Grid(const Grid &other);
+
+    /**
+     * assignment operator
+     *
+     * @param other the grid to assign to *this
+     */
     Grid & operator =(const Grid &other);
+
+    /**
+     * initializes all cells
+     *
+     * initializing means clearing the grid.
+     * After calling this method all cells
+     * do not contain a value and all choices are valid
+     * for each cell.
+     */
     void init_cells();
+
+    /**
+     * loads a grid from an input stream.
+     *
+     * the grids contents are just a sequence of 89 characters on a single line.
+     * each digit (1..9) is interpreted as a cells content. if the character 
+     * read is not a digit in the range 1..9 then the cell is considered empty.
+     * 
+     * @param in the stream to load the cells from
+     */
     void load(std::istream &in);
+
+    /**
+     * prints a grid in a row / column format.
+     *
+     * @param out the stream to print on
+     */
     void print(std::ostream &out) const;
+
+    /**
+     * prints a grid on a single line in the format
+     * described in the method Grid::load.
+     *
+     * the grid is *not* terminated by a newline character.
+     *
+     * @param out the stream to print on
+     */
+
     void println(std::ostream &out) const;
+
+    /**
+     * prints a grid in a row / column format.
+     *
+     * @param out the stream to print on
+     */
     void print_choices(std::ostream &out) const;
+
+    /**
+     * prints the grids status.
+     *
+     * prints information about the number of choices left to solve and the
+     * number of cells left to solve.
+     *
+     * @param out the stream to print on
+     */
     void print_status(std::ostream &out) const;
+
+    /**
+     * returns the number of cells left to solve.
+     *
+     * @return the number of cells left to solve.
+     */
     int get_to_do() const;
+
+    /**
+     * returns the number of choices left to solve.
+     *
+     * @param returns the number of choices left to solve.
+     */
     int get_num_choices() const;
+
+    /**
+     * initializes the lists of valid choices for each
+     * cell on the grid.
+     *
+     * see cleanup_choice for details.
+     */
     void cleanup_choices();
+
+    /**
+     * if the cell has a value, i.e. it is already solved.
+     * this value is removed from the list of choices of all
+     * adjacent cells. the list of valid choices for the cell
+     * is cleared, since there are no valid choices left for
+     * this cell.
+     *
+     * @param cell the cell
+     *
+     */
     void cleanup_choice(Cell &cell);
+
+    /**
+     * removes all invalid choices from a given cell.
+     *
+     * iterates over all adjacent cells. if a adjacent cell has a
+     * value, then this value is removed from the list of valid choices.
+     *
+     * @param cell the cell to remove the invalid choices from.
+     */
     void remove_invalid_cell_choices(Cell &cell);
+
+    /**
+     * clears a cells value and sets the valid
+     * choices of all adjacent cells.
+     */
     void clear_cell_value(Cell &cell);
+
+    /**
+     * returns an iterator pointing to the first cell of the grid.
+     *
+     * @return an iterator pointing to the first cell of the grid.
+     */
     iterator begin();
+
+    /**
+     * returns an iterator pointing past the last cell of the grid.
+     *
+     * @return an iterator pointing past the last cell of the grid.
+     */
     iterator end();
+
+    /**
+     * returns an iterator pointing to the first cell of the grid.
+     *
+     * @return an iterator pointing to the first cell of the grid.
+     */
     const_iterator begin() const;
+
+    /**
+     * returns an iterator pointing past the last cell of the grid.
+     *
+     * @return an iterator pointing past the last cell of the grid.
+     */
     const_iterator end() const;
+
+    /**
+     * returns a grids cell.
+     *
+     * @param the index in the range 0..81 of the cell.
+     * 
+     * @return the cell of the grid
+     */
     Cell & operator[](int idx);
+
+    /**
+     * returns a grids cell.
+     *
+     * @param the index in the range 0..81 of the cell.
+     *
+     * @return the cell of the grid
+     */
     const Cell & operator[](int idx) const;
 };
 
@@ -202,7 +368,6 @@ inline void Choices::set_all() {
     std::fill(choices, choices + 10, true);
     num_choices = 9;
 }
-
 
 inline int Choices::first_choice() const {
     if (num_choices == 0)
