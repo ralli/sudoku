@@ -340,10 +340,6 @@ private:
  * conclusion negating each other) or common conclusions (all possible
  * values of a starting cell force another cell to have a certain value
  * or not to have a certain value).
- *
- * this implementation just uses singles (naked singles or hidden singles) to
- * produce strong or weak links. it would be cooler, if we could use the other
- * hint producers (doubles, x-wings etc.) produce these links...
  */
 class ForcingChainHintProducer: public HintProducer {
 public:

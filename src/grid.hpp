@@ -107,34 +107,151 @@ public:
     int first_choice() const;
 };
 
+/**
+ * a single cell of a sudoku puzzle
+ */
 class Cell {
     int idx;
     int value;
     Choices choices;
 public:
+    /**
+     * Constructor
+     *
+     * @param the cells index
+     */
     Cell(int idx);
+
+    /**
+     * copy constructor
+     *
+     * @param other the cell to be copied
+     */
     Cell(const Cell &other);
+
+    /**
+     * assignment operator
+     */
     Cell & operator =(const Cell &other);
 
+    /**
+     * the cells value
+     *
+     * @return the cells value
+     */
     int get_value() const;
-    bool has_value() const;
+
+    /**
+     * the cells value
+     *
+     * param value the cells value
+     */
     void set_value(int value);
 
+    /**
+     * returns true, if the cell has a value
+     *
+     * @return true, if the cell has a value
+     */
+    bool has_value() const;
+
+    /**
+     * returns the cells row in the range 0..8
+     *
+     * @return the cells row in the range 0..8
+     */
     int get_row() const;
+
+    /**
+     * returns the cells column in the range 0..8
+     *
+     * @return the cells column in the range 0..8
+     */
     int get_col() const;
+
+    /**
+     * returns the index of the block (house) of the cell in the
+     * range 0..8.
+     * the indexes are given as follows:
+     * 
+        \verbatim
+     0 1 2
+     3 4 5
+     6 7 8 \endverbatim
+     *
+     *  @return the cells block index
+     */
     int get_block_idx() const;
+
+    /**
+     * returns the cells index in the range 0..80.
+     * the index in the top left cell is 0 and the one 
+     * in the bottom right is 80.
+     *
+     * @return the cells index
+     */
     int get_idx() const;
 
+    /**
+     * returns true, if a value is a valid choice for this cell.
+     *
+     * @param value the value to be checked
+     * 
+     * @return true, if a value is a valid choice for this cell.
+     */
     bool has_choice(int value) const;
+
+    /**
+     * adds a choice to the list of valid choices for this cell.
+     *
+     * @param value the choice to be added
+     */
     void add_choice(int value);
+
+    /**
+     * removes a choice to the list of valid choices for this cell.
+     *
+     * @param value the choice to be removed
+     */
     void remove_choice(int value);
+
+    /**
+     * clears the list of valid choices for this cell.
+     */
     void clear_choices();
 
+    /**
+     * returns the number of valid choices for this cell.
+     *
+     * @return the number of valid choices for this cell.
+     */
     int get_num_choices() const;
+
+    /**
+     * prints the cells choices
+     *
+     * @param out the stream to print on
+     */
     void print_choices(std::ostream &out) const;
+
+    /**
+     * returns the first valid choice of this cell or zero
+     * if there is no valid choice left.
+     *
+     * @return the first valid choice or zero
+     */
     int first_choice() const;
 
+    /**
+     * returns the list of all valid choices.
+     *
+     * @return the list of all valid choices.
+     */
     const Choices &get_choices() const;
+
+    /**
+     * sets all choices to be a valid choice for this cell.
+     */
     void set_all_choices();
 };
 
