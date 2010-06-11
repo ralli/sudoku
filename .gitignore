@@ -59,4 +59,4 @@ src/Release
 *.suo
 bin/
 build/
-
+*.out

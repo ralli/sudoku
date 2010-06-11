@@ -139,11 +139,6 @@ void XYWingHintProducer::find_xy_wing(Cell &cell, Grid &grid,
 
 XYWingHint *XYWingHintProducer::create_xy_hint(Cell &xy, Cell &yz, Cell &xz,
         int x, int y, int z, Grid &grid) const {
-#if 0
-    std::cout << "found xy: " << print_row_col(xy.get_idx()) << " yz: "
-    << print_row_col(yz.get_idx()) << " xz: "
-    << print_row_col(xz.get_idx()) << " x=" << x << " y=" << y << " z=" << z << std::endl;
-#endif
     std::vector<int> cells_to_clear;
 
     RangeList::const_index_iterator begin = RANGES.field_begin(yz.get_idx());

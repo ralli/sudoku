@@ -613,21 +613,6 @@ void ForcingChainHintProducer::analyze_links(std::vector<Link *> &links,
 
         std::vector<Link *> conclusions;
         if (all_links.find_common_conclusion(count, conclusions)) {
-#if 0
-            Link *p = conclusions.front()->get_head();
-            std::vector<Link *> &bla = cell_links[p->get_cell_idx()];
-            std::cout << "xxx size: " << count << " size2: "
-            << cell_links[p->get_cell_idx()].size();
-            for (std::vector<Link *>::const_iterator i = bla.begin(); i
-                    != bla.end(); ++i)
-            std::cout << ' ' << print_link(*i);
-            std::cout << std::endl;
-            std::cout << "links: ";
-            for (std::vector<Link *>::const_iterator i = links.begin(); i
-                    != links.end(); ++i)
-            std::cout << ' ' << print_link(*i);
-            std::cout << std::endl;
-#endif
             ForcingChainRangeHint *hint = new ForcingChainRangeHint(range,
                     conclusions);
             if (!consumer.consume_hint(hint))

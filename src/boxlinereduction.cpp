@@ -133,10 +133,6 @@ void BoxLineReductionHintProducer::find_line_hints(
              * rows in common
              */
             if (ijrows.count() == 2 && (positions[i] & positions[j]).any()) {
-#if 0
-                std::cout << "i=" << i << " flags=" << print_bitset(positions[i]) << std::endl;
-                std::cout << "j=" << j << " flags=" << print_bitset(positions[j]) << std::endl;
-#endif
                 for (int k = 0; k < 3; ++k) {
                     if (k != i && k != j) {
                         /*
