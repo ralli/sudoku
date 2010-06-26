@@ -35,7 +35,6 @@
 #endif
 #include "../include/gettext.h"
 #include "mainwindow.hpp"
-#include "sudokuprintoperation.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -44,7 +43,7 @@
 #define _(X) gettext(X)
 
 MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
-    model(model), sudokuView(model), statusView(model), hintView(model) {
+    model(model), sudokuView(model), statusView(model), hintView(model), printSettings(Gtk::PrintSettings::create()) {
     set_title(_("Sudoku"));
     set_default_size(800, 600);
     add(m_box);
@@ -67,6 +66,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "      <menuitem action='FileClear' />"
             "      <menuitem action='FileOpen' />"
             "      <menuitem action='FileCheck' />"
+            "      <menuitem action='FilePrint' />"
             "      <menuitem action='FilePreview' />"
             "      <separator />"
             "      <menuitem action='FileExit' />"
@@ -106,6 +106,7 @@ MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
             "  <toolbar  name='ToolBar'>"
             "    <toolitem action='FileNew'/>"
             "    <toolitem action='FileOpen'/>"
+            "    <toolitem action='FilePrint'/>"
             "    <toolitem action='FileCheck'/>"
             "    <toolitem action='EditUndo'/>"
             "    <toolitem action='EditRedo'/>"
@@ -168,8 +169,11 @@ void MainWindow::init_file_actions() {
     m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN, _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(
             *this, &MainWindow::on_file_open));
 
-    m_refActionGroup->add(Gtk::Action::create("FilePreview", Gtk::Stock::PRINT_PREVIEW, _("_Preview"), _("Shows a print preview")),
-            Gtk::AccelKey("<control>P"), sigc::mem_fun(*this, &MainWindow::on_file_preview));
+    m_refActionGroup->add(Gtk::Action::create("FilePrint", Gtk::Stock::PRINT, _("_Print"), _("Prints the sudoku")), Gtk::AccelKey(
+            "<control>P"), sigc::mem_fun(*this, &MainWindow::on_file_print));
+
+    m_refActionGroup->add(Gtk::Action::create("FilePreview", Gtk::Stock::PRINT_PREVIEW, _("Pre_view"), _("Shows a print preview")),
+            Gtk::AccelKey("<control><shift>P"), sigc::mem_fun(*this, &MainWindow::on_file_preview));
 
     m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT, _("E_xit"), _("Exits the application")), sigc::mem_fun(
             *this, &MainWindow::on_file_exit));
@@ -273,9 +277,40 @@ void MainWindow::on_file_clear() {
     model->clear();
 }
 
+void MainWindow::on_file_print() {
+    print_or_preview(Gtk::PRINT_OPERATION_ACTION_PRINT_DIALOG);
+}
+
 void MainWindow::on_file_preview() {
-    Glib::RefPtr<SudokuPrintOperation> printOperation = SudokuPrintOperation::create(model);
-    printOperation->run(Gtk::PRINT_OPERATION_ACTION_PREVIEW, *this);
+    print_or_preview(Gtk::PRINT_OPERATION_ACTION_PREVIEW);
+}
+
+void MainWindow::print_or_preview(Gtk::PrintOperationAction print_action) {
+    Glib::RefPtr<SudokuPrintOperation> print = SudokuPrintOperation::create(model);
+
+    //    print->set_track_print_status();
+    // print->set_default_page_setup(pageSetup);
+    print->set_print_settings(printSettings);
+
+    print->signal_done().connect(sigc::bind(sigc::mem_fun(*this, &MainWindow::on_printoperation_done), print));
+
+    try {
+        print->run(print_action /* print or preview */, *this);
+    } catch (const Gtk::PrintError& ex) {
+        std::ostringstream os;
+        os << _("An error occurred while trying to run a print operation:") << ex.what() << std::endl;
+        Gtk::MessageDialog err_dialog(*this, os.str(), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        err_dialog.run();
+    }
+}
+
+void MainWindow::on_printoperation_done(Gtk::PrintOperationResult result, const Glib::RefPtr<SudokuPrintOperation>& operation) {
+    if (result == Gtk::PRINT_OPERATION_RESULT_ERROR) {
+        Gtk::MessageDialog err_dialog(*this, "Error printing form", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        err_dialog.run();
+    } else if (result == Gtk::PRINT_OPERATION_RESULT_APPLY) {
+        printSettings = operation->get_print_settings();
+    }
 }
 
 void MainWindow::on_file_exit() {

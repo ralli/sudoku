@@ -38,6 +38,7 @@
 #include "statusview.hpp"
 #include "hintview.hpp"
 #include "sudokumodel.hpp"
+#include "sudokuprintoperation.hpp"
 
 class MainWindow: public Gtk::Window {
 private:
@@ -47,6 +48,7 @@ public:
     void on_file_open();
     void on_file_exit();
     void on_file_clear();
+    void on_file_print();
     void on_file_preview();
     void on_edit_undo();
     void on_edit_redo();
@@ -79,6 +81,8 @@ private:
     void init_view_highlight_actions();
     void init_help_actions();
     void on_clipboard_text_received(const Glib::ustring& text);
+    void print_or_preview(Gtk::PrintOperationAction print_action);
+    void on_printoperation_done(Gtk::PrintOperationResult result, const Glib::RefPtr<SudokuPrintOperation>& operation);
     void update_statusbar();
 private:
     Gtk::VBox m_box;
@@ -96,6 +100,7 @@ private:
     StatusView statusView;
     HintView hintView;
     guint context_id_status;
+    Glib::RefPtr<Gtk::PrintSettings> printSettings;
 };
 
 #endif
