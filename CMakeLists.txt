@@ -23,6 +23,8 @@ configure_file (
 add_subdirectory(src)
 add_subdirectory(po)
 
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+
 if(CMAKE_COMPILER_IS_GNUCXX)
    set(CMAKE_CXX_FLAGS -Wall)
 endif(CMAKE_COMPILER_IS_GNUCXX)
