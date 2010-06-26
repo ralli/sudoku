@@ -1,40 +1,41 @@
 /*
-* Copyright (c) 2009, Ralph Juhnke
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or
-* without modification, are permitted provided that the following conditions
-* are met:
-*
-*    * Redistributions of source code must retain the above copyright notice,
-*      this list of conditions and the following disclaimer.
-*
-*    * Redistributions in binary form must reproduce the above copyright
-*      notice, this list of conditions and the following disclaimer in the
-*      documentation and/or other materials provided with the distribution.
-*
-*    * Neither the name of "Ralph Juhnke" nor the names of its
-*      contributors may be used to endorse or promote products derived from
-*      this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-* OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2009, Ralph Juhnke
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *    * Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *
+ *    * Neither the name of "Ralph Juhnke" nor the names of its
+ *      contributors may be used to endorse or promote products derived from
+ *      this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #if !_MSC_VER
 #include "../include/config.h"
 #endif
 #include "../include/gettext.h"
 #include "mainwindow.hpp"
+#include "sudokuprintoperation.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -43,13 +44,12 @@
 #define _(X) gettext(X)
 
 MainWindow::MainWindow(const Glib::RefPtr<SudokuModel> &model) :
-model(model), sudokuView(model), statusView(model), hintView(model) {
+    model(model), sudokuView(model), statusView(model), hintView(model) {
     set_title(_("Sudoku"));
     set_default_size(800, 600);
     add(m_box);
 
-    model->signal_changed().connect(sigc::mem_fun(*this,
-        &MainWindow::on_model_changed));
+    model->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_model_changed));
 
     init_actions();
 
@@ -67,6 +67,7 @@ model(model), sudokuView(model), statusView(model), hintView(model) {
             "      <menuitem action='FileClear' />"
             "      <menuitem action='FileOpen' />"
             "      <menuitem action='FileCheck' />"
+            "      <menuitem action='FilePreview' />"
             "      <separator />"
             "      <menuitem action='FileExit' />"
             "    </menu>"
@@ -155,92 +156,71 @@ void MainWindow::init_actions() {
 }
 
 void MainWindow::init_file_actions() {
-    m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW,
-        _("_New"), _("Generates a new sudoku")), sigc::mem_fun(*this,
-        &MainWindow::on_file_new));
+    m_refActionGroup->add(Gtk::Action::create("FileNew", Gtk::Stock::NEW, _("_New"), _("Generates a new sudoku")), sigc::mem_fun(
+            *this, &MainWindow::on_file_new));
 
-    m_refActionGroup->add(Gtk::Action::create("FileClear", Gtk::Stock::NEW,
-        _("_Clear"), _("Clears the board")), Gtk::AccelKey(
-        "<control><shift>N"), sigc::mem_fun(*this,
-        &MainWindow::on_file_clear));
+    m_refActionGroup->add(Gtk::Action::create("FileClear", Gtk::Stock::NEW, _("_Clear"), _("Clears the board")), Gtk::AccelKey(
+            "<control><shift>N"), sigc::mem_fun(*this, &MainWindow::on_file_clear));
 
-    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::APPLY,
-        _("_Check"), _("Checks the sudoku")), Gtk::AccelKey(
-        "<control>T"), sigc::mem_fun(*this, &MainWindow::on_file_check));
+    m_refActionGroup->add(Gtk::Action::create("FileCheck", Gtk::Stock::APPLY, _("_Check"), _("Checks the sudoku")), Gtk::AccelKey(
+            "<control>T"), sigc::mem_fun(*this, &MainWindow::on_file_check));
 
-    m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN,
-        _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(*this,
-        &MainWindow::on_file_open));
+    m_refActionGroup->add(Gtk::Action::create("FileOpen", Gtk::Stock::OPEN, _("_Open"), _("Opens a sudoku file")), sigc::mem_fun(
+            *this, &MainWindow::on_file_open));
 
-    m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT,
-        _("E_xit"), _("Exits the application")), sigc::mem_fun(*this,
-        &MainWindow::on_file_exit));
+    m_refActionGroup->add(Gtk::Action::create("FilePreview", Gtk::Stock::PRINT_PREVIEW, _("_Preview"), _("Shows a print preview")),
+            Gtk::AccelKey("<control>P"), sigc::mem_fun(*this, &MainWindow::on_file_preview));
+
+    m_refActionGroup->add(Gtk::Action::create("FileExit", Gtk::Stock::QUIT, _("E_xit"), _("Exits the application")), sigc::mem_fun(
+            *this, &MainWindow::on_file_exit));
 }
 
 void MainWindow::init_edit_actions() {
     Gtk::RadioAction::Group difficulty_group;
 
-    m_actionUndo = Gtk::Action::create("EditUndo", Gtk::Stock::UNDO,
-        _("_Undo"), _("Undoes the last command"));
+    m_actionUndo = Gtk::Action::create("EditUndo", Gtk::Stock::UNDO, _("_Undo"), _("Undoes the last command"));
     m_actionUndo->set_sensitive(false);
-    m_refActionGroup->add(m_actionUndo, Gtk::AccelKey("<control>Z"),
-        sigc::mem_fun(*this, &MainWindow::on_edit_undo));
+    m_refActionGroup->add(m_actionUndo, Gtk::AccelKey("<control>Z"), sigc::mem_fun(*this, &MainWindow::on_edit_undo));
 
-    m_actionRedo = Gtk::Action::create("EditRedo", Gtk::Stock::REDO,
-        _("_Redo"), _("Re executes the last undone command"));
+    m_actionRedo = Gtk::Action::create("EditRedo", Gtk::Stock::REDO, _("_Redo"), _("Re executes the last undone command"));
     m_actionRedo->set_sensitive(false);
-    m_refActionGroup->add(m_actionRedo, Gtk::AccelKey("<control><shift>Z"),
-        sigc::mem_fun(*this, &MainWindow::on_edit_redo));
+    m_refActionGroup->add(m_actionRedo, Gtk::AccelKey("<control><shift>Z"), sigc::mem_fun(*this, &MainWindow::on_edit_redo));
 
-    m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY,
-        _("_Copy"), _("Copies the grid to the clipboard")),
-        sigc::mem_fun(*this, &MainWindow::on_edit_copy));
+    m_refActionGroup->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY, _("_Copy"), _("Copies the grid to the clipboard")),
+            sigc::mem_fun(*this, &MainWindow::on_edit_copy));
 
-    m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE,
-        _("_Paste"), _("Pastes a grid from the clipboard")),
-        sigc::mem_fun(*this, &MainWindow::on_edit_paste));
+    m_refActionGroup->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE, _("_Paste"), _("Pastes a grid from the clipboard")),
+            sigc::mem_fun(*this, &MainWindow::on_edit_paste));
 
-    m_refActionGroup->add(Gtk::Action::create("EditSolveSingles",
-        _("_Solve Singles"), _("Solves all naked and hidden singles")),
-        Gtk::AccelKey("<control><shift>S"),
-        sigc::mem_fun(*this, &MainWindow::on_solve_singles));
+    m_refActionGroup->add(Gtk::Action::create("EditSolveSingles", _("_Solve Singles"), _("Solves all naked and hidden singles")),
+            Gtk::AccelKey("<control><shift>S"), sigc::mem_fun(*this, &MainWindow::on_solve_singles));
 
-    m_refActionGroup->add(Gtk::Action::create("EditDifficulty",
-        _("_Difficulty")));
+    m_refActionGroup->add(Gtk::Action::create("EditDifficulty", _("_Difficulty")));
 
-    m_difficultyEasy = Gtk::RadioAction::create(difficulty_group,
-        "EditDifficultyEasy", _("_Easy"), _("Easy")), Gtk::AccelKey(
-        "<control><alt>E");
-    m_refActionGroup->add(m_difficultyEasy, sigc::mem_fun(*this,
-        &MainWindow::on_edit_difficulty_easy));
+    m_difficultyEasy = Gtk::RadioAction::create(difficulty_group, "EditDifficultyEasy", _("_Easy"), _("Easy")), Gtk::AccelKey(
+            "<control><alt>E");
+    m_refActionGroup->add(m_difficultyEasy, sigc::mem_fun(*this, &MainWindow::on_edit_difficulty_easy));
     m_difficultyEasy->set_active();
 
-    m_difficultyMedium = Gtk::RadioAction::create(difficulty_group,
-        "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
-        "<control><alt>M"), sigc::mem_fun(*this,
-        &MainWindow::on_edit_difficulty_medium);
-    m_refActionGroup->add(m_difficultyMedium, sigc::mem_fun(*this,
-        &MainWindow::on_edit_difficulty_medium));
+    m_difficultyMedium = Gtk::RadioAction::create(difficulty_group, "EditDifficultyMedium", _("_Medium"), _("Medium")), Gtk::AccelKey(
+            "<control><alt>M"), sigc::mem_fun(*this, &MainWindow::on_edit_difficulty_medium);
+    m_refActionGroup->add(m_difficultyMedium, sigc::mem_fun(*this, &MainWindow::on_edit_difficulty_medium));
 
-    m_difficultyHard = Gtk::RadioAction::create(difficulty_group,
-        "EditDifficultyHard", _("_Hard"), _("Hard")), Gtk::AccelKey(
-        "<control><alt>H");
-    m_refActionGroup->add(m_difficultyHard, sigc::mem_fun(*this,
-        &MainWindow::on_edit_difficulty_hard));
+    m_difficultyHard = Gtk::RadioAction::create(difficulty_group, "EditDifficultyHard", _("_Hard"), _("Hard")), Gtk::AccelKey(
+            "<control><alt>H");
+    m_refActionGroup->add(m_difficultyHard, sigc::mem_fun(*this, &MainWindow::on_edit_difficulty_hard));
 }
 
 void MainWindow::init_view_actions() {
-    Glib::RefPtr<Gtk::ToggleAction> toggle_choices = Gtk::ToggleAction::create(
-        "ViewChoices", _("_Choices"), _("Shows the choices"), true);
+    Glib::RefPtr<Gtk::ToggleAction> toggle_choices = Gtk::ToggleAction::create("ViewChoices", _("_Choices"),
+            _("Shows the choices"), true);
 
-    m_refActionGroup->add(toggle_choices, sigc::mem_fun(*this,
-        &MainWindow::on_view_choices));
+    m_refActionGroup->add(toggle_choices, sigc::mem_fun(*this, &MainWindow::on_view_choices));
 
-    Glib::RefPtr<Gtk::ToggleAction> toggle_sidebar = Gtk::ToggleAction::create(
-        "ViewSidebar", _("_Sidebar"), _("Shows the sidebar"), false);
+    Glib::RefPtr<Gtk::ToggleAction> toggle_sidebar = Gtk::ToggleAction::create("ViewSidebar", _("_Sidebar"),
+            _("Shows the sidebar"), false);
 
-    m_refActionGroup->add(toggle_sidebar, sigc::mem_fun(*this,
-        &MainWindow::on_view_sidebar));
+    m_refActionGroup->add(toggle_sidebar, sigc::mem_fun(*this, &MainWindow::on_view_sidebar));
 
     init_view_highlight_actions();
 }
@@ -248,62 +228,41 @@ void MainWindow::init_view_actions() {
 void MainWindow::init_view_highlight_actions() {
     m_refActionGroup->add(Gtk::Action::create("ViewHighlight", _("_Highlight")));
     Gtk::RadioAction::Group view_choices_group;
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewNone", _("Highlight _nothing"),
-        _("Removes all cell highlightings")), Gtk::AccelKey(
-        "<control><alt>0"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_nothing));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewOne", _("Highlight _1"),
-        _("Shows all cells having a one as candidate")),
-        Gtk::AccelKey("<control><alt>1"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_one));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewTwo", _("Highlight _2"),
-        _("Shows all cells having a two as candidate")),
-        Gtk::AccelKey("<control><alt>2"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_two));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewThree", _("Highlight _3"),
-        _("Shows all cells having a three as candidate")),
-        Gtk::AccelKey("<control><alt>3"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_three));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewFour", _("Highlight _4"),
-        _("Shows all cells having a four as candidate")),
-        Gtk::AccelKey("<control><alt>4"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_four));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewFive", _("Highlight _5"),
-        _("Shows all cells having a five as candidate")),
-        Gtk::AccelKey("<control><alt>5"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_five));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewSix", _("Highlight _6"),
-        _("Shows all cells having a six as candidate")),
-        Gtk::AccelKey("<control><alt>6"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_six));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewSeven", _("Highlight _7"),
-        _("Shows all cells having a seven as candidate")),
-        Gtk::AccelKey("<control><alt>7"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_seven));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewEight", _("Highlight _8"),
-        _("Shows all cells having a eight as candidate")),
-        Gtk::AccelKey("<control><alt>8"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_eight));
-    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group,
-        "ViewNine", _("Highlight _9"),
-        _("Shows all cells having a nine as candidate")),
-        Gtk::AccelKey("<control><alt>9"), sigc::mem_fun(*this,
-        &MainWindow::on_highlight_nine));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewNone", _("Highlight _nothing"),
+            _("Removes all cell highlightings")), Gtk::AccelKey("<control><alt>0"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_nothing));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewOne", _("Highlight _1"),
+            _("Shows all cells having a one as candidate")), Gtk::AccelKey("<control><alt>1"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_one));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewTwo", _("Highlight _2"),
+            _("Shows all cells having a two as candidate")), Gtk::AccelKey("<control><alt>2"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_two));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewThree", _("Highlight _3"),
+            _("Shows all cells having a three as candidate")), Gtk::AccelKey("<control><alt>3"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_three));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewFour", _("Highlight _4"),
+            _("Shows all cells having a four as candidate")), Gtk::AccelKey("<control><alt>4"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_four));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewFive", _("Highlight _5"),
+            _("Shows all cells having a five as candidate")), Gtk::AccelKey("<control><alt>5"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_five));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewSix", _("Highlight _6"),
+            _("Shows all cells having a six as candidate")), Gtk::AccelKey("<control><alt>6"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_six));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewSeven", _("Highlight _7"),
+            _("Shows all cells having a seven as candidate")), Gtk::AccelKey("<control><alt>7"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_seven));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewEight", _("Highlight _8"),
+            _("Shows all cells having a eight as candidate")), Gtk::AccelKey("<control><alt>8"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_eight));
+    m_refActionGroup->add(Gtk::RadioAction::create(view_choices_group, "ViewNine", _("Highlight _9"),
+            _("Shows all cells having a nine as candidate")), Gtk::AccelKey("<control><alt>9"), sigc::mem_fun(*this,
+            &MainWindow::on_highlight_nine));
 }
 
 void MainWindow::init_help_actions() {
-    m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT,
-        _("_About"), _("Shows information about gsudoku")),
-        sigc::mem_fun(*this, &MainWindow::on_help_about));
+    m_refActionGroup->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT, _("_About"), _("Shows information about gsudoku")),
+            sigc::mem_fun(*this, &MainWindow::on_help_about));
 }
 
 void MainWindow::on_file_new() {
@@ -314,13 +273,17 @@ void MainWindow::on_file_clear() {
     model->clear();
 }
 
+void MainWindow::on_file_preview() {
+    Glib::RefPtr<SudokuPrintOperation> printOperation = SudokuPrintOperation::create(model);
+    printOperation->run(Gtk::PRINT_OPERATION_ACTION_PREVIEW, *this);
+}
+
 void MainWindow::on_file_exit() {
     hide();
 }
 
 void MainWindow::on_file_open() {
-    Gtk::FileChooserDialog dialog("Please choose a file",
-        Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog dialog("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
     dialog.set_transient_for(*this);
 
     //Add response buttons the the dialog:
@@ -357,14 +320,13 @@ void MainWindow::on_file_open() {
             model->load(filename);
         } catch (std::exception & /*ex*/) {
             // Gtk::Window& parent, const Glib::ustring& message, bool use_markup = false, MessageType type = MESSAGE_INFO, ButtonsType buttons = BUTTONS_OK, bool modal = false
-            Gtk::MessageDialog dialog(*this, _("Error opening file"), false,
-                Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+            Gtk::MessageDialog dialog(*this, _("Error opening file"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
             dialog.set_secondary_text(_("Cannot open file: ") + filename);
             dialog.run();
 
         }
         break;
-                             }
+    }
     case (Gtk::RESPONSE_CANCEL):
         break;
     default:
@@ -388,8 +350,7 @@ void MainWindow::update_statusbar() {
     m_statusbar.pop(context_id_status);
     int todo = model->get_todo();
     std::ostringstream os;
-    os << _("Todo: ") << todo << _(" Done: ") << 81 - todo << _(" Choices: ")
-        << model->get_num_choices();
+    os << _("Todo: ") << todo << _(" Done: ") << 81 - todo << _(" Choices: ") << model->get_num_choices();
     m_statusbar.pop(context_id_status);
     m_statusbar.push(os.str(), context_id_status);
 }
@@ -409,8 +370,7 @@ void MainWindow::on_edit_copy() {
 
 void MainWindow::on_edit_paste() {
     Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get();
-    clipboard->request_text(sigc::mem_fun(*this,
-        &MainWindow::on_clipboard_text_received));
+    clipboard->request_text(sigc::mem_fun(*this, &MainWindow::on_clipboard_text_received));
 }
 
 void MainWindow::on_edit_difficulty_easy() {
@@ -429,10 +389,8 @@ void MainWindow::on_clipboard_text_received(const Glib::ustring& text) {
     try {
         model->load_from_string(text.c_str());
     } catch (std::exception & /*ex*/) {
-        Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false,
-            Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-        dialog.set_secondary_text(
-            _("The clipboad data does not contain a valid sudoku"));
+        Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        dialog.set_secondary_text(_("The clipboad data does not contain a valid sudoku"));
     }
 }
 
@@ -440,12 +398,10 @@ void MainWindow::on_file_check() {
     bool result = model->check();
     if (result) {
         Gtk::MessageDialog dialog(*this, _("Sudoku valid"));
-        dialog.set_secondary_text(
-            _("This Sudoku is valid and has one single solution"));
+        dialog.set_secondary_text(_("This Sudoku is valid and has one single solution"));
         dialog.run();
     } else {
-        Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false,
-            Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+        Gtk::MessageDialog dialog(*this, _("Invalid Sudoku"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
         dialog.set_secondary_text(_("This sudoku is not valid"));
         dialog.run();
     }
@@ -513,8 +469,7 @@ void MainWindow::on_help_about() {
     dlg.set_name("gsudoku");
     dlg.set_version("0.1");
     dlg.set_copyright("Ralph Juhnke");
-    dlg.set_license(
-        "Copyright (c) 2009, Ralph Juhnke\n"
+    dlg.set_license("Copyright (c) 2009, Ralph Juhnke\n"
         "All rights reserved.\n"
         "\n"
         "Redistribution and use in source and binary forms, with or\n"
