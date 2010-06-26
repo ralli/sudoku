@@ -51,7 +51,8 @@ statusview.cpp
 sudokugenerator.cpp 
 sudokumodel.cpp 
 sudokusolver.cpp 
-sudokuview.cpp)
+sudokuview.cpp
+drawingoperation.cpp)
 
 add_executable(sudoku ${SUDOKU_SOURCES})
 add_executable(dancinglinks ${DANCING_LINKS_SOURCES})

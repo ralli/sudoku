@@ -92,115 +92,12 @@ public:
 	 */
 	void on_model_changed_event();
 private:
-	/*!
-	 * \brief Draws the grids border.
-	 *
-	 * \param cr The Cairo context to draw on.
-	 */
-	void draw_border(Cairo::RefPtr<Cairo::Context> &cr) const;
-
-	/*!
-	 * \brief Draws the grids cells. Draws the bold lines which
-	 * separate the houses "3x3 boxes" of the grid.
-	 *
-	 * \param cr The Cairo context to draw on.
-	 */
-	void draw_bold_grid(Cairo::RefPtr<Cairo::Context> &cr) const;
-
-	/*!
-	 * \brief Draws the grids cells.
-	 *
-	 * \param cr The Cairo context to draw on.
-	 */
-	void draw_normal_grid(Cairo::RefPtr<Cairo::Context> &cr) const;
-
-	/**
-	 * Draws a line.
-	 *
-	 * The coordinates are given in device independent coordinates (0..1).
-	 * See init_matrix for details ...
-	 *
-	 * @param cr The Cairo context to draw on.
-	 * @param x1 the first x-coordinate
-	 * @param y1 the first y-coordinate
-	 * @param x2 the second x-coordinate
-	 * @param y2 the second y-coordinate
-	 */
-	void draw_line(Cairo::RefPtr<Cairo::Context> &cr, double x1, double y1,
-			double x2, double y2) const;
-
-	/**
-	 * Draws a text centered at a given coordinate.
-	 *
-	 * @param cr The Cairo context to draw on.
-	 * @param x the x coordinate
-	 * @param y the y coordinate
-	 * @params text the string to be drawn
-	 */
-	void draw_centered_text(Cairo::RefPtr<Cairo::Context> &cr, double x,
-			double y, const std::string &text) const;
-
-	/**
-	 * Draws a text at the center of a given field.
-	 *
-	 * @param cr The Cairo context to draw on.
-	 * @param x The column of the field in the range (0..8)
-	 * @param y The row of the field in the range (0..8)
-	 */
-	void draw_field_text(Cairo::RefPtr<Cairo::Context> &cr, int x, int y,
-			const std::string &text) const;
-
-	/**
-	 * Draws the texts of all fields.
-	 *
-	 * @param cr The Cairo context to draw on.
-	 */
-	void draw_field_texts(Cairo::RefPtr<Cairo::Context> &cr) const;
-
-	/**
-	 * Draws a choice for a specific field.
-	 *
-	 * @param cr The Cairo context to draw on.
-	 * @param x The column of the field in the range (0..8)
-	 * @param y The row of the field in the range (0..8)
-	 * @param choice The choice to be drawn in the range (1..9)
-	 */
-	void draw_field_choice(Cairo::RefPtr<Cairo::Context> &cr, int x, int y,
-			int choice) const;
-
-	/**
-	 * Draws all remaining choices of all fields.
-     *
-	 * @param cr The Cairo context to draw on.
-	 */
-	void draw_field_choices(Cairo::RefPtr<Cairo::Context> &cr) const;
-
 	/**
 	 * Draws the selected (currently focused) cell.
 	 *
      * @param cr The Cairo context to draw on.
 	 */
 	void draw_selected_cell(Cairo::RefPtr<Cairo::Context> &cr) const;
-
-	/**
-	 * Draws all highlighted cells.
-	 *
-	 * Highlighted cells are the ones having a specific choice.
-	 * This makes it easier for the user to find singletons.
-     *
-     * @param cr The Cairo context to draw on.
-	 */
-	void draw_highlighted_cells(Cairo::RefPtr<Cairo::Context> &cr) const;
-
-	/**
-	 * Draws one highlighted cell.
-	 *
-	 * @see draw_highlighted_cells for details.
-	 *
-     * @param cr The Cairo context to draw on.
-     * @idx the index of the cell in the range (0..80)
-	 */
-	void draw_highlighted_cell(Cairo::RefPtr<Cairo::Context> &cr, int idx) const;
 
 	/**
 	 * Initializes the transformation matrix used to display the view.
