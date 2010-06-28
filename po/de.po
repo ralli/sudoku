@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sudoku 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-26 23:23+0200\n"
-"PO-Revision-Date: 2010-06-26 23:25+0200\n"
+"POT-Creation-Date: 2010-06-27 01:10+0200\n"
+"PO-Revision-Date: 2010-06-27 01:13+0200\n"
 "Last-Translator: Ralph Juhnke <r_juhnke@gmx.de>\n"
 "Language-Team: German <>\n"
 "MIME-Version: 1.0\n"
@@ -17,27 +17,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/mainwindow.cpp:353
+#: ../src/mainwindow.cpp:388
 msgid " Choices: "
 msgstr " Möglichkeiten: "
 
-#: ../src/mainwindow.cpp:353
+#: ../src/mainwindow.cpp:388
 msgid " Done: "
 msgstr " Gelöst: "
 
-#: ../src/mainwindow.cpp:308
+#: ../src/mainwindow.cpp:301
+msgid "An error occurred while trying to run a print operation:"
+msgstr "Beim Drucken ist ein Fehler aufgetreten:"
+
+#: ../src/mainwindow.cpp:343
 msgid "Any files"
 msgstr "Alle Dateien"
 
-#: ../src/mainwindow.cpp:301
+#: ../src/mainwindow.cpp:336
 msgid "C/C++ files"
 msgstr "C/C++-Dateien"
 
-#: ../src/mainwindow.cpp:324
+#: ../src/mainwindow.cpp:359
 msgid "Cannot open file: "
 msgstr "Kann die Datei nicht öffnen: "
 
-#: ../src/mainwindow.cpp:165
+#: ../src/mainwindow.cpp:166
 msgid "Checks the sudoku"
 msgstr "Prüft das Sudoku"
 
@@ -45,11 +49,11 @@ msgstr "Prüft das Sudoku"
 msgid "Choices:"
 msgstr "Möglichkeiten"
 
-#: ../src/mainwindow.cpp:162
+#: ../src/mainwindow.cpp:163
 msgid "Clears the board"
 msgstr "Leert das Spielfeld"
 
-#: ../src/mainwindow.cpp:189
+#: ../src/mainwindow.cpp:193
 msgid "Copies the grid to the clipboard"
 msgstr "Kopiert das Spielfeld in die Zwischenablage"
 
@@ -57,67 +61,67 @@ msgstr "Kopiert das Spielfeld in die Zwischenablage"
 msgid "Done:"
 msgstr "Gelöst:"
 
-#: ../src/mainwindow.cpp:174
+#: ../src/mainwindow.cpp:178
 msgid "E_xit"
 msgstr "_Beenden"
 
-#: ../src/mainwindow.cpp:200
+#: ../src/mainwindow.cpp:204
 msgid "Easy"
 msgstr "Einfach"
 
-#: ../src/mainwindow.cpp:323
+#: ../src/mainwindow.cpp:358
 msgid "Error opening file"
 msgstr "Fehler beim Öffnen der Datei"
 
-#: ../src/mainwindow.cpp:174
+#: ../src/mainwindow.cpp:178
 msgid "Exits the application"
 msgstr "Beendet die Anwendung"
 
-#: ../src/mainwindow.cpp:159
+#: ../src/mainwindow.cpp:160
 msgid "Generates a new sudoku"
 msgstr "Generiert ein neues Sudoku"
 
-#: ../src/mainwindow.cpp:209
+#: ../src/mainwindow.cpp:213
 msgid "Hard"
 msgstr "Schwer"
 
-#: ../src/mainwindow.cpp:234
+#: ../src/mainwindow.cpp:238
 msgid "Highlight _1"
 msgstr "_1 hervorheben"
 
-#: ../src/mainwindow.cpp:237
+#: ../src/mainwindow.cpp:241
 msgid "Highlight _2"
 msgstr "_2 hervorheben"
 
-#: ../src/mainwindow.cpp:240
+#: ../src/mainwindow.cpp:244
 msgid "Highlight _3"
 msgstr "_3 hervorheben"
 
-#: ../src/mainwindow.cpp:243
+#: ../src/mainwindow.cpp:247
 msgid "Highlight _4"
 msgstr "_4 hervorheben"
 
-#: ../src/mainwindow.cpp:246
+#: ../src/mainwindow.cpp:250
 msgid "Highlight _5"
 msgstr "_5 hervorheben"
 
-#: ../src/mainwindow.cpp:249
+#: ../src/mainwindow.cpp:253
 msgid "Highlight _6"
 msgstr "_6 hervorheben"
 
-#: ../src/mainwindow.cpp:252
+#: ../src/mainwindow.cpp:256
 msgid "Highlight _7"
 msgstr "_7 hervorheben"
 
-#: ../src/mainwindow.cpp:255
+#: ../src/mainwindow.cpp:259
 msgid "Highlight _8"
 msgstr "_8 hervorheben"
 
-#: ../src/mainwindow.cpp:258
+#: ../src/mainwindow.cpp:262
 msgid "Highlight _9"
 msgstr "_9 hervorheben"
 
-#: ../src/mainwindow.cpp:231
+#: ../src/mainwindow.cpp:235
 msgid "Highlight _nothing"
 msgstr "_Nichts hervorheben"
 
@@ -129,11 +133,11 @@ msgstr "Hinweis"
 msgid "Invalid"
 msgstr "Falsch"
 
-#: ../src/mainwindow.cpp:392 ../src/mainwindow.cpp:404
+#: ../src/mainwindow.cpp:427 ../src/mainwindow.cpp:439
 msgid "Invalid Sudoku"
 msgstr "Falsches Datenformat für ein Sudoku"
 
-#: ../src/mainwindow.cpp:205
+#: ../src/mainwindow.cpp:209
 msgid "Medium"
 msgstr "Mittel"
 
@@ -141,75 +145,83 @@ msgstr "Mittel"
 msgid "N/A"
 msgstr "N/A"
 
-#: ../src/mainwindow.cpp:168
+#: ../src/mainwindow.cpp:169
 msgid "Opens a sudoku file"
 msgstr "Öffnet eine Sudoku-Datei"
 
-#: ../src/mainwindow.cpp:192
+#: ../src/mainwindow.cpp:196
 msgid "Pastes a grid from the clipboard"
 msgstr "Fügt das Spielfeld aus der Zwischenablage ein"
 
-#: ../src/mainwindow.cpp:185
+#: ../src/mainwindow.cpp:175
+msgid "Pre_view"
+msgstr "_Vorschau"
+
+#: ../src/mainwindow.cpp:172
+msgid "Prints the sudoku"
+msgstr "Druckt das Sudoku"
+
+#: ../src/mainwindow.cpp:189
 msgid "Re executes the last undone command"
 msgstr "Wiederholt den zuletzt rückgängig gemachten Befehl"
 
-#: ../src/mainwindow.cpp:232
+#: ../src/mainwindow.cpp:236
 msgid "Removes all cell highlightings"
 msgstr "Zeigt keine Hervorhebungen an"
 
-#: ../src/mainwindow.cpp:171
+#: ../src/mainwindow.cpp:175
 msgid "Shows a print preview"
 msgstr "Zeigt eine Druckvorschau"
 
-#: ../src/mainwindow.cpp:256
+#: ../src/mainwindow.cpp:260
 msgid "Shows all cells having a eight as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Acht möglich ist"
 
-#: ../src/mainwindow.cpp:247
+#: ../src/mainwindow.cpp:251
 msgid "Shows all cells having a five as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Fünf möglich ist"
 
-#: ../src/mainwindow.cpp:244
+#: ../src/mainwindow.cpp:248
 msgid "Shows all cells having a four as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Vier möglich ist"
 
-#: ../src/mainwindow.cpp:259
+#: ../src/mainwindow.cpp:263
 msgid "Shows all cells having a nine as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Neun möglich ist"
 
-#: ../src/mainwindow.cpp:235
+#: ../src/mainwindow.cpp:239
 msgid "Shows all cells having a one as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Eins möglich ist"
 
-#: ../src/mainwindow.cpp:253
+#: ../src/mainwindow.cpp:257
 msgid "Shows all cells having a seven as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Sieben möglich ist"
 
-#: ../src/mainwindow.cpp:250
+#: ../src/mainwindow.cpp:254
 msgid "Shows all cells having a six as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Sechs möglich ist"
 
-#: ../src/mainwindow.cpp:241
+#: ../src/mainwindow.cpp:245
 msgid "Shows all cells having a three as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Drei möglich ist"
 
-#: ../src/mainwindow.cpp:238
+#: ../src/mainwindow.cpp:242
 msgid "Shows all cells having a two as candidate"
 msgstr "Zeigt alle Zellen, bei denen eine Zwei möglich ist"
 
-#: ../src/mainwindow.cpp:264
+#: ../src/mainwindow.cpp:268
 msgid "Shows information about gsudoku"
 msgstr "Zeigt Informationen über die Anwendung an"
 
-#: ../src/mainwindow.cpp:216
+#: ../src/mainwindow.cpp:220
 msgid "Shows the choices"
 msgstr "Zeigt die Möglichkeiten an"
 
-#: ../src/mainwindow.cpp:221
+#: ../src/mainwindow.cpp:225
 msgid "Shows the sidebar"
 msgstr "Zeigt die Seitenleiste an"
 
-#: ../src/mainwindow.cpp:195
+#: ../src/mainwindow.cpp:199
 msgid "Solves all naked and hidden singles"
 msgstr "Löst alle Singles"
 
@@ -217,27 +229,27 @@ msgstr "Löst alle Singles"
 msgid "Status"
 msgstr "Status"
 
-#: ../src/mainwindow.cpp:48
+#: ../src/mainwindow.cpp:47
 msgid "Sudoku"
 msgstr "Sudoku"
 
-#: ../src/mainwindow.cpp:400
+#: ../src/mainwindow.cpp:435
 msgid "Sudoku valid"
 msgstr "Sudoku valide"
 
-#: ../src/mainwindow.cpp:296
+#: ../src/mainwindow.cpp:331
 msgid "Text files"
 msgstr "Textdateien"
 
-#: ../src/mainwindow.cpp:393
+#: ../src/mainwindow.cpp:428
 msgid "The clipboad data does not contain a valid sudoku"
 msgstr "Die Zwischenablage enthält kein valides Sudoku"
 
-#: ../src/mainwindow.cpp:401
+#: ../src/mainwindow.cpp:436
 msgid "This Sudoku is valid and has one single solution"
 msgstr "Dieses Sudoku ist korrekt und hat genau eine Lösung"
 
-#: ../src/mainwindow.cpp:405
+#: ../src/mainwindow.cpp:440
 msgid "This sudoku is not valid"
 msgstr "Dieses Sudoku ist nicht korrekt"
 
@@ -245,15 +257,15 @@ msgstr "Dieses Sudoku ist nicht korrekt"
 msgid "To-Do:"
 msgstr "Noch offen:"
 
-#: ../src/mainwindow.cpp:353
+#: ../src/mainwindow.cpp:388
 msgid "Todo: "
 msgstr "Noch offen: "
 
-#: ../src/mainwindow.cpp:181
+#: ../src/mainwindow.cpp:185
 msgid "Undoes the last command"
 msgstr "Macht das letzte Kommando rückgängig"
 
-#: ../src/mainwindow.cpp:264
+#: ../src/mainwindow.cpp:268
 msgid "_About"
 msgstr "Ü_ber"
 
@@ -261,35 +273,35 @@ msgstr "Ü_ber"
 msgid "_Apply Hint"
 msgstr "Hinweis _anwenden"
 
-#: ../src/mainwindow.cpp:165
+#: ../src/mainwindow.cpp:166
 msgid "_Check"
 msgstr "_Prüfen"
 
-#: ../src/mainwindow.cpp:215
+#: ../src/mainwindow.cpp:219
 msgid "_Choices"
 msgstr "_Möglichkeiten"
 
-#: ../src/mainwindow.cpp:162
+#: ../src/mainwindow.cpp:163
 msgid "_Clear"
 msgstr "_Leeren"
 
-#: ../src/mainwindow.cpp:189
+#: ../src/mainwindow.cpp:193
 msgid "_Copy"
 msgstr "_Kopieren"
 
-#: ../src/mainwindow.cpp:198
+#: ../src/mainwindow.cpp:202
 msgid "_Difficulty"
 msgstr "_Schwierigkeitsgrad"
 
-#: ../src/mainwindow.cpp:200
+#: ../src/mainwindow.cpp:204
 msgid "_Easy"
 msgstr "_Einfach"
 
-#: ../src/mainwindow.cpp:148
+#: ../src/mainwindow.cpp:149
 msgid "_Edit"
 msgstr "_Bearbeiten"
 
-#: ../src/mainwindow.cpp:147
+#: ../src/mainwindow.cpp:148
 msgid "_File"
 msgstr "_Datei"
 
@@ -297,54 +309,54 @@ msgstr "_Datei"
 msgid "_Find Hint"
 msgstr "_Hinweis anzeigen"
 
-#: ../src/mainwindow.cpp:209
+#: ../src/mainwindow.cpp:213
 msgid "_Hard"
 msgstr "_Schwer"
 
-#: ../src/mainwindow.cpp:150
+#: ../src/mainwindow.cpp:151
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../src/mainwindow.cpp:229
+#: ../src/mainwindow.cpp:233
 msgid "_Highlight"
 msgstr "_Hervorheben"
 
-#: ../src/mainwindow.cpp:205
+#: ../src/mainwindow.cpp:209
 msgid "_Medium"
 msgstr "_Mittel"
 
-#: ../src/mainwindow.cpp:159
+#: ../src/mainwindow.cpp:160
 msgid "_New"
 msgstr "_Neu"
 
-#: ../src/mainwindow.cpp:168
+#: ../src/mainwindow.cpp:169
 msgid "_Open"
 msgstr "Ö_ffnen"
 
-#: ../src/mainwindow.cpp:192
+#: ../src/mainwindow.cpp:196
 msgid "_Paste"
 msgstr "_Einfügen"
 
-#: ../src/mainwindow.cpp:171
-msgid "_Preview"
-msgstr "_Vorschau"
+#: ../src/mainwindow.cpp:172
+msgid "_Print"
+msgstr "_Drucken"
 
-#: ../src/mainwindow.cpp:185
+#: ../src/mainwindow.cpp:189
 msgid "_Redo"
 msgstr "_Wiederholen"
 
-#: ../src/mainwindow.cpp:220
+#: ../src/mainwindow.cpp:224
 msgid "_Sidebar"
 msgstr "_Seitenleiste"
 
-#: ../src/mainwindow.cpp:195
+#: ../src/mainwindow.cpp:199
 msgid "_Solve Singles"
 msgstr "Löse _Singles"
 
-#: ../src/mainwindow.cpp:181
+#: ../src/mainwindow.cpp:185
 msgid "_Undo"
 msgstr "R_ückgängig"
 
-#: ../src/mainwindow.cpp:149
+#: ../src/mainwindow.cpp:150
 msgid "_View"
 msgstr "_Anzeigen"
